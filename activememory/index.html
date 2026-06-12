@@ -126,7 +126,10 @@
   .q.enter { opacity: 0; transform: translateY(-10px); max-height: 0; padding-top: 0; padding-bottom: 0; }
   .q.fresh { background-color: #bce3d2; }
   .q.catch.fresh { background-color: #f3e2b6; }
-  .q.gone { opacity: 0; transform: translateX(14px); max-height: 0; padding-top: 0; padding-bottom: 0; }
+  .q.gone {
+    opacity: 0; transform: translateX(14px); max-height: 0; padding-top: 0; padding-bottom: 0;
+    transition: opacity .22s ease, transform .22s ease, max-height .28s ease, padding .28s ease;
+  }
 
   /* secure / credential variant */
   .q.secure .meta .dot { background: #3b6fb0; }
@@ -420,57 +423,89 @@
   var SEED_OPEN = {
     meta: 'Maps your data across both apps',
     ask: 'Your website sells a "Trust Package." In QuickBooks the matching item is "Estate Plan Flat Fee." Should Claude always treat them as the same thing?',
-    ph: 'e.g. yes, same item...'
+    ph: 'e.g. yes, same item...',
+    improve: 'When a Trust Package sells on your site, Claude logs it as the right QuickBooks item every time, so your books stay clean.'
   };
 
-  // these fade in over time
+  // these fade in over time. Mix of WordPress, QuickBooks, both, and business basics.
   var FEED = [
-    { meta: 'Maps your data across both apps',
-      ask: 'When the same client appears in both apps under slightly different names, how should Claude decide it is one person?',
-      ph: 'e.g. match by email first, then by full name...' },
+    // WordPress
+    { meta: 'A rule for your website',
+      ask: 'When Claude writes or updates a page, should it always include your "Book a free 15-minute consult" button, or only on service pages?',
+      ph: 'e.g. every page, near the top and bottom...',
+      improve: 'Claude adds your booking button in the right spots on its own, so no page goes live without a way to reach you.' },
+    // QuickBooks
     { meta: 'A rule for your books',
       ask: 'Stripe takes a 2.9% fee on website payments. How should Claude record that fee in QuickBooks?',
-      ph: 'e.g. book the full amount, then the fee as a separate expense...' },
+      ph: 'e.g. book the full amount, then the fee as a separate expense...',
+      improve: 'Every website payment gets booked with the fee handled your way, so the numbers match your bank statement.' },
+    // Both apps
+    { meta: 'Connects your website and your books',
+      ask: 'When someone books a consult on your website, should Claude add them as a customer in QuickBooks right away, or wait until they pay?',
+      ph: 'e.g. wait until they pay...',
+      improve: 'New website leads land in QuickBooks exactly when you want, so your client list never fills up with no-shows.' },
+    // Business basics
+    { meta: 'Sharpens your website copy',
+      ask: 'Are there types of clients you want more of right now? It changes how Claude writes your pages.',
+      ph: 'e.g. business owners setting up trusts...',
+      improve: 'Claude leans your website toward the clients you actually want, so the right people reach out.' },
+    // Both apps
+    { meta: 'Maps your data across both apps',
+      ask: 'When the same client appears in both apps under slightly different names, how should Claude decide it is one person?',
+      ph: 'e.g. match by email first, then by full name...',
+      improve: 'Claude can tell when a website client and a QuickBooks client are the same person, so payments line up and you avoid duplicates.' },
+    // WordPress
+    { meta: 'A rule for your website',
+      ask: 'Should Claude publish page changes live, or always leave them as drafts for you to review first?',
+      ph: 'e.g. always drafts, I approve before it goes live...',
+      improve: 'Claude never surprises you with a live change. It drafts, you approve, then it ships.' },
+    // QuickBooks
     { meta: 'A rule for your books',
       ask: 'When you refund a client on the website, should Claude create a matching credit memo in QuickBooks, or leave it for your bookkeeper?',
-      ph: 'e.g. create the credit memo automatically...' },
+      ph: 'e.g. create the credit memo automatically...',
+      improve: 'Refunds flow into QuickBooks the way you want, so you and your bookkeeper stay in sync.' },
+    // Business basics
     { meta: 'Helps Claude sound like you',
       ask: 'Should "transparent flat-fee pricing" be the standard way Claude describes your prices everywhere it writes?',
-      ph: 'e.g. yes, never frame it as cheap or a deal...' }
+      ph: 'e.g. yes, never frame it as cheap or a deal...',
+      improve: 'Claude describes your pricing in your words on every page it writes, never off-brand.' }
   ];
 
   function checkEmpty() {
-    var left = qBody.querySelectorAll('.q:not(.gone)').length;
-    emptyMsg.style.display = left ? 'none' : 'block';
+    var open = qBody.querySelectorAll('.q:not(.gone):not(.answered)').length;
+    emptyMsg.style.display = open ? 'none' : 'block';
   }
 
   function buildQuestion(p) {
     var q = document.createElement('div');
-    q.className = 'q enter' + (p.catch ? ' catch' : '') + (p.secure ? ' secure' : '');
+    q.className = 'q enter' + (p.catch ? ' catch' : '');
     q.innerHTML =
       '<div class="meta"><span class="dot"></span> ' + p.meta + '</div>' +
       '<div class="ask">' + p.ask + '</div>' +
-      '<textarea class="answer' + (p.secure ? ' pw' : '') + '" rows="2" placeholder="' + p.ph + '"></textarea>' +
-      (p.secure ? '<div class="lock">🔒 Stored encrypted. Only used to run the tasks you ask for.</div>' : '') +
+      '<textarea class="answer" rows="2" placeholder="' + p.ph + '"></textarea>' +
       '<div class="actions">' +
         '<button class="btn btn-save" data-q>Save</button>' +
         '<button class="btn-skip" data-q>Skip</button>' +
       '</div>';
+    q._preset = p;
     return q;
+  }
+
+  function answeredInner(p) {
+    var improveHtml = p.improve
+      ? '<div class="improve"><div class="improve-label">How this will improve Claude</div>' +
+        '<div class="improve-eg">' + p.improve + '</div></div>'
+      : '';
+    return '<div class="meta"><span class="dot"></span> ✓ ' + p.meta + '</div>' +
+      '<div class="ask">' + p.ask + '</div>' +
+      '<div class="given">' + p.answer + '</div>' +
+      improveHtml;
   }
 
   function buildAnswered(p) {
     var q = document.createElement('div');
     q.className = 'q answered';
-    var improveHtml = p.improve
-      ? '<div class="improve"><div class="improve-label">How this will improve Claude</div>' +
-        '<div class="improve-eg">' + p.improve + '</div></div>'
-      : '';
-    q.innerHTML =
-      '<div class="meta"><span class="dot"></span> ✓ ' + p.meta + '</div>' +
-      '<div class="ask">' + p.ask + '</div>' +
-      '<div class="given">' + p.answer + '</div>' +
-      improveHtml;
+    q.innerHTML = answeredInner(p);
     return q;
   }
 
@@ -506,15 +541,23 @@
       if (idx < FEED.length) setTimeout(tick, INTERVAL_MS - TYPING_MS);
     }, TYPING_MS);
   }
-  setTimeout(tick, 6000 - TYPING_MS); // first card appears at ~6s
+  setTimeout(tick, 3000 - TYPING_MS); // first card appears at ~3s
 
-  // answering / skipping removes the question (event delegation for dynamic nodes)
+  // Save -> convert to a saved card showing how Claude will use it. Skip -> hide fast.
   qBody.addEventListener('click', function (e) {
-    var btn = e.target.closest('[data-q]');
-    if (!btn) return;
-    var q = btn.closest('.q');
-    q.classList.add('gone');
-    setTimeout(checkEmpty, 480);
+    var q = e.target.closest('.q');
+    if (!q) return;
+    if (e.target.closest('.btn-save')) {
+      var p = q._preset || {};
+      var ta = q.querySelector('.answer');
+      var ans = (ta && ta.value.trim()) ? ta.value.trim() : 'Yes.';
+      q.classList.add('answered');
+      q.innerHTML = answeredInner({ meta: 'Saved to your profile', ask: p.ask, answer: ans, improve: p.improve });
+      checkEmpty();
+    } else if (e.target.closest('.btn-skip')) {
+      q.classList.add('gone');
+      setTimeout(checkEmpty, 300);
+    }
   });
 </script>
 
