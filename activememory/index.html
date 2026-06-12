@@ -53,6 +53,22 @@
   .saved-state { font-size: 12px; color: var(--faint); display: flex; align-items: center; gap: 6px; }
   .saved-state .tick { color: var(--green); font-weight: 700; }
 
+  /* tabs */
+  .tabs { flex: 0 0 auto; display: flex; gap: 2px; padding: 0 28px; background: #fff; border-bottom: 1px solid var(--line); }
+  .tab {
+    font: inherit; font-size: 13px; font-weight: 600; color: var(--muted);
+    background: none; border: none; cursor: pointer; padding: 13px 14px;
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active { color: var(--green-deep); border-bottom-color: var(--green); }
+  .tab .tdot { width: 7px; height: 7px; border-radius: 50%; }
+  .tab .tdot.ok { background: #2bbd7e; }
+  .tab .tdot.wait { background: #cf9b34; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
   .p-body { flex: 1; overflow-y: auto; padding: 6px 36px 30px; }
 
   .fieldset { padding: 22px 0 6px; }
@@ -104,7 +120,7 @@
 
   .q {
     padding: 18px 14px 20px; margin: 0 -14px; border-radius: 12px;
-    transition: opacity .9s ease, transform .9s ease, max-height 1s ease, padding 1s ease, background-color 1.6s ease;
+    transition: opacity 1.8s ease, transform 1.8s ease, max-height 1.8s ease, padding 1.8s ease, background-color 3s ease;
     max-height: 420px; overflow: hidden; background-color: transparent;
   }
   .q + .q { border-top: 1px solid var(--line); }
@@ -181,124 +197,199 @@
   <!-- ===================== LEFT: STRUCTURED PROFILE FORM ===================== -->
   <div class="col profile">
     <div class="p-head">
-      <h1><span class="mark">◧</span> Business profile</h1>
+      <h1><span class="mark">◧</span> Diskint Law</h1>
       <div class="saved-state" id="savedState"><span class="tick">✓</span> All changes saved</div>
+    </div>
+
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-tab="basics">Business basics</button>
+      <button class="tab" data-tab="wordpress">WordPress <span class="tdot ok"></span></button>
+      <button class="tab" data-tab="quickbooks">QuickBooks <span class="tdot wait"></span></button>
     </div>
 
     <div class="p-body" id="formBody">
 
-      <div class="fieldset">
-        <div class="legend">Basics</div>
-        <div class="field">
-          <label>Business name</label>
-          <input class="input" value="Diskint Law">
-        </div>
-        <div class="row2">
+      <!-- ====== TAB 1: BUSINESS BASICS ====== -->
+      <div class="panel active" data-panel="basics">
+
+        <div class="fieldset">
+          <div class="legend">Basics</div>
           <div class="field">
-            <label>Website</label>
-            <input class="input" value="diskintlaw.com">
+            <label>Business name</label>
+            <input class="input" value="Diskint Law">
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label>Website</label>
+              <input class="input" value="diskintlaw.com">
+            </div>
+            <div class="field">
+              <label>Industry</label>
+              <input class="input" value="Estate planning law firm">
+            </div>
           </div>
           <div class="field">
-            <label>Industry</label>
-            <input class="input" value="Estate planning law firm">
+            <label>One-line description</label>
+            <input class="input" value="Flat-fee estate planning for families in California and Nevada.">
           </div>
         </div>
-        <div class="field">
-          <label>One-line description</label>
-          <input class="input" value="Flat-fee estate planning for families in California and Nevada.">
-        </div>
-      </div>
 
-      <div class="fieldset">
-        <div class="legend">Connections</div>
-        <div class="field">
-          <label>WordPress</label>
-          <div class="conn"><span class="stat-pill ok">Connected</span> <span class="conn-sub">diskintlaw.com · admin "dlaw"</span></div>
-        </div>
-        <div class="field">
-          <label>QuickBooks</label>
-          <div class="conn"><span class="stat-pill wait">Needs login</span> <span class="conn-sub">Answer the question on the right to connect.</span></div>
-        </div>
-      </div>
-
-      <div class="fieldset">
-        <div class="legend">Data mapping</div>
-        <div class="field">
-          <label>Website item "Trust Package" is</label>
-          <input class="input" value="QuickBooks item: Estate Plan Flat Fee">
-        </div>
-        <div class="field">
-          <label>Online payments post to <span class="new">used 4× this week</span></label>
-          <input class="input" value="QuickBooks income account: Legal Fees">
-        </div>
-        <div class="field">
-          <label>"Maria's accounts" means</label>
-          <input class="input" placeholder="Not set yet. A question on the right can fill this in.">
-        </div>
-      </div>
-
-      <div class="fieldset">
-        <div class="legend">Practice</div>
-        <div class="row2">
-          <div class="field">
-            <label>Locations served</label>
-            <input class="input" value="California, Nevada">
+        <div class="fieldset">
+          <div class="legend">Practice</div>
+          <div class="row2">
+            <div class="field">
+              <label>Locations served</label>
+              <input class="input" value="California, Nevada">
+            </div>
+            <div class="field">
+              <label>Pricing model</label>
+              <input class="input" value="Flat fee, quoted up front">
+            </div>
           </div>
           <div class="field">
-            <label>Pricing model</label>
-            <input class="input" value="Flat fee, quoted up front">
-          </div>
-        </div>
-        <div class="field">
-          <label>Services offered</label>
-          <input class="input" value="Wills, trusts, estate plans, probate">
-        </div>
-        <div class="field">
-          <label>Services we do NOT offer</label>
-          <input class="input" value="Family law, criminal defense">
-        </div>
-      </div>
-
-      <div class="fieldset">
-        <div class="legend">Voice &amp; tone</div>
-        <div class="field">
-          <label>How we sound</label>
-          <textarea class="textarea" rows="2">Plain English, no legal jargon. Warm and clear. Clients are everyday people, not lawyers.</textarea>
-        </div>
-        <div class="field">
-          <label>Words to never use <span class="new">updated just now</span></label>
-          <input class="input" value="cheap, affordable, discount, budget">
-        </div>
-        <div class="field">
-          <label>Positioning</label>
-          <input class="input" value="Not the discount firm. We compete on clarity and quality.">
-        </div>
-      </div>
-
-      <div class="fieldset">
-        <div class="legend">Compliance</div>
-        <div class="field">
-          <label>Rules that apply to all copy</label>
-          <textarea class="textarea" rows="2">No superlatives or guarantees (state bar advertising rules). Every page ends with the "not legal advice" disclaimer.</textarea>
-        </div>
-      </div>
-
-      <div class="fieldset">
-        <div class="legend">Getting clients</div>
-        <div class="row2">
-          <div class="field">
-            <label>Call to action</label>
-            <input class="input" value="Book a free 15-minute consult">
+            <label>Services offered</label>
+            <input class="input" value="Wills, trusts, estate plans, probate">
           </div>
           <div class="field">
-            <label>Booking link</label>
-            <input class="input" value="calendly.com/diskintlaw">
+            <label>Services we do NOT offer</label>
+            <input class="input" value="Family law, criminal defense">
           </div>
         </div>
-        <div class="field">
-          <label>Clients we want more of</label>
-          <input class="input" placeholder="Not set yet. A question on the right can fill this in.">
+
+        <div class="fieldset">
+          <div class="legend">Voice &amp; tone</div>
+          <div class="field">
+            <label>How we sound</label>
+            <textarea class="textarea" rows="2">Plain English, no legal jargon. Warm and clear. Clients are everyday people, not lawyers.</textarea>
+          </div>
+          <div class="field">
+            <label>Words to never use <span class="new">updated just now</span></label>
+            <input class="input" value="cheap, affordable, discount, budget">
+          </div>
+          <div class="field">
+            <label>Positioning</label>
+            <input class="input" value="Not the discount firm. We compete on clarity and quality.">
+          </div>
         </div>
+
+        <div class="fieldset">
+          <div class="legend">Compliance</div>
+          <div class="field">
+            <label>Rules that apply to all copy</label>
+            <textarea class="textarea" rows="2">No superlatives or guarantees (state bar advertising rules). Every page ends with the "not legal advice" disclaimer.</textarea>
+          </div>
+        </div>
+
+        <div class="fieldset">
+          <div class="legend">Getting clients</div>
+          <div class="row2">
+            <div class="field">
+              <label>Call to action</label>
+              <input class="input" value="Book a free 15-minute consult">
+            </div>
+            <div class="field">
+              <label>Booking link</label>
+              <input class="input" value="calendly.com/diskintlaw">
+            </div>
+          </div>
+          <div class="field">
+            <label>Clients we want more of</label>
+            <input class="input" placeholder="Not set yet. A question on the right can fill this in.">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ====== TAB 2: WORDPRESS ====== -->
+      <div class="panel" data-panel="wordpress">
+
+        <div class="fieldset">
+          <div class="legend">Connection</div>
+          <div class="field">
+            <label>Status</label>
+            <div class="conn"><span class="stat-pill ok">Connected</span> <span class="conn-sub">Claude can edit your site.</span></div>
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label>Site URL</label>
+              <input class="input" value="diskintlaw.com">
+            </div>
+            <div class="field">
+              <label>Admin username</label>
+              <input class="input" value="dlaw">
+            </div>
+          </div>
+          <div class="field">
+            <label>Application password <span class="new">saved</span></label>
+            <input class="input pw" type="password" value="x8Kd92mfQ1aZ">
+          </div>
+        </div>
+
+        <div class="fieldset">
+          <div class="legend">Site setup</div>
+          <div class="field">
+            <label>Pages Claude maintains</label>
+            <input class="input" value="Home, Services, Estate Planning, About, Contact">
+          </div>
+          <div class="field">
+            <label>Include on every page</label>
+            <textarea class="textarea" rows="2">The "not legal advice" disclaimer in the footer, and the "Book a free 15-minute consult" button.</textarea>
+          </div>
+          <div class="field">
+            <label>Never publish without review</label>
+            <input class="input" value="Yes. Claude drafts, you approve before it goes live.">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ====== TAB 3: QUICKBOOKS ====== -->
+      <div class="panel" data-panel="quickbooks">
+
+        <div class="fieldset">
+          <div class="legend">Connection</div>
+          <div class="field">
+            <label>Status</label>
+            <div class="conn"><span class="stat-pill wait">Needs login</span> <span class="conn-sub">Answer the question on the right to connect.</span></div>
+          </div>
+          <div class="field">
+            <label>Company file</label>
+            <input class="input" value="Diskint Law, PC">
+          </div>
+          <div class="field">
+            <label>Login or API token</label>
+            <input class="input" placeholder="Not connected yet. The question on the right will fill this in.">
+          </div>
+        </div>
+
+        <div class="fieldset">
+          <div class="legend">Data mapping</div>
+          <div class="field">
+            <label>Website item "Trust Package" is</label>
+            <input class="input" value="QuickBooks item: Estate Plan Flat Fee">
+          </div>
+          <div class="field">
+            <label>Online payments post to <span class="new">used 4× this week</span></label>
+            <input class="input" value="Income account: Legal Fees">
+          </div>
+          <div class="field">
+            <label>Matching the same client across both apps</label>
+            <input class="input" value="Match by email. If no email, match by full name.">
+          </div>
+          <div class="field">
+            <label>"Maria's accounts" means</label>
+            <input class="input" placeholder="Not set yet. A question on the right can fill this in.">
+          </div>
+          <div class="field">
+            <label>Stripe card fee (2.9%)</label>
+            <input class="input" placeholder="Not set yet. A question on the right can fill this in.">
+          </div>
+          <div class="field">
+            <label>Refunds on the website</label>
+            <input class="input" placeholder="Not set yet. A question on the right can fill this in.">
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -324,6 +415,17 @@
   </div>
 
 <script>
+  // ---- Left tabs ----
+  document.getElementById('tabs').addEventListener('click', function (e) {
+    var tab = e.target.closest('.tab');
+    if (!tab) return;
+    var name = tab.getAttribute('data-tab');
+    document.querySelectorAll('.tab').forEach(function (t) { t.classList.toggle('active', t === tab); });
+    document.querySelectorAll('.panel').forEach(function (p) {
+      p.classList.toggle('active', p.getAttribute('data-panel') === name);
+    });
+  });
+
   // ---- Left form: dirty tracking + save feedback (no real persistence) ----
   var body = document.getElementById('formBody');
   var saveBtn = document.getElementById('saveBtn');
@@ -454,28 +556,28 @@
     return q;
   }
 
-  // typing cue at the very top, where new questions land
+  // seed the queue (oldest at top): one already answered, then one still open
+  qBody.insertBefore(buildAnswered(SEED_ANSWERED), emptyMsg);
+  qBody.insertBefore(buildQuestion(SEED_OPEN), emptyMsg);
+
+  // typing cue sits at the bottom, where new questions land
   var typing = document.createElement('div');
   typing.className = 'typing';
   typing.innerHTML = 'Claude is working <span class="pips"><i></i><i></i><i></i></span>';
   qBody.insertBefore(typing, emptyMsg);
 
-  // seed the queue: one open question, one already answered (below it)
-  qBody.insertBefore(buildQuestion(SEED_OPEN), emptyMsg);
-  qBody.insertBefore(buildAnswered(SEED_ANSWERED), emptyMsg);
-
   function addQuestion(p) {
     var q = buildQuestion(p);
-    qBody.insertBefore(q, typing.nextSibling); // newest right under the working cue
+    qBody.insertBefore(q, typing); // newest at the bottom, just above the working cue
     void q.offsetHeight; // reflow, then animate in
     q.classList.remove('enter');
     q.classList.add('fresh');
-    setTimeout(function () { q.classList.remove('fresh'); }, 1500); // bg glow fades out
+    setTimeout(function () { q.classList.remove('fresh'); }, 2600); // bg glow fades out slowly
     checkEmpty();
   }
 
   // timing: first question at 6s, then one every 15s
-  var TYPING_MS = 1800, INTERVAL_MS = 15000;
+  var TYPING_MS = 1800, INTERVAL_MS = 20000;
   var idx = 0;
   function tick() {
     if (idx >= FEED.length) return;
