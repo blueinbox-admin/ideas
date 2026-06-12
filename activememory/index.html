@@ -90,7 +90,21 @@
     font-size: 13.5px; color: #36433d; line-height: 1.45; transition: background-color 1.3s ease;
   }
   .fact .tick { color: var(--green); flex: 0 0 auto; font-weight: 700; }
+  .fact .fact-del {
+    margin-left: auto; flex: 0 0 auto; align-self: center;
+    background: none; border: none; cursor: pointer; font: inherit; font-size: 12px;
+    font-weight: 600; color: var(--faint); padding: 0 0 0 10px;
+    opacity: 0; transition: opacity .12s, color .12s;
+  }
+  .fact:hover .fact-del, .fact:focus-within .fact-del { opacity: 1; }
+  .fact .fact-del:hover { color: #b23b3b; }
   .fact.fresh { background-color: #c4e6d6; }
+  .fact.gone {
+    opacity: 0; transform: translateX(14px); max-height: 0;
+    padding-top: 0; padding-bottom: 0; margin-bottom: 0; overflow: hidden;
+    transition: opacity .2s ease, transform .2s ease, max-height .26s ease,
+                padding .26s ease, margin .26s ease;
+  }
   .addfact { display: flex; gap: 8px; margin-top: 14px; }
   .addfact .input { flex: 1; }
   .addfact .btn { flex: 0 0 auto; }
@@ -179,6 +193,13 @@
     color: var(--green); background: none; border: none; cursor: pointer; padding: 0;
   }
   .card-head .edit:hover { color: var(--green-deep); }
+  .card-head .del {
+    margin-left: auto; font: inherit; font-size: 12px; font-weight: 600;
+    color: var(--faint); background: none; border: none; cursor: pointer; padding: 0;
+    opacity: 0; transition: opacity .12s, color .12s;
+  }
+  .q:hover .card-head .del, .q:focus-within .card-head .del { opacity: 1; }
+  .card-head .del:hover { color: #b23b3b; }
   .card-body { padding: 13px 14px; }
 
   .q .given { font-size: 13.5px; color: var(--ink); line-height: 1.45; background: var(--line-soft); border-radius: 9px; padding: 9px 12px; margin-top: 12px; }
@@ -262,9 +283,9 @@
           <div class="legend">Things Claude can't see</div>
           <p class="facts-note">Not on your website, not in your books. The judgment calls and history only you know. Add one at a time.</p>
           <div class="factlist" id="factlist">
-            <div class="fact"><span class="tick">✓</span> We don't take DIY-will clients. Too much back-and-forth for the fee.</div>
-            <div class="fact"><span class="tick">✓</span> Busy season is January to April. Push estate reviews then.</div>
-            <div class="fact"><span class="tick">✓</span> Referrals from Dr. Lin's office get a same-week appointment.</div>
+            <div class="fact"><span class="tick">✓</span> We don't take DIY-will clients. Too much back-and-forth for the fee.<button class="fact-del" type="button">Delete</button></div>
+            <div class="fact"><span class="tick">✓</span> Busy season is January to April. Push estate reviews then.<button class="fact-del" type="button">Delete</button></div>
+            <div class="fact"><span class="tick">✓</span> Referrals from Dr. Lin's office get a same-week appointment.<button class="fact-del" type="button">Delete</button></div>
           </div>
           <div class="addfact">
             <input class="input" id="factInput" placeholder="Add something only you would know...">
@@ -330,22 +351,6 @@
           </div>
         </div>
 
-        <div class="fieldset">
-          <div class="legend">Data mapping</div>
-          <div class="field">
-            <label>Website item "Trust Package" is</label>
-            <input class="input" value="QuickBooks item: Estate Plan Flat Fee">
-          </div>
-          <div class="field">
-            <label>Online payments post to</label>
-            <input class="input" value="Income account: Legal Fees">
-          </div>
-          <div class="field">
-            <label>Matching the same client across both apps</label>
-            <input class="input" placeholder="Not set yet. A question on the right can fill this in.">
-          </div>
-        </div>
-
       </div>
 
     </div>
@@ -395,7 +400,8 @@
       if (!v) return;
       var row = document.createElement('div');
       row.className = 'fact fresh';
-      row.innerHTML = '<span class="tick">✓</span> ' + v.replace(/</g, '&lt;');
+      row.innerHTML = '<span class="tick">✓</span> ' + v.replace(/</g, '&lt;') +
+        '<button class="fact-del" type="button">Delete</button>';
       list.appendChild(row);
       input.value = '';
       input.focus();
@@ -403,6 +409,12 @@
     }
     add.addEventListener('click', addFact);
     input.addEventListener('keydown', function (e) { if (e.key === 'Enter') addFact(); });
+    list.addEventListener('click', function (e) {
+      if (!e.target.closest('.fact-del')) return;
+      var row = e.target.closest('.fact');
+      row.classList.add('gone');
+      setTimeout(function () { row.remove(); }, 280);
+    });
   })();
 
   // ---- Draggable divider: resize the two columns ----
@@ -487,21 +499,21 @@
 
   // already-answered seed (shows the queue -> profile loop, and how it improves Claude)
   var SEED_ANSWERED = {
-    meta: 'A rule for your books', source: 'from your books',
+    meta: 'A rule for your books', source: 'QuickBooks',
     context: 'You asked Claude to "record yesterday\'s website payments in QuickBooks."',
     ask: 'When a payment comes in through your website, which QuickBooks account should it go to?',
     answer: 'Legal Fees for consults. Consulting for ongoing retainers.',
     ph: 'e.g. Legal Fees for consults...',
-    improve: 'Your books start reconciling themselves. Every website payment lands in the right account automatically, turning month-end close from an afternoon into a few minutes.'
+    improve: 'Before this, Claude would guess the account or stop to ask you on every payment. Now it posts each one to Legal Fees on its own, no back-and-forth.'
   };
 
   // open seed (already waiting when the page loads)
   var SEED_OPEN = {
-    meta: 'Maps your data across both apps', source: 'worth checking', catch: true,
+    meta: 'Maps your data across both apps', source: 'Both apps',
     context: 'You asked Claude to "log the website Trust Package sale in QuickBooks."',
     ask: 'Your website sells a "Trust Package." In QuickBooks the matching item is "Estate Plan Flat Fee." Should Claude always treat them as the same thing?',
     ph: 'e.g. yes, same item...',
-    improve: 'No more mismatched line items to chase. Every Trust Package sale ties cleanly to QuickBooks, so your revenue reports are right the first time and you can trust your own numbers.'
+    improve: 'Before this, Claude saw the website sale and the QuickBooks item as two unrelated things. Now it links them every time, so no revenue goes uncounted.'
   };
 
   // these fade in over time. Mix of WordPress, QuickBooks, and both apps.
@@ -512,37 +524,37 @@
       context: 'You asked Claude to "add a new estate planning page to the site."',
       ask: 'When Claude writes or updates a page, should it always include your "Book a free 15-minute consult" button, or only on service pages?',
       ph: 'e.g. every page, near the top and bottom...',
-      improve: 'Every page Claude touches turns into a lead magnet. No more good-looking pages that quietly fail to get anyone to book.' },
+      improve: 'Before this, Claude left the booking button off new pages unless you remembered to ask. Now it adds it every time, so no page ships without a way to book.' },
     // QuickBooks
     { meta: 'A rule for your books', source: 'from your books',
       context: 'You asked Claude to "reconcile this week\'s Stripe payouts."',
       ask: 'Stripe takes a 2.9% fee on website payments. How should Claude record that fee in QuickBooks?',
       ph: 'e.g. book the full amount, then the fee as a separate expense...',
-      improve: 'Your books match your bank to the penny. No more hunting down phantom discrepancies the night before taxes are due.' },
+      improve: 'Before this, Claude would record the gross amount and quietly throw off your totals. Now it books the fee your way, so your books match the bank without you fixing it.' },
     // Both apps
     { meta: 'Connects your website and your books', source: 'worth checking', catch: true,
       context: 'You asked Claude to "add the people who booked consults to QuickBooks."',
       ask: 'When someone books a consult on your website, should Claude add them as a customer in QuickBooks right away, or wait until they pay?',
       ph: 'e.g. wait until they pay...',
-      improve: 'Your client list stays clean and real. Follow-ups and reports never get polluted with people who booked but never paid.' },
+      improve: 'Before this, Claude would add every booking as a customer and clutter your list with no-shows. Now it waits until they pay, so your client list stays real.' },
     // Both apps
     { meta: 'Maps your data across both apps', source: 'worth checking', catch: true,
       context: 'You asked Claude to "match this week\'s website payments to client records."',
       ask: 'When the same client appears in both apps under slightly different names, how should Claude decide it is one person?',
       ph: 'e.g. match by email first, then by full name...',
-      improve: 'One client, one record. No more duplicate contacts or a payment applied to the wrong John Smith and the cleanup that follows.' },
+      improve: 'Before this, Claude would create a second record for the same person. Now it knows to match them, so you stop cleaning up duplicates by hand.' },
     // WordPress
     { meta: 'A rule for your website', source: 'a safety check', catch: true,
       context: 'You asked Claude to "update the wording on the services page."',
       ask: 'Should Claude publish page changes live, or always leave them as drafts for you to review first?',
       ph: 'e.g. always drafts, I approve before it goes live...',
-      improve: 'Nothing embarrassing ever goes live by accident. You stay in control of every word a client sees on your site.' },
+      improve: 'Before this, Claude might push a change straight to your live site. Now it leaves a draft for you, so nothing reaches clients until you say so.' },
     // QuickBooks
     { meta: 'A rule for your books', source: 'from your books',
       context: 'You asked Claude to "refund the Henderson consult."',
       ask: 'When you refund a client on the website, should Claude create a matching credit memo in QuickBooks, or leave it for your bookkeeper?',
       ph: 'e.g. create the credit memo automatically...',
-      improve: 'Refunds never slip through the cracks. Your books and your bookkeeper always agree, and audits stay boring.' }
+      improve: 'Before this, a refund would sit unrecorded until your bookkeeper caught it. Now Claude logs the credit memo right away, so your books are never behind.' }
   ];
 
   function checkEmpty() {
@@ -581,7 +593,8 @@
       ? '<div class="improve"><div class="improve-label">How this will improve Claude</div>' +
         '<div class="improve-eg">' + p.improve + '</div></div>'
       : '';
-    return '<div class="card-head"><span class="cico check">✓</span>Saved to your profile</div>' +
+    return '<div class="card-head"><span class="cico check">✓</span>Saved to your profile' +
+        '<button class="del" data-delete type="button">Delete</button></div>' +
       '<div class="card-body">' +
         '<div class="ask">' + p.ask + '</div>' +
         '<textarea class="answer saved" rows="2">' + (p.answer || '') + '</textarea>' +
@@ -644,6 +657,12 @@
     var p = q._preset || {};
     var ta, actions;
 
+    // delete a saved answer entirely
+    if (e.target.closest('[data-delete]')) {
+      q.classList.add('gone');
+      setTimeout(function () { q.remove(); checkEmpty(); }, 300);
+      return;
+    }
     // re-save an edited saved answer
     if (e.target.closest('[data-resave]')) {
       ta = q.querySelector('.answer.saved');
