@@ -82,6 +82,19 @@
   .panel { display: none; }
   .panel.active { display: block; }
 
+  /* "Other facts" freeform list */
+  .facts-note { font-size: 12.5px; color: var(--muted); line-height: 1.5; margin: -4px 0 16px; }
+  .fact {
+    display: flex; align-items: flex-start; gap: 9px; padding: 11px 13px;
+    background: #fff; border: 1px solid var(--line); border-radius: 9px; margin-bottom: 8px;
+    font-size: 13.5px; color: #36433d; line-height: 1.45; transition: background-color 1.3s ease;
+  }
+  .fact .tick { color: var(--green); flex: 0 0 auto; font-weight: 700; }
+  .fact.fresh { background-color: #c4e6d6; }
+  .addfact { display: flex; gap: 8px; margin-top: 14px; }
+  .addfact .input { flex: 1; }
+  .addfact .btn { flex: 0 0 auto; }
+
   .p-body { flex: 1; overflow-y: auto; padding: 6px 36px 30px; }
 
   .fieldset { padding: 22px 0 6px; }
@@ -131,30 +144,42 @@
   .q-body { flex: 1; overflow-y: auto; padding: 14px 28px 40px; }
 
   .q {
-    padding: 18px 14px 20px; margin: 0 -14px; border-radius: 12px;
-    transition: opacity 2.6s ease, transform 2.6s ease, max-height 2.6s ease, padding 2.6s ease, background-color 4.2s ease;
-    max-height: 420px; overflow: hidden; background-color: transparent;
+    background: #fff; border: 1px solid var(--green-line); border-radius: 12px;
+    overflow: hidden; box-shadow: 0 1px 2px rgba(20,40,30,0.04); margin-bottom: 14px;
+    transition: opacity 2.4s ease, transform 2.4s ease, background-color 4.2s ease;
+    max-height: 700px; background-color: #fff;
   }
-  .q + .q { border-top: 1px solid var(--line); }
-  .q.enter { opacity: 0; transform: translateY(-10px); max-height: 0; padding-top: 0; padding-bottom: 0; }
+  .q.catch { border-color: #ecdcb4; }
+  .q.enter { opacity: 0; transform: translateY(-6px); }
   .q.fresh { background-color: #bce3d2; }
   .q.catch.fresh { background-color: #f3e2b6; }
   .q.gone {
-    opacity: 0; transform: translateX(14px); max-height: 0; padding-top: 0; padding-bottom: 0;
-    transition: opacity .22s ease, transform .22s ease, max-height .28s ease, padding .28s ease;
+    opacity: 0; transform: translateX(14px); max-height: 0; margin-bottom: 0;
+    transition: opacity .2s ease, transform .2s ease, max-height .28s ease, margin .28s ease;
   }
 
-  /* secure / credential variant */
-  .q.secure .meta .dot { background: #3b6fb0; }
-  .q .lock { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: #5a6b80; margin: 10px 0 12px; }
-  .q .answer.pw { letter-spacing: 0.12em; }
+  /* card header bar with round icon + source tag */
+  .card-head {
+    display: flex; align-items: center; gap: 9px; padding: 11px 14px;
+    background: var(--green-tint); border-bottom: 1px solid var(--green-line);
+    font-size: 13px; font-weight: 600; color: var(--green-deep);
+  }
+  .q.catch .card-head { background: #fbf3df; border-bottom-color: #ecdcb4; color: #8a6a1f; }
+  .card-head .cico { width: 9px; height: 9px; border-radius: 50%; background: var(--green); flex: 0 0 auto; }
+  .q.catch .card-head .cico { background: #d99a2b; }
+  .card-head .cico.check {
+    width: 19px; height: 19px; background: var(--green); color: #fff;
+    display: grid; place-items: center; font-size: 11px;
+  }
+  .card-head .src { margin-left: auto; font-size: 11px; font-weight: 500; color: #7d9a8e; }
+  .card-head .edit {
+    margin-left: auto; font: inherit; font-size: 12px; font-weight: 600;
+    color: var(--green); background: none; border: none; cursor: pointer; padding: 0;
+  }
+  .card-head .edit:hover { color: var(--green-deep); }
+  .card-body { padding: 13px 14px; }
 
-  /* answered (seed) card */
-  .q.answered { opacity: .82; }
-  .q.answered .meta { color: var(--green); }
   .q .given { font-size: 13.5px; color: var(--ink); line-height: 1.45; background: var(--line-soft); border-radius: 9px; padding: 9px 12px; margin-top: 12px; }
-  .q .edit { font: inherit; font-size: 12px; font-weight: 600; color: var(--muted); background: none; border: none; cursor: pointer; margin-top: 9px; padding: 0; }
-  .q .edit:hover { color: var(--green-deep); }
 
   /* "how this will improve Claude" on saved cards */
   .improve { margin-top: 12px; padding: 10px 13px; background: var(--green-tint); border: 1px solid var(--green-line); border-radius: 9px; }
@@ -188,6 +213,8 @@
   .answer { width: 100%; font: inherit; font-size: 13.5px; color: var(--ink); line-height: 1.45; border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; resize: none; background: #fff; margin-bottom: 12px; }
   .answer::placeholder { color: var(--faint); }
   .answer:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px var(--green-tint); }
+  .answer.saved { background: var(--line-soft); border-color: transparent; cursor: text; margin-bottom: 0; }
+  .answer.saved:focus { background: #fff; border-color: var(--green); }
   .actions { display: flex; align-items: center; gap: 10px; }
   .btn-skip { background: transparent; color: var(--muted); border: none; padding: 9px 8px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
   .btn-skip:hover { color: var(--ink); }
@@ -210,66 +237,34 @@
     </div>
 
     <div class="tabs" id="tabs">
-      <button class="tab active" data-tab="basics">Business basics</button>
-      <button class="tab" data-tab="wordpress">WordPress <span class="tdot ok"></span></button>
+      <button class="tab active" data-tab="wordpress">WordPress <span class="tdot ok"></span></button>
       <button class="tab" data-tab="quickbooks">QuickBooks <span class="tdot ok"></span></button>
+      <button class="tab" data-tab="facts">Other facts</button>
     </div>
 
     <div class="p-body" id="formBody">
 
-      <!-- ====== TAB 1: BUSINESS BASICS ====== -->
-      <div class="panel active" data-panel="basics">
+      <!-- ====== TAB: OTHER FACTS (freeform, add one at a time) ====== -->
+      <div class="panel" data-panel="facts">
 
         <div class="fieldset">
-          <div class="legend">Basics</div>
-          <div class="field">
-            <label>Business name</label>
-            <input class="input" value="Diskint Law">
+          <div class="legend">Things Claude can't see</div>
+          <p class="facts-note">Not on your website, not in your books. The judgment calls and history only you know. Add one at a time.</p>
+          <div class="factlist" id="factlist">
+            <div class="fact"><span class="tick">✓</span> We don't take DIY-will clients. Too much back-and-forth for the fee.</div>
+            <div class="fact"><span class="tick">✓</span> Busy season is January to April. Push estate reviews then.</div>
+            <div class="fact"><span class="tick">✓</span> Referrals from Dr. Lin's office get a same-week appointment.</div>
           </div>
-          <div class="row2">
-            <div class="field">
-              <label>Website</label>
-              <input class="input" value="diskintlaw.com">
-            </div>
-            <div class="field">
-              <label>Locations served</label>
-              <input class="input" value="California, Nevada">
-            </div>
-          </div>
-          <div class="field">
-            <label>One-line description</label>
-            <input class="input" value="Flat-fee estate planning for families in California and Nevada.">
-          </div>
-        </div>
-
-        <div class="fieldset">
-          <div class="legend">Voice &amp; rules</div>
-          <div class="field">
-            <label>How we sound</label>
-            <textarea class="textarea" rows="2">Plain English, no legal jargon. Warm and clear. Clients are everyday people, not lawyers.</textarea>
-          </div>
-          <div class="field">
-            <label>Words to never use</label>
-            <input class="input" value="cheap, affordable, discount, budget">
-          </div>
-        </div>
-
-        <div class="fieldset">
-          <div class="legend">Getting clients</div>
-          <div class="field">
-            <label>Call to action</label>
-            <input class="input" value="Book a free 15-minute consult, links to Calendly">
-          </div>
-          <div class="field">
-            <label>Clients we want more of</label>
-            <input class="input" placeholder="Not set yet. A question on the right can fill this in.">
+          <div class="addfact">
+            <input class="input" id="factInput" placeholder="Add something only you would know...">
+            <button class="btn btn-save" id="factAdd" type="button">Add</button>
           </div>
         </div>
 
       </div>
 
-      <!-- ====== TAB 2: WORDPRESS ====== -->
-      <div class="panel" data-panel="wordpress">
+      <!-- ====== TAB: WORDPRESS ====== -->
+      <div class="panel active" data-panel="wordpress">
 
         <div class="fieldset">
           <div class="legend">Connection</div>
@@ -379,6 +374,26 @@
     });
   });
 
+  // ---- Other facts: add one fact at a time ----
+  (function () {
+    var add = document.getElementById('factAdd');
+    var input = document.getElementById('factInput');
+    var list = document.getElementById('factlist');
+    function addFact() {
+      var v = input.value.trim();
+      if (!v) return;
+      var row = document.createElement('div');
+      row.className = 'fact fresh';
+      row.innerHTML = '<span class="tick">✓</span> ' + v.replace(/</g, '&lt;');
+      list.appendChild(row);
+      input.value = '';
+      input.focus();
+      setTimeout(function () { row.classList.remove('fresh'); }, 1400);
+    }
+    add.addEventListener('click', addFact);
+    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') addFact(); });
+  })();
+
   // ---- Draggable divider: resize the two columns ----
   (function () {
     var divider = document.getElementById('divider');
@@ -456,9 +471,12 @@
   // questions. The user answers whenever. Each one teaches Claude something it can't infer
   // on its own, and improves every future task.
 
+  // Every question is something Claude CANNOT see or glean: credentials, how the apps map
+  // to each other, and private rules. Nothing derivable from the website or the books.
+
   // already-answered seed (shows the queue -> profile loop, and how it improves Claude)
   var SEED_ANSWERED = {
-    meta: 'A rule for your books',
+    meta: 'A rule for your books', source: 'from your books',
     context: 'You asked Claude to "record yesterday\'s website payments in QuickBooks."',
     ask: 'When a payment comes in through your website, which QuickBooks account should it go to?',
     answer: 'Legal Fees for consults. Consulting for ongoing retainers.',
@@ -468,64 +486,52 @@
 
   // open seed (already waiting when the page loads)
   var SEED_OPEN = {
-    meta: 'Maps your data across both apps',
+    meta: 'Maps your data across both apps', source: 'worth checking', catch: true,
     context: 'You asked Claude to "log the website Trust Package sale in QuickBooks."',
     ask: 'Your website sells a "Trust Package." In QuickBooks the matching item is "Estate Plan Flat Fee." Should Claude always treat them as the same thing?',
     ph: 'e.g. yes, same item...',
     improve: 'When a Trust Package sells on your site, Claude logs it as the right QuickBooks item every time, so your books stay clean.'
   };
 
-  // these fade in over time. Mix of WordPress, QuickBooks, both, and business basics.
+  // these fade in over time. Mix of WordPress, QuickBooks, and both apps.
   // Each carries a "context" line: what you said in Claude Code that prompted the question.
   var FEED = [
     // WordPress
-    { meta: 'A rule for your website',
+    { meta: 'A rule for your website', source: 'from your edit',
       context: 'You asked Claude to "add a new estate planning page to the site."',
       ask: 'When Claude writes or updates a page, should it always include your "Book a free 15-minute consult" button, or only on service pages?',
       ph: 'e.g. every page, near the top and bottom...',
       improve: 'Claude adds your booking button in the right spots on its own, so no page goes live without a way to reach you.' },
     // QuickBooks
-    { meta: 'A rule for your books',
+    { meta: 'A rule for your books', source: 'from your books',
       context: 'You asked Claude to "reconcile this week\'s Stripe payouts."',
       ask: 'Stripe takes a 2.9% fee on website payments. How should Claude record that fee in QuickBooks?',
       ph: 'e.g. book the full amount, then the fee as a separate expense...',
       improve: 'Every website payment gets booked with the fee handled your way, so the numbers match your bank statement.' },
     // Both apps
-    { meta: 'Connects your website and your books',
+    { meta: 'Connects your website and your books', source: 'worth checking', catch: true,
       context: 'You asked Claude to "add the people who booked consults to QuickBooks."',
       ask: 'When someone books a consult on your website, should Claude add them as a customer in QuickBooks right away, or wait until they pay?',
       ph: 'e.g. wait until they pay...',
       improve: 'New website leads land in QuickBooks exactly when you want, so your client list never fills up with no-shows.' },
-    // Business basics
-    { meta: 'Sharpens your website copy',
-      context: 'You asked Claude to "rewrite the homepage to bring in better clients."',
-      ask: 'Are there types of clients you want more of right now? It changes how Claude writes your pages.',
-      ph: 'e.g. business owners setting up trusts...',
-      improve: 'Claude leans your website toward the clients you actually want, so the right people reach out.' },
     // Both apps
-    { meta: 'Maps your data across both apps',
+    { meta: 'Maps your data across both apps', source: 'worth checking', catch: true,
       context: 'You asked Claude to "match this week\'s website payments to client records."',
       ask: 'When the same client appears in both apps under slightly different names, how should Claude decide it is one person?',
       ph: 'e.g. match by email first, then by full name...',
       improve: 'Claude can tell when a website client and a QuickBooks client are the same person, so payments line up and you avoid duplicates.' },
     // WordPress
-    { meta: 'A rule for your website',
+    { meta: 'A rule for your website', source: 'a safety check', catch: true,
       context: 'You asked Claude to "update the wording on the services page."',
       ask: 'Should Claude publish page changes live, or always leave them as drafts for you to review first?',
       ph: 'e.g. always drafts, I approve before it goes live...',
       improve: 'Claude never surprises you with a live change. It drafts, you approve, then it ships.' },
     // QuickBooks
-    { meta: 'A rule for your books',
+    { meta: 'A rule for your books', source: 'from your books',
       context: 'You asked Claude to "refund the Henderson consult."',
       ask: 'When you refund a client on the website, should Claude create a matching credit memo in QuickBooks, or leave it for your bookkeeper?',
       ph: 'e.g. create the credit memo automatically...',
-      improve: 'Refunds flow into QuickBooks the way you want, so you and your bookkeeper stay in sync.' },
-    // Business basics
-    { meta: 'Helps Claude sound like you',
-      context: 'You asked Claude to "write the new fees page."',
-      ask: 'Should "transparent flat-fee pricing" be the standard way Claude describes your prices everywhere it writes?',
-      ph: 'e.g. yes, never frame it as cheap or a deal...',
-      improve: 'Claude describes your pricing in your words on every page it writes, never off-brand.' }
+      improve: 'Refunds flow into QuickBooks the way you want, so you and your bookkeeper stay in sync.' }
   ];
 
   function checkEmpty() {
@@ -538,13 +544,16 @@
     var secondBtn = editing
       ? '<button class="btn-skip" data-cancel>Cancel</button>'
       : '<button class="btn-skip" data-q>Skip</button>';
-    return '<div class="meta"><span class="dot"></span> ' + p.meta + '</div>' +
-      (p.context ? '<div class="context">' + p.context + '</div>' : '') +
-      '<div class="ask">' + p.ask + '</div>' +
-      '<textarea class="answer" rows="2" placeholder="' + (p.ph || '') + '">' + value + '</textarea>' +
-      '<div class="actions">' +
-        '<button class="btn btn-save" data-q>Save</button>' +
-        secondBtn +
+    return '<div class="card-head"><span class="cico"></span>' + p.meta +
+        (p.source ? '<span class="src">' + p.source + '</span>' : '') + '</div>' +
+      '<div class="card-body">' +
+        (p.context ? '<div class="context">' + p.context + '</div>' : '') +
+        '<div class="ask">' + p.ask + '</div>' +
+        '<textarea class="answer" rows="2" placeholder="' + (p.ph || '') + '">' + value + '</textarea>' +
+        '<div class="actions">' +
+          '<button class="btn btn-save" data-q>Save</button>' +
+          secondBtn +
+        '</div>' +
       '</div>';
   }
 
@@ -561,11 +570,12 @@
       ? '<div class="improve"><div class="improve-label">How this will improve Claude</div>' +
         '<div class="improve-eg">' + p.improve + '</div></div>'
       : '';
-    return '<div class="meta"><span class="dot"></span> ✓ Saved to your profile</div>' +
-      '<div class="ask">' + p.ask + '</div>' +
-      '<div class="given">' + (p.answer || '') + '</div>' +
-      improveHtml +
-      '<button class="edit" data-edit>Edit</button>';
+    return '<div class="card-head"><span class="cico check">✓</span>Saved to your profile</div>' +
+      '<div class="card-body">' +
+        '<div class="ask">' + p.ask + '</div>' +
+        '<textarea class="answer saved" rows="2">' + (p.answer || '') + '</textarea>' +
+        improveHtml +
+      '</div>';
   }
 
   function buildAnswered(p) {
@@ -611,36 +621,28 @@
   setTimeout(tick, 3000 - TYPING_MS); // first card appears at ~3s
 
   // Save -> saved card (with how it improves Claude). Skip -> hide fast.
-  // Edit -> reopen a saved answer for changes. Cancel -> discard edits.
   qBody.addEventListener('click', function (e) {
     var q = e.target.closest('.q');
     if (!q) return;
     var p = q._preset || {};
-
-    if (e.target.closest('.edit')) {                 // reopen saved answer to edit
-      q.classList.remove('answered');
-      q.innerHTML = questionInner(p, p.answer || '', true);
-      var t = q.querySelector('.answer'); if (t) t.focus();
-      return;
-    }
-    if (e.target.closest('[data-cancel]')) {         // discard edits, restore saved card
-      q.classList.add('answered');
-      q.innerHTML = answeredInner(p);
-      return;
-    }
-    if (e.target.closest('.btn-save')) {             // save a new or updated answer
+    if (e.target.closest('.btn-save')) {             // save the answer
       var ta = q.querySelector('.answer');
       p.answer = (ta && ta.value.trim()) ? ta.value.trim() : 'Yes.';
       q.classList.add('answered');
       q.innerHTML = answeredInner(p);
       checkEmpty();
-      return;
-    }
-    if (e.target.closest('.btn-skip')) {             // skip an unanswered question
+    } else if (e.target.closest('.btn-skip')) {      // skip an unanswered question
       q.classList.add('gone');
       setTimeout(checkEmpty, 300);
-      return;
     }
+  });
+
+  // Saved answers stay editable in place: typing in them updates the stored fact.
+  qBody.addEventListener('input', function (e) {
+    var ta = e.target.closest('.answer.saved');
+    if (!ta) return;
+    var q = e.target.closest('.q');
+    if (q && q._preset) q._preset.answer = ta.value;
   });
 </script>
 
