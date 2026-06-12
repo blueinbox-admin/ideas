@@ -34,7 +34,7 @@
   .profile {
     flex: 0 0 auto;
     width: 40%;
-    min-width: 0;
+    min-width: 330px;
     background: #fff;
   }
 
@@ -146,7 +146,7 @@
   .btn-save.done { background: var(--green-deep); }
 
   /* ============ RIGHT: question queue ============ */
-  .queue { flex: 1 1 0; min-width: 0; background: var(--bg); }
+  .queue { flex: 1 1 0; min-width: 380px; background: var(--bg); }
   .q-head { flex: 0 0 auto; padding: 24px 28px 16px; border-bottom: 1px solid var(--line); }
   .q-head .top, .q-head .note { max-width: 720px; margin-left: auto; margin-right: auto; }
   .q-head .top { display: flex; align-items: center; justify-content: space-between; }
@@ -209,6 +209,11 @@
   .improve-row.so { margin-top: 2px; padding-top: 6px; border-top: 1px solid var(--green-line); }
   .improve-row.so .lbl { color: var(--green); }
   .improve-row.so .txt { font-weight: 600; color: #1c3b32; }
+
+  /* open-card hook: the present-tense cost of leaving this unanswered. Hugs its text. */
+  .hookbox { margin: 12px 0; padding: 10px 13px; background: var(--line-soft); border: 1px solid var(--line); border-radius: 9px; }
+  .hookbox .hl { font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--faint); font-weight: 600; margin-bottom: 7px; }
+  .hookbox .ht { font-size: 12.5px; line-height: 1.45; color: var(--muted); }
 
   /* left form: connection rows + status pills */
   .conn { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -274,10 +279,10 @@
     body { flex-direction: column; height: auto; min-height: 100vh; overflow-y: auto; }
     .col { height: auto; }
 
-    /* profile on top, full width (override the 56% and any drag-set inline width) */
-    .profile { width: 100% !important; flex: 0 0 auto; }
+    /* profile on top, full width (override the 40% and any drag-set inline width) */
+    .profile { width: 100% !important; min-width: 0; flex: 0 0 auto; }
     .divider { display: none; }
-    .queue { width: 100%; flex: 0 0 auto; border-top: 1px solid var(--line); }
+    .queue { width: 100%; min-width: 0; flex: 0 0 auto; border-top: 1px solid var(--line); }
 
     /* panels grow with their content instead of scrolling independently */
     .p-body, .q-body { flex: 0 0 auto; overflow: visible; }
@@ -345,17 +350,6 @@
           </div>
         </div>
 
-        <div class="fieldset">
-          <div class="legend">Site rules</div>
-          <div class="field">
-            <label>Include on every page</label>
-            <textarea class="textarea" rows="2">The "not legal advice" disclaimer in the footer, and the "Book a free 15-minute consult" button.</textarea>
-          </div>
-          <div class="field">
-            <label>Never publish without review</label>
-            <input class="input" value="Yes. Claude drafts, you approve before it goes live.">
-          </div>
-        </div>
 
       </div>
 
@@ -542,21 +536,62 @@
 
   // open seed (already waiting when the page loads)
   var SEED_OPEN = {
-    meta: 'Maps your data across both apps', source: 'Both apps',
-    context: 'You asked Claude to "log the website Trust Package sale in QuickBooks."',
-    ask: 'Your website sells a "Trust Package." In QuickBooks the matching item is "Estate Plan Flat Fee." Should Claude always treat them as the same thing?',
-    ph: 'e.g. yes, same item...',
+    meta: 'A rule for your website', source: 'WordPress',
+    context: 'You asked Claude to "write the new estate planning page."',
+    ask: 'When Claude writes for your site, should it sound formal and lawyerly, or warm and plain so first-timers feel at ease?',
+    ph: 'e.g. warm and plain, skip the legal jargon...',
     improve: {
-      before: 'Claude saw the website sale and the QuickBooks item as two unrelated things.',
-      now: 'it links them on every payment.',
-      so: 'no revenue goes uncounted and your books match your bank.'
+      before: 'Claude guessed your tone and you rewrote half of what it drafted.',
+      now: 'it writes in your voice the first time.',
+      so: 'new pages sound like you and need almost no editing.'
     }
   };
 
   // these fade in over time. Mix of WordPress, QuickBooks, and both apps.
   // Each carries a "context" line: what you said in Claude Code that prompted the question.
   var FEED = [
+    // ---- NEW: website + how the firm works, surfaced first ----
     // WordPress
+    { meta: 'A rule for your website', source: 'WordPress',
+      context: 'You asked Claude to "update the services page."',
+      ask: 'Are there services you do NOT want promoted on the site, like the DIY wills you turn away?',
+      ph: 'e.g. never feature DIY wills or anything hourly...',
+      improve: {
+        before: 'Claude could feature work you do not want, pulling in bad-fit leads.',
+        now: 'it keeps those off the site.',
+        so: 'you stop fielding inquiries you only have to turn down.'
+      } },
+    // How you work -- labeling / vocabulary
+    { meta: 'Your words for things', source: 'Your business',
+      context: 'You asked Claude to "draft a welcome note for a new client."',
+      ask: 'What do you call the people you work with and the work you do for them? Clients and matters, customers and cases, something else?',
+      ph: 'e.g. clients and matters, never customers or cases...',
+      improve: {
+        before: 'Claude used generic words like "customer" that sound wrong for a law office.',
+        now: 'it uses your terms everywhere, on the site and in your books.',
+        so: 'everything Claude writes sounds like it came from your firm.'
+      } },
+    // How you work -- intake workflow
+    { meta: 'How your firm works', source: 'Your business',
+      context: 'You asked Claude to "follow up with this week\'s consult bookings."',
+      ask: 'Walk Claude through what happens after someone books a consult. What are the steps from first call to signed client?',
+      ph: 'e.g. consult, conflict check, engagement letter, intake form...',
+      improve: {
+        before: 'Claude did not know your intake steps and skipped or reordered them.',
+        now: 'it follows your process in the right order.',
+        so: 'every new client goes through the same steps without you steering each one.'
+      } },
+    // How you work -- how the firm thinks (good fit)
+    { meta: 'How your firm works', source: 'Your business',
+      context: 'You asked Claude to "sort this week\'s new inquiries."',
+      ask: 'How do you tell a good-fit client from one you would rather pass on?',
+      ph: 'e.g. flat-fee estate work yes, hourly disputes no...',
+      improve: {
+        before: 'Claude treated every inquiry the same and surfaced ones you would never take.',
+        now: 'it flags the good-fit ones first.',
+        so: 'you spend your time on the clients worth having.'
+      } },
+    // ---- existing WordPress ----
     { meta: 'A rule for your website', source: 'WordPress',
       context: 'You asked Claude to "add a new estate planning page to the site."',
       ask: 'When Claude writes or updates a page, should it always include your "Book a free 15-minute consult" button, or only on service pages?',
@@ -566,37 +601,6 @@
         now: 'it adds it to every page it builds.',
         so: 'no page goes live without a way to book you.'
       } },
-    // QuickBooks
-    { meta: 'A rule for your books', source: 'QuickBooks',
-      context: 'You asked Claude to "reconcile this week\'s Stripe payouts."',
-      ask: 'Stripe takes a 2.9% fee on website payments. How should Claude record that fee in QuickBooks?',
-      ph: 'e.g. book the full amount, then the fee as a separate expense...',
-      improve: {
-        before: 'Claude recorded only what landed in your bank, so your income looked short.',
-        now: 'it books the full sale and the fee on its own line.',
-        so: 'your revenue is accurate and the fees show up as a deduction at tax time.'
-      } },
-    // Both apps
-    { meta: 'Connects your website and your books', source: 'Both apps',
-      context: 'You asked Claude to "add the people who booked consults to QuickBooks."',
-      ask: 'When someone books a consult on your website, should Claude add them as a customer in QuickBooks right away, or wait until they pay?',
-      ph: 'e.g. wait until they pay...',
-      improve: {
-        before: 'Claude added every booking as a customer, no-shows included.',
-        now: 'it waits until they pay to create the record.',
-        so: 'your client list stays real and you stop deleting no-shows.'
-      } },
-    // Both apps
-    { meta: 'Maps your data across both apps', source: 'Both apps',
-      context: 'You asked Claude to "match this week\'s website payments to client records."',
-      ask: 'When the same client appears in both your website and QuickBooks under slightly different names, how should Claude decide it is one person?',
-      ph: 'e.g. match by email first, then by full name...',
-      improve: {
-        before: 'Claude created a second QuickBooks record for someone already in your website.',
-        now: 'it matches them by your rule.',
-        so: 'you stop cleaning up duplicate clients by hand.'
-      } },
-    // WordPress
     { meta: 'A rule for your website', source: 'WordPress',
       context: 'You asked Claude to "update the wording on the services page."',
       ask: 'Should Claude publish page changes live, or always leave them as drafts for you to review first?',
@@ -606,7 +610,44 @@
         now: 'it leaves a draft for you to approve first.',
         so: 'nothing reaches clients until you say so.'
       } },
-    // QuickBooks
+    // ---- books / cross-app, now lower in the queue ----
+    // relocated from the open seed
+    { meta: 'Maps your data across both apps', source: 'WordPress + QuickBooks',
+      context: 'You asked Claude to "log the website Trust Package sale in QuickBooks."',
+      ask: 'Your website sells a "Trust Package." In QuickBooks the matching item is "Estate Plan Flat Fee." Should Claude always treat them as the same thing?',
+      ph: 'e.g. yes, same item...',
+      improve: {
+        before: 'Claude saw the website sale and the QuickBooks item as two unrelated things.',
+        now: 'it links them on every payment.',
+        so: 'no revenue goes uncounted and your books match your bank.'
+      } },
+    { meta: 'A rule for your books', source: 'QuickBooks',
+      context: 'You asked Claude to "reconcile this week\'s Stripe payouts."',
+      ask: 'Stripe takes a 2.9% fee on website payments. How should Claude record that fee in QuickBooks?',
+      ph: 'e.g. book the full amount, then the fee as a separate expense...',
+      improve: {
+        before: 'Claude recorded only what landed in your bank, so your income looked short.',
+        now: 'it books the full sale and the fee on its own line.',
+        so: 'your revenue is accurate and the fees show up as a deduction at tax time.'
+      } },
+    { meta: 'Connects your website and your books', source: 'WordPress + QuickBooks',
+      context: 'You asked Claude to "add the people who booked consults to QuickBooks."',
+      ask: 'When someone books a consult on your website, should Claude add them as a customer in QuickBooks right away, or wait until they pay?',
+      ph: 'e.g. wait until they pay...',
+      improve: {
+        before: 'Claude added every booking as a customer, no-shows included.',
+        now: 'it waits until they pay to create the record.',
+        so: 'your client list stays real and you stop deleting no-shows.'
+      } },
+    { meta: 'Maps your data across both apps', source: 'WordPress + QuickBooks',
+      context: 'You asked Claude to "match this week\'s website payments to client records."',
+      ask: 'When the same client appears in both your website and QuickBooks under slightly different names, how should Claude decide it is one person?',
+      ph: 'e.g. match by email first, then by full name...',
+      improve: {
+        before: 'Claude created a second QuickBooks record for someone already in your website.',
+        now: 'it matches them by your rule.',
+        so: 'you stop cleaning up duplicate clients by hand.'
+      } },
     { meta: 'A rule for your books', source: 'QuickBooks',
       context: 'You asked Claude to "refund the Henderson consult."',
       ask: 'When you refund a client on the website, should Claude create a matching credit memo in QuickBooks, or leave it for your bookkeeper?',
@@ -634,11 +675,20 @@
         (p.context ? '<div class="context">' + p.context + '</div>' : '') +
         '<div class="ask">' + p.ask + '</div>' +
         '<textarea class="answer" rows="2" placeholder="' + (p.ph || '') + '">' + value + '</textarea>' +
+        hookHtml(p) +
         '<div class="actions">' +
           '<button class="btn btn-save" data-q>Save</button>' +
           secondBtn +
         '</div>' +
       '</div>';
+  }
+
+  // The present-tense cost of leaving this unanswered. Reserves the same vertical
+  // space the Before/Now/So box will fill once answered, so the card doesn't resize.
+  function hookHtml(p) {
+    var text = p.hook || (p.improve && p.improve.before);
+    if (!text) return '';
+    return '<div class="hookbox"><div class="hl">Without this</div><div class="ht">' + text + '</div></div>';
   }
 
   function buildQuestion(p) {
@@ -666,6 +716,7 @@
         '</div>' +
         '<button class="del" data-delete type="button">Delete</button></div>' +
       '<div class="card-body">' +
+        (p.context ? '<div class="context">' + p.context + '</div>' : '') +
         '<div class="ask">' + p.ask + '</div>' +
         '<textarea class="answer saved" rows="2">' + (p.answer || '') + '</textarea>' +
         improveHtml +
@@ -730,6 +781,7 @@
 
     // delete a saved answer entirely
     if (e.target.closest('[data-delete]')) {
+      q.style.minHeight = ''; // release the locked height so the card can collapse
       q.classList.add('gone');
       setTimeout(function () { q.remove(); checkEmpty(); }, 300);
       return;
@@ -753,10 +805,11 @@
       if (actions) { actions.hidden = true; actions.classList.remove('done'); }
       return;
     }
-    // answer an open question -> becomes a saved card
+    // answer an open question -> becomes a saved card (lock height so it can't jump)
     if (e.target.closest('.btn-save')) {
       ta = q.querySelector('.answer');
       p.answer = (ta && ta.value.trim()) ? ta.value.trim() : 'Yes.';
+      q.style.minHeight = q.offsetHeight + 'px'; // freeze current height before the swap
       q.classList.add('answered');
       q.innerHTML = answeredInner(p);
       checkEmpty();
@@ -768,6 +821,17 @@
       setTimeout(checkEmpty, 300);
       return;
     }
+  });
+
+  // Enter saves the answer; Shift+Enter still inserts a newline.
+  qBody.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' || e.shiftKey) return;
+    var ta = e.target.closest('.answer');
+    if (!ta) return;
+    e.preventDefault();
+    var q = e.target.closest('.q');
+    var saveBtn = q && q.querySelector('.btn-save');
+    if (saveBtn) saveBtn.click();
   });
 
   // Editing a saved answer: show Save/Cancel as soon as you focus or change it,
