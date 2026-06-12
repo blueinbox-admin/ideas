@@ -30,7 +30,11 @@
     -webkit-font-smoothing: antialiased;
   }
   .col { display: flex; flex-direction: column; height: 100%; }
-  .topbar { flex: 0 0 auto; display: flex; align-items: center; justify-content: center; padding: 11px 16px; background: #fff; border-bottom: 1px solid var(--line); }
+  .topbar { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 11px 16px; background: #fff; border-bottom: 1px solid var(--line); }
+  .topbar-row { display: flex; align-items: center; gap: 12px; }
+  .session-chip { font-size: 12.5px; color: var(--muted); }
+  .session-chip b { color: var(--ink); font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+  .topbar-note { font-size: 11.5px; color: var(--faint); text-align: center; max-width: 560px; }
   .main-row { flex: 1 1 auto; display: flex; min-height: 0; }
 
   /* ============ LEFT: structured profile form ============ */
@@ -225,17 +229,17 @@
   .improve-rows { display: flex; flex-direction: column; gap: 5px; }
   .improve-row { font-size: 12.5px; line-height: 1.45; color: #2c4a40; display: grid; grid-template-columns: 42px 1fr; gap: 9px; align-items: baseline; }
   .improve-row .lbl { font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; color: #8aa89b; padding-top: 1px; }
-  .improve-row.so { margin-top: 2px; padding-top: 6px; border-top: 1px solid var(--green-line); }
-  .improve-row.so .lbl { color: var(--green); }
-  .improve-row.so .txt { font-weight: 600; color: #1c3b32; }
-  /* plain-English gloss under the technical "Before" line */
-  .improve-row .cost { display: block; margin-top: 4px; font-size: 12px; color: #6f8a7e; }
+  .improve-row.now { margin-top: 2px; padding-top: 6px; border-top: 1px solid var(--green-line); }
+  .improve-row.now .lbl { color: var(--green); }
+  .improve-row.now .txt { color: #1c3b32; }
+  /* plain-English gloss: reads as a continuation of the "Before" line above it */
+  .improve-row .cost { display: block; margin-top: 4px; color: #2c4a40; }
 
   /* open-card hook: the present-tense cost of leaving this unanswered. Hugs its text. */
   .hookbox { margin: 12px 0; padding: 0; }
   .hookbox .hl { display: inline; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #b8862f; font-weight: 700; margin-right: 8px; }
-  .hookbox .ht { display: inline; font-size: 13px; line-height: 1.5; color: var(--muted); }
-  .hookbox .ht-cost { display: block; margin-top: 6px; font-size: 12.5px; line-height: 1.5; color: #98a09a; }
+  .hookbox .ht { display: inline; font-size: 12px; line-height: 1.5; color: var(--muted); }
+  .hookbox .ht-cost { display: block; margin-top: 5px; font-size: 12px; line-height: 1.5; color: var(--muted); }
 
   /* left form: connection rows + status pills */
   .conn { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -322,12 +326,16 @@
 </head>
 <body>
 
-  <header class="topbar">
-    <button class="conn-toggle" id="connToggle" type="button" aria-pressed="true" title="Connection to Claude Code">
-      <span class="conn-dot"></span>
-      <span class="conn-label" id="connLabel">Live with Claude Code</span>
-      <span class="conn-switch"><span class="conn-knob"></span></span>
-    </button>
+    <header class="topbar">
+    <div class="topbar-row">
+      <button class="conn-toggle" id="connToggle" type="button" aria-pressed="true" title="Connection to Claude Code">
+        <span class="conn-dot"></span>
+        <span class="conn-label" id="connLabel">Live with Claude Code</span>
+        <span class="conn-switch"><span class="conn-knob"></span></span>
+      </button>
+      <span class="session-chip" id="sessionChip">working in <b>diskint-law-website</b></span>
+    </div>
+    <div class="topbar-note" id="topbarNote">Preview. This is the panel you would see while you work. New questions show up as Claude works in your session.</div>
   </header>
 
   <div class="main-row">
@@ -362,8 +370,8 @@
         </div>
 
         <div class="fieldset">
-          <div class="legend">Things Claude can't see</div>
-          <p class="facts-note">The judgment calls and history only you know, nothing it can read from your website or books. Add one at a time.</p>
+          <div class="legend">Things Claude can't read anywhere</div>
+          <p class="facts-note">The judgment calls and history that live only in your head, not on your website or in your books, so no agent can read them. Saved here, each one becomes a memory that loads into every session and every sub-agent, so Claude stops guessing at the calls only you can make. Add one at a time.</p>
           <div class="factlist" id="factlist">
             <div class="fact"><span class="tick">✓</span> We don't take DIY-will clients. Too much back-and-forth for the fee.<button class="fact-del" type="button">Delete</button></div>
             <div class="fact"><span class="tick">✓</span> Busy season is January to April. Push estate reviews then.<button class="fact-del" type="button">Delete</button></div>
@@ -580,8 +588,7 @@
     improve: {
       before: 'When a books sub-agent runs your reconciliation, it starts fresh with only CLAUDE.md and whatever memories get recalled, not your earlier chat. The account mapping was in neither, so each run guessed or stopped to ask.',
       cost: 'Every reconciliation either pings you with the same question or files income in the wrong account.',
-      now: 'it posts each one to Legal Fees on its own.',
-      so: 'your consult income lands in the right place without you touching it.'
+      now: 'it posts each one to Legal Fees on its own, and your consult income lands where it should without you touching it.'
     }
   };
 
@@ -594,8 +601,7 @@
     improve: {
       before: 'Your tone only ever lived in the active context window. A new session, or a writing agent spun up to draft the page, begins from CLAUDE.md and recalled memories, where it was never written, so the tone reset and you rewrote half the draft.',
       cost: 'Every new page comes back sounding generic, and you rewrite it before it can go out.',
-      now: 'it writes in your voice the first time.',
-      so: 'new pages sound like you and need almost no editing.'
+      now: 'it writes in your voice on the first try, and new pages need almost no editing.'
     }
   };
 
@@ -611,8 +617,7 @@
       improve: {
         before: 'A saved memory only helps if its description matches and it gets recalled at the moment of the edit. Nothing flagged the DIY wills you turn away, so the page agent worked from your live site and kept featuring them, pulling in leads you just have to reject.',
         cost: 'Your site keeps advertising the work you turn down, and your inbox fills with leads you have to reject.',
-        now: 'it keeps those off the site.',
-        so: 'you stop fielding inquiries you only have to turn down.'
+        now: 'it keeps those off the site, so you stop fielding inquiries you only turn down.'
       } },
     // How you work -- labeling / vocabulary
     { meta: 'Your words for things', source: 'Your business',
@@ -620,10 +625,9 @@
       ask: 'What do you call the people you work with and the work you do for them? Clients and matters, customers and cases, something else?',
       ph: 'e.g. clients and matters, never customers or cases...',
       improve: {
-        before: 'House words like "clients and matters" only stick if someone writes them into CLAUDE.md by hand. No one had, so each drafting run fell back on "customer" and "case," which sound wrong for a law office.',
+        before: 'Words like "clients and matters" only carry into the next session if someone writes them into CLAUDE.md by hand. No one had, so each new draft fell back on "customer" and "case," which sound wrong for a law office.',
         cost: 'Everything Claude writes reads a little off, like it came from someone who does not know the firm.',
-        now: 'it uses your terms everywhere, on the site and in your books.',
-        so: 'everything Claude writes sounds like it came from your firm.'
+        now: 'it uses your terms across the site and your books, so everything reads like your firm wrote it.'
       } },
     // How you work -- intake workflow
     { meta: 'How your firm works', source: 'Your business',
@@ -633,8 +637,7 @@
       improve: {
         before: 'A multi-step workflow only runs the same way every time if it is written down. Yours was not in CLAUDE.md, so each orchestrated run rebuilt the steps from scratch and dropped or reordered them.',
         cost: 'New clients slip through a different crack each time, and you re-check every file by hand.',
-        now: 'it follows your process in the right order.',
-        so: 'every new client goes through the same steps without you steering each one.'
+        now: 'it follows your steps in order, so every new client gets the same path without you steering.'
       } },
     // How you work -- how the firm thinks (good fit)
     { meta: 'How your firm works', source: 'Your business',
@@ -644,8 +647,7 @@
       improve: {
         before: 'Your good-fit rule lived only in your head, never in CLAUDE.md or a recalled memory, so the triage agent scored every new inquiry the same and surfaced ones you would never take.',
         cost: 'You still triage the inbox yourself, because the agent cannot tell a real client from a time-sink.',
-        now: 'it flags the good-fit ones first.',
-        so: 'you spend your time on the clients worth having.'
+        now: 'it surfaces the good-fit inquiries first, and your time goes to clients worth having.'
       } },
     // ---- existing WordPress ----
     { meta: 'A rule for your website', source: 'WordPress',
@@ -655,8 +657,7 @@
       improve: {
         before: 'Nothing on a page tells an agent that a booking button belongs on it. With no rule saved in CLAUDE.md, each new page shipped from the template without one unless you asked.',
         cost: 'Pages go live with no way to reach you, and you only notice after they are public.',
-        now: 'it adds it to every page it builds.',
-        so: 'no page goes live without a way to book you.'
+        now: 'it adds the button to every page it builds, so none ships without a way to book you.'
       } },
     { meta: 'A rule for your website', source: 'WordPress',
       context: 'You asked Claude to "update the wording on the services page."',
@@ -665,8 +666,7 @@
       improve: {
         before: 'A sub-agent editing the services page sees only CLAUDE.md and recalled memories, not your spoken "always draft first." With no such rule saved, it had no reason to hold back and could publish straight to your live site.',
         cost: 'A wrong edit can reach your clients before you have seen it.',
-        now: 'it leaves a draft for you to approve first.',
-        so: 'nothing reaches clients until you say so.'
+        now: 'it leaves a draft for you to approve, and nothing reaches clients until you sign off.'
       } },
     // ---- books / cross-app, now lower in the queue ----
     // relocated from the open seed
@@ -677,8 +677,7 @@
       improve: {
         before: 'The link between your site\'s "Trust Package" and QuickBooks\' "Estate Plan Flat Fee" lives only in your head. Neither app stores it and no memory carried it, so each agent logged them as two unrelated items.',
         cost: 'Sales stop matching invoices, and your books quietly drift from what actually sold.',
-        now: 'it links them on every payment.',
-        so: 'no revenue goes uncounted and your books match your bank.'
+        now: 'it links them on every payment, so no revenue slips and your books match your bank.'
       } },
     { meta: 'A rule for your books', source: 'QuickBooks',
       context: 'You asked Claude to "reconcile this week\'s Stripe payouts."',
@@ -687,8 +686,7 @@
       improve: {
         before: 'How you book the 2.9% fee is an accounting choice, not something in the payout data. With no saved rule, the reconciliation agent recorded only the net that hit your bank.',
         cost: 'Your revenue looks smaller than it was, and the fees disappear instead of showing up as a deduction.',
-        now: 'it books the full sale and the fee on its own line.',
-        so: 'your revenue is accurate and the fees show up as a deduction at tax time.'
+        now: 'it books the full sale and the fee separately, so your revenue stays accurate and the fees show up as a deduction.'
       } },
     { meta: 'Connects your website and your books', source: 'WordPress + QuickBooks',
       context: 'You asked Claude to "add the people who booked consults to QuickBooks."',
@@ -697,8 +695,7 @@
       improve: {
         before: 'Whether a booking counts as a customer yet is a policy call, invisible in the booking data. With nothing saved, the agent created a record the moment anyone booked.',
         cost: 'Your client list fills with no-shows you then have to hunt down and delete.',
-        now: 'it waits until they pay to create the record.',
-        so: 'your client list stays real and you stop deleting no-shows.'
+        now: 'it waits until they pay to create the record, so your client list stays real.'
       } },
     { meta: 'Maps your data across both apps', source: 'WordPress + QuickBooks',
       context: 'You asked Claude to "match this week\'s website payments to client records."',
@@ -707,8 +704,7 @@
       improve: {
         before: 'Deciding two slightly different names are the same person takes a matching rule. None was in CLAUDE.md or recalled, so the agent opened a second QuickBooks record instead of linking the existing one.',
         cost: 'Duplicates pile up, and you reconcile the same client twice.',
-        now: 'it matches them by your rule.',
-        so: 'you stop cleaning up duplicate clients by hand.'
+        now: 'it matches them by your rule, and you stop cleaning up duplicates by hand.'
       } },
     { meta: 'A rule for your books', source: 'QuickBooks',
       context: 'You asked Claude to "refund the Henderson consult."',
@@ -717,8 +713,7 @@
       improve: {
         before: 'Whether Claude or your bookkeeper owns the credit memo is a division-of-labor rule, written nowhere. Without it, the refund agent guessed, sometimes duplicating the memo, sometimes skipping it.',
         cost: 'Refunds get booked twice or not at all, and you catch it at month end.',
-        now: 'it handles refunds exactly the way you told it.',
-        so: 'your books and your bookkeeper never end up out of sync.'
+        now: 'it handles refunds the way you told it, and your books and bookkeeper stay in sync.'
       } }
   ];
 
@@ -737,7 +732,7 @@
       '<div class="card-body">' +
         (p.context ? '<div class="context">' + p.context + '</div>' : '') +
         '<div class="ask">' + p.ask + '</div>' +
-        '<textarea class="answer" rows="2" placeholder="' + (p.ph || '') + '">' + value + '</textarea>' +
+        '<textarea class="answer" rows="2">' + value + '</textarea>' +
         hookHtml(p) +
         '<div class="actions">' +
           '<button class="btn btn-save" data-q>Save</button>' +
@@ -770,8 +765,7 @@
         '<div class="improve-rows">' +
           '<div class="improve-row"><span class="lbl">Before</span><span class="txt">' + p.improve.before +
             (p.improve.cost ? '<span class="cost">' + p.improve.cost + '</span>' : '') + '</span></div>' +
-          '<div class="improve-row"><span class="lbl">Now</span><span class="txt">' + p.improve.now + '</span></div>' +
-          '<div class="improve-row so"><span class="lbl">So</span><span class="txt">' + p.improve.so + '</span></div>' +
+          '<div class="improve-row now"><span class="lbl">Now</span><span class="txt">' + p.improve.now + '</span></div>' +
         '</div></div>'
       : '';
     return '<div class="card-head"><span class="cico check">✓</span>Saved to your profile' +
@@ -858,6 +852,12 @@
     connToggle.classList.toggle('off', !on);
     connToggle.setAttribute('aria-pressed', on ? 'true' : 'false');
     connLabel.textContent = on ? 'Live with Claude Code' : 'Disconnected';
+    var _chip = document.getElementById('sessionChip');
+    var _note = document.getElementById('topbarNote');
+    if (_chip) _chip.style.display = on ? '' : 'none';
+    if (_note) _note.textContent = on
+      ? 'Preview. This is the panel you would see while you work. New questions show up as Claude works in your session.'
+      : 'Disconnected. While the session is off, no new questions arrive.';
     pausedMsg.classList.toggle('show', !on);
     if (on) { scheduleNext(1200); }      // reconnected: resume shortly
     else { clearTimeout(feedTimer); typing.classList.remove('show'); }
