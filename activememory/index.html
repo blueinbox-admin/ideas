@@ -165,10 +165,8 @@
     transition: opacity 2.4s ease, transform 2.4s ease, background-color 4.2s ease;
     max-height: 700px; background-color: #fff;
   }
-  .q.catch { border-color: #ecdcb4; }
   .q.enter { opacity: 0; transform: translateY(-6px); }
   .q.fresh { background-color: #bce3d2; }
-  .q.catch.fresh { background-color: #f3e2b6; }
   .q.gone {
     opacity: 0; transform: translateX(14px); max-height: 0; margin-bottom: 0;
     transition: opacity .2s ease, transform .2s ease, max-height .28s ease, margin .28s ease;
@@ -180,9 +178,7 @@
     background: var(--green-tint); border-bottom: 1px solid var(--green-line);
     font-size: 13px; font-weight: 600; color: var(--green-deep);
   }
-  .q.catch .card-head { background: #fbf3df; border-bottom-color: #ecdcb4; color: #8a6a1f; }
   .card-head .cico { width: 9px; height: 9px; border-radius: 50%; background: var(--green); flex: 0 0 auto; }
-  .q.catch .card-head .cico { background: #d99a2b; }
   .card-head .cico.check {
     width: 19px; height: 19px; background: var(--green); color: #fff;
     display: grid; place-items: center; font-size: 11px;
@@ -204,10 +200,15 @@
 
   .q .given { font-size: 13.5px; color: var(--ink); line-height: 1.45; background: var(--line-soft); border-radius: 9px; padding: 9px 12px; margin-top: 12px; }
 
-  /* "how this will improve Claude" on saved cards */
+  /* "what this changes for you" on saved cards: Before / Now / So */
   .improve { margin-top: 12px; padding: 10px 13px; background: var(--green-tint); border: 1px solid var(--green-line); border-radius: 9px; }
-  .improve-label { font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--green); font-weight: 600; margin-bottom: 5px; }
-  .improve-eg { font-size: 12.5px; line-height: 1.5; color: #2c4a40; }
+  .improve-label { font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--green); font-weight: 600; margin-bottom: 7px; }
+  .improve-rows { display: flex; flex-direction: column; gap: 5px; }
+  .improve-row { font-size: 12.5px; line-height: 1.45; color: #2c4a40; display: grid; grid-template-columns: 42px 1fr; gap: 9px; align-items: baseline; }
+  .improve-row .lbl { font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; color: #8aa89b; padding-top: 1px; }
+  .improve-row.so { margin-top: 2px; padding-top: 6px; border-top: 1px solid var(--green-line); }
+  .improve-row.so .lbl { color: var(--green); }
+  .improve-row.so .txt { font-weight: 600; color: #1c3b32; }
 
   /* left form: connection rows + status pills */
   .conn { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -226,7 +227,6 @@
   @keyframes pip { 0%,100% { opacity: .25; } 50% { opacity: 1; } }
   .q .meta { font-size: 11px; letter-spacing: 0.04em; color: var(--faint); display: flex; align-items: center; gap: 7px; margin-bottom: 9px; }
   .q .meta .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex: 0 0 auto; }
-  .q.catch .meta .dot { background: #cf9b34; }
   .q .context {
     font-size: 12px; color: var(--muted); line-height: 1.45; font-style: italic;
     border-left: 2px solid var(--line); padding-left: 10px; margin: 0 0 11px;
@@ -244,9 +244,6 @@
   .saved-actions.done .btn-save, .saved-actions.done .btn-skip { display: none; }
   .saved-actions.done .saved-flag { display: inline; }
 
-  /* tone-matched primary action: amber cards get an amber Save */
-  .q.catch .btn-save { background: #b9831f; }
-  .q.catch .btn-save:hover { background: #986a12; }
   .actions { display: flex; align-items: center; gap: 10px; }
   .btn-skip { background: transparent; color: var(--muted); border: none; padding: 9px 8px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
   .btn-skip:hover { color: var(--ink); }
@@ -257,6 +254,26 @@
 
   ::-webkit-scrollbar { width: 8px; }
   ::-webkit-scrollbar-thumb { background: rgba(120,130,125,0.28); border-radius: 6px; }
+
+  /* ============ MOBILE: stack the two columns, let the page scroll ============ */
+  @media (max-width: 760px) {
+    html, body { height: auto; }
+    body { flex-direction: column; height: auto; min-height: 100vh; overflow-y: auto; }
+    .col { height: auto; }
+
+    /* profile on top, full width (override the 56% and any drag-set inline width) */
+    .profile { width: 100% !important; flex: 0 0 auto; }
+    .divider { display: none; }
+    .queue { width: 100%; flex: 0 0 auto; border-top: 1px solid var(--line); }
+
+    /* panels grow with their content instead of scrolling independently */
+    .p-body, .q-body { flex: 0 0 auto; overflow: visible; }
+
+    /* tighter side padding on small screens */
+    .p-head, .save-bar, .p-body { padding-left: 20px; padding-right: 20px; }
+    .tabs { padding-left: 16px; padding-right: 16px; }
+    .q-head, .q-body { padding-left: 16px; padding-right: 16px; }
+  }
 </style>
 </head>
 <body>
@@ -504,7 +521,11 @@
     ask: 'When a payment comes in through your website, which QuickBooks account should it go to?',
     answer: 'Legal Fees for consults. Consulting for ongoing retainers.',
     ph: 'e.g. Legal Fees for consults...',
-    improve: 'Before this, Claude would guess the account or stop to ask you on every payment. Now it posts each one to Legal Fees on its own, no back-and-forth.'
+    improve: {
+      before: 'Claude guessed the account or stopped to ask you on every payment.',
+      now: 'it posts each one to Legal Fees on its own.',
+      so: 'your consult income lands in the right place without you touching it.'
+    }
   };
 
   // open seed (already waiting when the page loads)
@@ -513,48 +534,76 @@
     context: 'You asked Claude to "log the website Trust Package sale in QuickBooks."',
     ask: 'Your website sells a "Trust Package." In QuickBooks the matching item is "Estate Plan Flat Fee." Should Claude always treat them as the same thing?',
     ph: 'e.g. yes, same item...',
-    improve: 'Before this, Claude saw the website sale and the QuickBooks item as two unrelated things. Now it links them every time, so no revenue goes uncounted.'
+    improve: {
+      before: 'Claude saw the website sale and the QuickBooks item as two unrelated things.',
+      now: 'it links them on every payment.',
+      so: 'no revenue goes uncounted and your books match your bank.'
+    }
   };
 
   // these fade in over time. Mix of WordPress, QuickBooks, and both apps.
   // Each carries a "context" line: what you said in Claude Code that prompted the question.
   var FEED = [
     // WordPress
-    { meta: 'A rule for your website', source: 'from your edit',
+    { meta: 'A rule for your website', source: 'WordPress',
       context: 'You asked Claude to "add a new estate planning page to the site."',
       ask: 'When Claude writes or updates a page, should it always include your "Book a free 15-minute consult" button, or only on service pages?',
       ph: 'e.g. every page, near the top and bottom...',
-      improve: 'Before this, Claude left the booking button off new pages unless you remembered to ask. Now it adds it every time, so no page ships without a way to book.' },
+      improve: {
+        before: 'Claude left the booking button off new pages unless you remembered to ask.',
+        now: 'it adds it to every page it builds.',
+        so: 'no page goes live without a way to book you.'
+      } },
     // QuickBooks
-    { meta: 'A rule for your books', source: 'from your books',
+    { meta: 'A rule for your books', source: 'QuickBooks',
       context: 'You asked Claude to "reconcile this week\'s Stripe payouts."',
       ask: 'Stripe takes a 2.9% fee on website payments. How should Claude record that fee in QuickBooks?',
       ph: 'e.g. book the full amount, then the fee as a separate expense...',
-      improve: 'Before this, Claude would record the gross amount and quietly throw off your totals. Now it books the fee your way, so your books match the bank without you fixing it.' },
+      improve: {
+        before: 'Claude recorded only what landed in your bank, so your income looked short.',
+        now: 'it books the full sale and the fee on its own line.',
+        so: 'your revenue is accurate and the fees show up as a deduction at tax time.'
+      } },
     // Both apps
-    { meta: 'Connects your website and your books', source: 'worth checking', catch: true,
+    { meta: 'Connects your website and your books', source: 'Both apps',
       context: 'You asked Claude to "add the people who booked consults to QuickBooks."',
       ask: 'When someone books a consult on your website, should Claude add them as a customer in QuickBooks right away, or wait until they pay?',
       ph: 'e.g. wait until they pay...',
-      improve: 'Before this, Claude would add every booking as a customer and clutter your list with no-shows. Now it waits until they pay, so your client list stays real.' },
+      improve: {
+        before: 'Claude added every booking as a customer, no-shows included.',
+        now: 'it waits until they pay to create the record.',
+        so: 'your client list stays real and you stop deleting no-shows.'
+      } },
     // Both apps
-    { meta: 'Maps your data across both apps', source: 'worth checking', catch: true,
+    { meta: 'Maps your data across both apps', source: 'Both apps',
       context: 'You asked Claude to "match this week\'s website payments to client records."',
-      ask: 'When the same client appears in both apps under slightly different names, how should Claude decide it is one person?',
+      ask: 'When the same client appears in both your website and QuickBooks under slightly different names, how should Claude decide it is one person?',
       ph: 'e.g. match by email first, then by full name...',
-      improve: 'Before this, Claude would create a second record for the same person. Now it knows to match them, so you stop cleaning up duplicates by hand.' },
+      improve: {
+        before: 'Claude created a second QuickBooks record for someone already in your website.',
+        now: 'it matches them by your rule.',
+        so: 'you stop cleaning up duplicate clients by hand.'
+      } },
     // WordPress
-    { meta: 'A rule for your website', source: 'a safety check', catch: true,
+    { meta: 'A rule for your website', source: 'WordPress',
       context: 'You asked Claude to "update the wording on the services page."',
       ask: 'Should Claude publish page changes live, or always leave them as drafts for you to review first?',
       ph: 'e.g. always drafts, I approve before it goes live...',
-      improve: 'Before this, Claude might push a change straight to your live site. Now it leaves a draft for you, so nothing reaches clients until you say so.' },
+      improve: {
+        before: 'Claude could push a change straight to your live site.',
+        now: 'it leaves a draft for you to approve first.',
+        so: 'nothing reaches clients until you say so.'
+      } },
     // QuickBooks
-    { meta: 'A rule for your books', source: 'from your books',
+    { meta: 'A rule for your books', source: 'QuickBooks',
       context: 'You asked Claude to "refund the Henderson consult."',
       ask: 'When you refund a client on the website, should Claude create a matching credit memo in QuickBooks, or leave it for your bookkeeper?',
       ph: 'e.g. create the credit memo automatically...',
-      improve: 'Before this, a refund would sit unrecorded until your bookkeeper caught it. Now Claude logs the credit memo right away, so your books are never behind.' }
+      improve: {
+        before: 'a refund sat unrecorded until your bookkeeper caught it.',
+        now: 'Claude logs the credit memo right away.',
+        so: 'your books are never behind on refunds.'
+      } }
   ];
 
   function checkEmpty() {
@@ -582,7 +631,7 @@
 
   function buildQuestion(p) {
     var q = document.createElement('div');
-    q.className = 'q enter' + (p.catch ? ' catch' : '');
+    q.className = 'q enter';
     q.innerHTML = questionInner(p, '', false);
     q._preset = p;
     return q;
@@ -590,8 +639,12 @@
 
   function answeredInner(p) {
     var improveHtml = p.improve
-      ? '<div class="improve"><div class="improve-label">How this will improve Claude</div>' +
-        '<div class="improve-eg">' + p.improve + '</div></div>'
+      ? '<div class="improve"><div class="improve-label">What this changes for you</div>' +
+        '<div class="improve-rows">' +
+          '<div class="improve-row"><span class="lbl">Before</span><span class="txt">' + p.improve.before + '</span></div>' +
+          '<div class="improve-row"><span class="lbl">Now</span><span class="txt">' + p.improve.now + '</span></div>' +
+          '<div class="improve-row so"><span class="lbl">So</span><span class="txt">' + p.improve.so + '</span></div>' +
+        '</div></div>'
       : '';
     return '<div class="card-head"><span class="cico check">✓</span>Saved to your profile' +
         '<button class="del" data-delete type="button">Delete</button></div>' +
@@ -632,6 +685,7 @@
     void q.offsetHeight; // reflow, then animate in
     q.classList.remove('enter');
     q.classList.add('fresh');
+    qBody.scrollTo({ top: qBody.scrollHeight, behavior: 'smooth' }); // bring the new question into view
     setTimeout(function () { q.classList.remove('fresh'); }, 3600); // bg glow holds, then fades out slowly
     checkEmpty();
   }
@@ -699,17 +753,29 @@
     }
   });
 
-  // Editing a saved answer reveals Save/Cancel only when the value actually changes.
+  // Editing a saved answer: show Save/Cancel as soon as you focus or change it,
+  // and tuck them away only if you click out without changing anything.
+  function revealSaved(q) {
+    if (!q) return;
+    var actions = q.querySelector('.saved-actions');
+    if (actions) { actions.hidden = false; actions.classList.remove('done'); }
+  }
+  qBody.addEventListener('focusin', function (e) {
+    if (e.target.closest('.answer.saved')) revealSaved(e.target.closest('.q'));
+  });
   qBody.addEventListener('input', function (e) {
+    if (e.target.closest('.answer.saved')) revealSaved(e.target.closest('.q'));
+  });
+  qBody.addEventListener('focusout', function (e) {
     var ta = e.target.closest('.answer.saved');
     if (!ta) return;
     var q = e.target.closest('.q');
     if (!q || !q._preset) return;
     var actions = q.querySelector('.saved-actions');
     if (!actions) return;
+    if (e.relatedTarget && actions.contains(e.relatedTarget)) return; // moving onto Save/Cancel
     var dirty = ta.value.trim() !== (q._preset.answer || '').trim();
-    actions.hidden = !dirty;
-    actions.classList.remove('done');
+    if (!dirty) actions.hidden = true;
   });
 </script>
 
