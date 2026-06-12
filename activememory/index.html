@@ -30,110 +30,96 @@
   }
   .col { display: flex; flex-direction: column; height: 100%; }
 
-  /* ============ LEFT: structured company brain ============ */
-  .brain {
+  /* ============ LEFT: structured profile form ============ */
+  .profile {
     width: 56%;
     background: #fff;
     border-right: 1px solid var(--line);
   }
-  .brain-head {
+  .p-head {
     flex: 0 0 auto;
-    padding: 26px 34px 20px;
+    padding: 24px 36px 18px;
     border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between;
   }
-  .brain-head h1 {
-    font-size: 19px; font-weight: 600; letter-spacing: -0.02em;
+  .p-head h1 {
+    font-size: 18px; font-weight: 600; letter-spacing: -0.02em;
     display: flex; align-items: center; gap: 10px;
   }
-  .brain-head h1 .mark {
+  .p-head h1 .mark {
     width: 24px; height: 24px; border-radius: 6px; background: var(--green);
     display: grid; place-items: center; color: #fff; font-size: 13px;
   }
-  .brain-head .sub { margin-top: 6px; font-size: 13px; color: var(--muted); }
-  .brain-head .sub b { color: var(--ink); font-weight: 600; }
+  .saved-state { font-size: 12px; color: var(--faint); display: flex; align-items: center; gap: 6px; }
+  .saved-state .tick { color: var(--green); font-weight: 700; }
 
-  .brain-body { flex: 1; overflow-y: auto; padding: 8px 34px 40px; }
+  .p-body { flex: 1; overflow-y: auto; padding: 6px 36px 30px; }
 
-  .group { padding: 22px 0 4px; }
-  .group + .group { border-top: 1px solid var(--line-soft); }
-  .group-label {
+  .fieldset { padding: 22px 0 6px; }
+  .fieldset + .fieldset { border-top: 1px solid var(--line-soft); }
+  .legend {
     font-size: 11px; letter-spacing: 0.13em; text-transform: uppercase;
-    color: var(--faint); font-weight: 600; margin-bottom: 14px;
+    color: var(--faint); font-weight: 600; margin-bottom: 16px;
   }
-  .fact { padding: 11px 0; display: flex; align-items: baseline; gap: 16px; }
-  .fact + .fact { border-top: 1px solid var(--line-soft); }
-  .fact .k {
-    flex: 0 0 132px; font-size: 12.5px; color: var(--muted);
-    text-transform: none; letter-spacing: 0;
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 4px; }
+  .field label { display: block; font-size: 12.5px; color: var(--muted); margin-bottom: 6px; }
+  .field label .new { margin-left: 7px; font-size: 10px; font-weight: 600; color: var(--green); background: var(--green-tint); border: 1px solid var(--green-line); padding: 1px 7px; border-radius: 20px; }
+  .input, .textarea {
+    width: 100%; font: inherit; font-size: 14px; color: var(--ink); line-height: 1.5;
+    border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px;
+    background: #fff; transition: border-color .12s, box-shadow .12s, background .12s;
   }
-  .fact .v { flex: 1; font-size: 14px; line-height: 1.5; color: var(--ink); }
-  .fact .v .tag {
-    display: inline-block; margin-left: 8px; font-size: 10px; font-weight: 600;
-    color: var(--green); background: var(--green-tint); border: 1px solid var(--green-line);
-    padding: 1px 7px; border-radius: 20px; vertical-align: 1px;
+  .textarea { resize: vertical; min-height: 44px; }
+  .input:focus, .textarea:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px var(--green-tint); }
+  .field.dirty .input, .field.dirty .textarea { background: #fffdf6; border-color: #e7d7a8; }
+  .row2 { display: flex; gap: 14px; }
+  .row2 .field { flex: 1; }
+
+  /* sticky save bar */
+  .save-bar {
+    flex: 0 0 auto; border-top: 1px solid var(--line);
+    padding: 14px 36px; background: #fff;
+    display: flex; align-items: center; justify-content: space-between;
   }
+  .save-bar .hint { font-size: 12.5px; color: var(--faint); }
+  .save-bar .hint.show-dirty { color: #a07c1f; }
+  .btn { font: inherit; font-size: 13px; font-weight: 600; padding: 9px 20px; border-radius: 9px; cursor: pointer; border: 1px solid transparent; transition: background .12s, color .12s, opacity .12s; }
+  .btn-save { background: var(--green); color: #fff; }
+  .btn-save:hover { background: var(--green-deep); }
+  .btn-save:disabled { opacity: .45; cursor: default; }
+  .btn-save.done { background: var(--green-deep); }
 
   /* ============ RIGHT: question queue ============ */
-  .queue {
-    width: 44%;
-    background: var(--bg);
-  }
-  .queue-head {
-    flex: 0 0 auto;
-    padding: 26px 28px 18px;
-    border-bottom: 1px solid var(--line);
-  }
-  .queue-head .top { display: flex; align-items: center; justify-content: space-between; }
-  .queue-head h2 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+  .queue { width: 44%; background: var(--bg); }
+  .q-head { flex: 0 0 auto; padding: 24px 28px 16px; border-bottom: 1px solid var(--line); }
+  .q-head .top { display: flex; align-items: center; justify-content: space-between; }
+  .q-head h2 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
   .synced { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); }
-  .live {
-    width: 7px; height: 7px; border-radius: 50%; background: #2bbd7e;
-    box-shadow: 0 0 0 0 rgba(43,189,126,0.6); animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(43,189,126,0.5); }
-    70% { box-shadow: 0 0 0 6px rgba(43,189,126,0); }
-    100% { box-shadow: 0 0 0 0 rgba(43,189,126,0); }
-  }
-  .queue-head .note { margin-top: 6px; font-size: 12.5px; color: var(--faint); }
+  .live { width: 7px; height: 7px; border-radius: 50%; background: #2bbd7e; box-shadow: 0 0 0 0 rgba(43,189,126,0.6); animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(43,189,126,0.5);} 70% { box-shadow: 0 0 0 6px rgba(43,189,126,0);} 100% { box-shadow: 0 0 0 0 rgba(43,189,126,0);} }
+  .q-head .note { margin-top: 6px; font-size: 12.5px; color: var(--faint); }
 
-  .queue-body { flex: 1; overflow-y: auto; padding: 18px 28px 40px; }
+  .q-body { flex: 1; overflow-y: auto; padding: 14px 28px 40px; }
 
-  .q { padding: 18px 0 20px; }
+  .q { padding: 18px 0 20px; transition: opacity .35s, transform .35s, max-height .4s, padding .4s; max-height: 320px; overflow: hidden; }
   .q + .q { border-top: 1px solid var(--line); }
-  .q .meta {
-    font-size: 11px; letter-spacing: 0.04em; color: var(--faint);
-    display: flex; align-items: center; gap: 7px; margin-bottom: 9px;
-  }
+  .q.gone { opacity: 0; transform: translateX(12px); max-height: 0; padding: 0; }
+  .q .meta { font-size: 11px; letter-spacing: 0.04em; color: var(--faint); display: flex; align-items: center; gap: 7px; margin-bottom: 9px; }
   .q .meta .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex: 0 0 auto; }
   .q.catch .meta .dot { background: #cf9b34; }
   .q .ask { font-size: 14.5px; line-height: 1.5; color: var(--ink); margin-bottom: 14px; }
   .q .ask b { font-weight: 600; }
-
-  .answer {
-    width: 100%; font: inherit; font-size: 13.5px; color: var(--ink); line-height: 1.45;
-    border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; resize: none;
-    background: #fff; margin-bottom: 12px;
-  }
+  .answer { width: 100%; font: inherit; font-size: 13.5px; color: var(--ink); line-height: 1.45; border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; resize: none; background: #fff; margin-bottom: 12px; }
   .answer::placeholder { color: var(--faint); }
-  .answer:focus { outline: none; border-color: var(--green-line); box-shadow: 0 0 0 3px var(--green-tint); }
-
+  .answer:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px var(--green-tint); }
   .actions { display: flex; align-items: center; gap: 10px; }
-  .btn { font: inherit; font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 9px; cursor: pointer; border: 1px solid transparent; }
-  .btn-save { background: var(--green); color: #fff; }
-  .btn-save:hover { background: var(--green-deep); }
-  .btn-skip { background: transparent; color: var(--muted); border: none; padding: 8px 8px; }
+  .btn-skip { background: transparent; color: var(--muted); border: none; padding: 9px 8px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
   .btn-skip:hover { color: var(--ink); }
-
-  /* yes/no quick reply */
   .yesno { display: flex; gap: 8px; }
-  .chip {
-    font: inherit; font-size: 13px; font-weight: 600; padding: 8px 18px; border-radius: 9px; cursor: pointer;
-    border: 1px solid var(--line); background: #fff; color: var(--ink);
-  }
-  .chip:hover { border-color: var(--green-line); background: var(--green-tint); color: var(--green-deep); }
-
-  .empty { font-size: 12.5px; color: var(--faint); padding: 22px 0 0; text-align: center; }
+  .chip { font: inherit; font-size: 13px; font-weight: 600; padding: 8px 18px; border-radius: 9px; cursor: pointer; border: 1px solid var(--line); background: #fff; color: var(--ink); transition: background .12s, border-color .12s, color .12s; }
+  .chip:hover { border-color: var(--green); background: var(--green-tint); color: var(--green-deep); }
+  .empty { font-size: 12.5px; color: var(--faint); padding: 18px 0 0; text-align: center; }
 
   ::-webkit-scrollbar { width: 8px; }
   ::-webkit-scrollbar-thumb { background: rgba(120,130,125,0.28); border-radius: 6px; }
@@ -141,119 +127,209 @@
 </head>
 <body>
 
-  <!-- ===================== LEFT: STRUCTURED BRAIN ===================== -->
-  <div class="col brain">
-    <div class="brain-head">
-      <h1><span class="mark">◧</span> Diskint Law</h1>
-      <div class="sub">Claude knows <b>23 facts</b> about this firm. Updated as you work.</div>
+  <!-- ===================== LEFT: STRUCTURED PROFILE FORM ===================== -->
+  <div class="col profile">
+    <div class="p-head">
+      <h1><span class="mark">◧</span> Business profile</h1>
+      <div class="saved-state" id="savedState"><span class="tick">✓</span> All changes saved</div>
     </div>
-    <div class="brain-body">
 
-      <div class="group">
-        <div class="group-label">Voice &amp; tone</div>
-        <div class="fact">
-          <div class="k">Language</div>
-          <div class="v">Plain English, no legal jargon. Clients are everyday people.</div>
+    <div class="p-body" id="formBody">
+
+      <div class="fieldset">
+        <div class="legend">Basics</div>
+        <div class="field">
+          <label>Business name</label>
+          <input class="input" value="Diskint Law">
         </div>
-        <div class="fact">
-          <div class="k">Never say</div>
-          <div class="v">"Cheap" or "affordable." Use "transparent flat-fee" instead.<span class="tag">just now</span></div>
+        <div class="row2">
+          <div class="field">
+            <label>Website</label>
+            <input class="input" value="diskintlaw.com">
+          </div>
+          <div class="field">
+            <label>Industry</label>
+            <input class="input" value="Estate planning law firm">
+          </div>
         </div>
-        <div class="fact">
-          <div class="k">Positioning</div>
-          <div class="v">Not the discount firm. Quality and clarity, not low price.</div>
+        <div class="field">
+          <label>One-line description</label>
+          <input class="input" value="Flat-fee estate planning for families in California and Nevada.">
         </div>
       </div>
 
-      <div class="group">
-        <div class="group-label">Practice</div>
-        <div class="fact">
-          <div class="k">Jurisdiction</div>
-          <div class="v">California and Nevada only.</div>
+      <div class="fieldset">
+        <div class="legend">Practice</div>
+        <div class="row2">
+          <div class="field">
+            <label>Locations served</label>
+            <input class="input" value="California, Nevada">
+          </div>
+          <div class="field">
+            <label>Pricing model</label>
+            <input class="input" value="Flat fee, quoted up front">
+          </div>
         </div>
-        <div class="fact">
-          <div class="k">Services</div>
-          <div class="v">Estate planning, wills, trusts, probate. No family law.</div>
+        <div class="field">
+          <label>Services offered</label>
+          <input class="input" value="Wills, trusts, estate plans, probate">
         </div>
-        <div class="fact">
-          <div class="k">Pricing model</div>
-          <div class="v">Flat fee, quoted up front. No hourly billing.</div>
-        </div>
-      </div>
-
-      <div class="group">
-        <div class="group-label">Compliance</div>
-        <div class="fact">
-          <div class="k">Bar rules</div>
-          <div class="v">No superlatives or guarantees in any copy.</div>
-        </div>
-        <div class="fact">
-          <div class="k">Every page</div>
-          <div class="v">Ends with the "not legal advice" disclaimer.</div>
+        <div class="field">
+          <label>Services we do NOT offer</label>
+          <input class="input" value="Family law, criminal defense">
         </div>
       </div>
 
-      <div class="group">
-        <div class="group-label">Getting clients</div>
-        <div class="fact">
-          <div class="k">Call to action</div>
-          <div class="v">"Book a free 15-minute consult" linking to Calendly.</div>
+      <div class="fieldset">
+        <div class="legend">Voice &amp; tone</div>
+        <div class="field">
+          <label>How we sound</label>
+          <textarea class="textarea" rows="2">Plain English, no legal jargon. Warm and clear. Clients are everyday people, not lawyers.</textarea>
         </div>
-        <div class="fact">
-          <div class="k">Contact preference</div>
-          <div class="v">Push the booking link, not the office phone number.</div>
+        <div class="field">
+          <label>Words to never use <span class="new">updated just now</span></label>
+          <input class="input" value="cheap, affordable, discount, budget">
+        </div>
+        <div class="field">
+          <label>Positioning</label>
+          <input class="input" value="Not the discount firm. We compete on clarity and quality.">
         </div>
       </div>
 
+      <div class="fieldset">
+        <div class="legend">Compliance</div>
+        <div class="field">
+          <label>Rules that apply to all copy</label>
+          <textarea class="textarea" rows="2">No superlatives or guarantees (state bar advertising rules). Every page ends with the "not legal advice" disclaimer.</textarea>
+        </div>
+      </div>
+
+      <div class="fieldset">
+        <div class="legend">Getting clients</div>
+        <div class="row2">
+          <div class="field">
+            <label>Call to action</label>
+            <input class="input" value="Book a free 15-minute consult">
+          </div>
+          <div class="field">
+            <label>Booking link</label>
+            <input class="input" value="calendly.com/diskintlaw">
+          </div>
+        </div>
+        <div class="field">
+          <label>Clients we want more of</label>
+          <input class="input" placeholder="Not set yet. A question on the right can fill this in.">
+        </div>
+      </div>
+
+    </div>
+
+    <div class="save-bar">
+      <div class="hint" id="saveHint">Edit any field to update what Claude knows.</div>
+      <button class="btn btn-save" id="saveBtn" disabled>Save changes</button>
     </div>
   </div>
 
   <!-- ===================== RIGHT: QUESTION QUEUE ===================== -->
   <div class="col queue">
-    <div class="queue-head">
+    <div class="q-head">
       <div class="top">
         <h2>Questions</h2>
         <div class="synced"><span class="live"></span> Live with Claude Code</div>
       </div>
       <div class="note">Answer when you have a second. No rush.</div>
     </div>
-    <div class="queue-body">
+    <div class="q-body" id="qBody">
 
-      <!-- q1: caught from his correction -->
       <div class="q">
         <div class="meta"><span class="dot"></span> Caught from your last edit</div>
         <div class="ask">You told Claude to drop "affordable." Should that be a permanent rule for all your copy?</div>
         <div class="yesno">
-          <button class="chip">Yes, always</button>
-          <button class="chip">Just this once</button>
+          <button class="chip" data-q>Yes, always</button>
+          <button class="chip" data-q>Just this once</button>
         </div>
       </div>
 
-      <!-- q2: an assumption to confirm -->
       <div class="q catch">
         <div class="meta"><span class="dot"></span> Claude assumed something</div>
         <div class="ask">The new page reads like you serve clients anywhere. You only practice in <b>California and Nevada</b>, right?</div>
         <div class="yesno">
-          <button class="chip">That's right</button>
-          <button class="chip">Not quite</button>
+          <button class="chip" data-q>That's right</button>
+          <button class="chip" data-q>Not quite</button>
         </div>
       </div>
 
-      <!-- q3: open gap question -->
       <div class="q">
         <div class="meta"><span class="dot"></span> Would sharpen your content</div>
         <div class="ask">Are there clients you want more of right now? It changes how Claude writes your pages.</div>
         <textarea class="answer" rows="2" placeholder="e.g. business owners setting up trusts..."></textarea>
         <div class="actions">
-          <button class="btn btn-save">Save</button>
-          <button class="btn btn-skip">Skip</button>
+          <button class="btn btn-save" data-q>Save</button>
+          <button class="btn-skip" data-q>Skip</button>
         </div>
       </div>
 
-      <div class="empty">That's everything for now.</div>
+      <div class="empty" id="emptyMsg" style="display:none;">All caught up. Nice.</div>
 
     </div>
   </div>
+
+<script>
+  // ---- Left form: dirty tracking + save feedback (no real persistence) ----
+  var body = document.getElementById('formBody');
+  var saveBtn = document.getElementById('saveBtn');
+  var saveHint = document.getElementById('saveHint');
+  var savedState = document.getElementById('savedState');
+  var dirty = false;
+
+  function markDirty(e) {
+    var field = e.target.closest('.field');
+    if (field) field.classList.add('dirty');
+    if (dirty) return;
+    dirty = true;
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save changes';
+    saveBtn.classList.remove('done');
+    saveHint.textContent = 'You have unsaved changes.';
+    saveHint.classList.add('show-dirty');
+    savedState.style.visibility = 'hidden';
+  }
+  body.addEventListener('input', markDirty);
+
+  saveBtn.addEventListener('click', function () {
+    if (!dirty) return;
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+    setTimeout(function () {
+      document.querySelectorAll('.field.dirty').forEach(function (f) { f.classList.remove('dirty'); });
+      saveBtn.textContent = 'Saved ✓';
+      saveBtn.classList.add('done');
+      saveHint.textContent = 'Synced to Claude. It will use this on your next message.';
+      saveHint.classList.remove('show-dirty');
+      savedState.style.visibility = 'visible';
+      dirty = false;
+      setTimeout(function () {
+        saveBtn.textContent = 'Save changes';
+        saveBtn.classList.remove('done');
+        saveBtn.disabled = true;
+        saveHint.textContent = 'Edit any field to update what Claude knows.';
+      }, 1800);
+    }, 550);
+  });
+
+  // ---- Right queue: answering removes the question ----
+  function checkEmpty() {
+    var left = document.querySelectorAll('#qBody .q:not(.gone)').length;
+    document.getElementById('emptyMsg').style.display = left ? 'none' : 'block';
+  }
+  document.querySelectorAll('[data-q]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var q = btn.closest('.q');
+      q.classList.add('gone');
+      setTimeout(checkEmpty, 360);
+    });
+  });
+</script>
 
 </body>
 </html>
