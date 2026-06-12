@@ -102,10 +102,51 @@
 
   .q-body { flex: 1; overflow-y: auto; padding: 14px 28px 40px; }
 
-  .q { padding: 18px 0 20px; transition: opacity .4s ease, transform .4s ease, max-height .45s ease, padding .45s ease; max-height: 340px; overflow: hidden; }
+  .q {
+    padding: 18px 14px 20px; margin: 0 -14px; border-radius: 12px;
+    transition: opacity .9s ease, transform .9s ease, max-height 1s ease, padding 1s ease, background-color 1.6s ease;
+    max-height: 420px; overflow: hidden; background-color: transparent;
+  }
   .q + .q { border-top: 1px solid var(--line); }
-  .q.enter { opacity: 0; transform: translateY(-8px); max-height: 0; padding-top: 0; padding-bottom: 0; }
-  .q.gone { opacity: 0; transform: translateX(12px); max-height: 0; padding-top: 0; padding-bottom: 0; }
+  .q.enter { opacity: 0; transform: translateY(-10px); max-height: 0; padding-top: 0; padding-bottom: 0; }
+  .q.fresh { background-color: var(--green-tint); }
+  .q.catch.fresh { background-color: #fbf3df; }
+  .q.gone { opacity: 0; transform: translateX(14px); max-height: 0; padding-top: 0; padding-bottom: 0; }
+
+  /* secure / credential variant */
+  .q.secure .meta .dot { background: #3b6fb0; }
+  .q .lock { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: #5a6b80; margin: 10px 0 12px; }
+  .q .answer.pw { letter-spacing: 0.12em; }
+
+  /* answered (seed) card */
+  .q.answered { opacity: .82; }
+  .q.answered .meta { color: var(--green); }
+  .q .given { font-size: 13.5px; color: var(--ink); line-height: 1.45; background: var(--line-soft); border-radius: 9px; padding: 9px 12px; margin-top: 12px; }
+  .q .edit { font: inherit; font-size: 12px; font-weight: 600; color: var(--muted); background: none; border: none; cursor: pointer; margin-top: 9px; padding: 0; }
+  .q .edit:hover { color: var(--green-deep); }
+
+  /* "how it helped Claude" reveal */
+  .used-toggle {
+    font: inherit; font-size: 12px; font-weight: 600; color: var(--green); background: none; border: none;
+    cursor: pointer; margin-top: 11px; padding: 0; display: inline-flex; align-items: center; gap: 5px;
+  }
+  .used-toggle .chev { transition: transform .25s; font-size: 10px; }
+  .used-toggle.open .chev { transform: rotate(90deg); }
+  .proof { max-height: 0; overflow: hidden; opacity: 0; transition: max-height .35s ease, opacity .3s ease, margin .35s ease; }
+  .proof.open { max-height: 240px; opacity: 1; margin-top: 11px; }
+  .proof .cap { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
+  .pline { font-size: 12.5px; line-height: 1.5; padding: 9px 12px; border-radius: 9px; margin-bottom: 6px; }
+  .pline .who { display: block; font-size: 9.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--faint); margin-bottom: 3px; }
+  .pline.you { background: var(--line-soft); color: var(--ink); }
+  .pline.claude { background: var(--green-tint); color: #284a3f; border: 1px solid var(--green-line); }
+  .pline.claude b { color: var(--green-deep); }
+
+  /* left form: connection rows + status pills */
+  .conn { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .conn-sub { font-size: 12.5px; color: var(--muted); }
+  .stat-pill { font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 20px; }
+  .stat-pill.ok { color: var(--green); background: var(--green-tint); border: 1px solid var(--green-line); }
+  .stat-pill.wait { color: #a07c1f; background: #fbf3df; border: 1px solid #ecdcb4; }
 
   /* typing cue while "Claude works" */
   .typing { display: flex; align-items: center; gap: 8px; padding: 16px 0 4px; font-size: 12.5px; color: var(--faint); opacity: 0; transition: opacity .25s; }
@@ -165,6 +206,34 @@
         <div class="field">
           <label>One-line description</label>
           <input class="input" value="Flat-fee estate planning for families in California and Nevada.">
+        </div>
+      </div>
+
+      <div class="fieldset">
+        <div class="legend">Connections</div>
+        <div class="field">
+          <label>WordPress</label>
+          <div class="conn"><span class="stat-pill ok">Connected</span> <span class="conn-sub">diskintlaw.com · admin "dlaw"</span></div>
+        </div>
+        <div class="field">
+          <label>QuickBooks</label>
+          <div class="conn"><span class="stat-pill wait">Needs login</span> <span class="conn-sub">Answer the question on the right to connect.</span></div>
+        </div>
+      </div>
+
+      <div class="fieldset">
+        <div class="legend">Data mapping</div>
+        <div class="field">
+          <label>Website item "Trust Package" is</label>
+          <input class="input" value="QuickBooks item: Estate Plan Flat Fee">
+        </div>
+        <div class="field">
+          <label>Online payments post to <span class="new">used 4× this week</span></label>
+          <input class="input" value="QuickBooks income account: Legal Fees">
+        </div>
+        <div class="field">
+          <label>"Maria's accounts" means</label>
+          <input class="input" placeholder="Not set yet. A question on the right can fill this in.">
         </div>
       </div>
 
@@ -298,28 +367,50 @@
   });
 
   // ---- Right queue: preset questions fade in over time, as if Claude is working next door ----
+  // The good questions are the ones Claude can't answer on its own: credentials it has no
+  // way to see, and how a concept in one app maps to a different concept in another.
   var qBody = document.getElementById('qBody');
   var emptyMsg = document.getElementById('emptyMsg');
 
-  var PRESETS = [
-    { meta: 'Caught from your last edit', catch: false,
-      ask: 'You told Claude to drop "affordable." Should that be a permanent rule for all your copy?',
-      ph: 'e.g. yes, never use it on any page...' },
-    { meta: 'Claude assumed something', catch: true,
-      ask: 'The new page reads like you serve clients anywhere. You only practice in <b>California and Nevada</b>, right?',
-      ph: 'e.g. yes, CA and NV only...' },
-    { meta: 'Would sharpen your content', catch: false,
-      ask: 'Are there clients you want more of right now? It changes how Claude writes your pages.',
-      ph: 'e.g. business owners setting up trusts...' },
-    { meta: 'Claude is unsure', catch: true,
-      ask: 'Claude wrote "call our office today." Do you take phone calls, or should everything go through the booking link?',
-      ph: 'e.g. booking link only, we do not list a phone number...' },
-    { meta: 'Worth pinning down', catch: false,
-      ask: 'Your trust page and will page use a different tone. Which one sounds more like you?',
-      ph: 'e.g. the will page, keep it that warm...' },
-    { meta: 'Gap Claude noticed', catch: false,
-      ask: 'There is no contact info for after-hours questions. Is there one, or do you want every page to say consults are by appointment?',
-      ph: 'e.g. by appointment only...' }
+  // already-answered seed (shows the queue -> profile loop, and HOW Claude used it)
+  var SEED_ANSWERED = {
+    meta: 'Saved to your profile',
+    ask: 'A website payment just came in. QuickBooks has three income accounts: Legal Fees, Consulting, Other. Which should online payments land in?',
+    answer: 'Legal Fees for consults. Consulting for ongoing retainers.',
+    usedWhen: 'Claude used this 2 min ago',
+    proof: [
+      { who: 'You', cls: 'you', text: 'Record yesterday\'s website payments in QuickBooks.' },
+      { who: 'Claude', cls: 'claude', text: 'Done. The $350 consult payment went to <b>Legal Fees</b>, the account you set. The $1,200 retainer went to <b>Consulting</b>. Nothing landed in Other.' }
+    ]
+  };
+
+  // open seed (already waiting when the page loads)
+  var SEED_OPEN = {
+    meta: 'Claude needs to log in', secure: true,
+    ask: 'To edit your site, Claude has to sign in to WordPress. It cannot see your saved passwords. Add the admin login once and it is stored encrypted.',
+    ph: 'WordPress admin password'
+  };
+
+  // these fade in over time
+  var FEED = [
+    { meta: 'Claude needs to log in', secure: true,
+      ask: 'Now connect QuickBooks the same way, so Claude can pull invoices and match payments to your books.',
+      ph: 'QuickBooks login or API token' },
+    { meta: 'These might be the same thing', catch: true,
+      ask: 'Your website sells a "Trust Package." QuickBooks has an item called "Estate Plan Flat Fee." When a Trust Package sells online, should Claude record it as that QuickBooks item?',
+      ph: 'e.g. yes, same thing...' },
+    { meta: 'Claude heard a word it does not know',
+      ask: 'You told Claude to "send Maria\'s accounts to billing." It cannot tell who Maria is. Which clients count as hers?',
+      ph: 'e.g. Maria is our paralegal, her clients are tagged "MR" in QuickBooks...' },
+    { meta: 'Same client, two systems?', catch: true,
+      ask: 'Your site has a client "jdsmith@gmail.com." QuickBooks lists "John D. Smith." Should Claude treat them as one client when it reconciles?',
+      ph: 'e.g. yes, same person...' },
+    { meta: 'A rule for the books',
+      ask: 'Stripe takes a 2.9% fee on website payments. In QuickBooks, do you record the full amount and the fee as its own line, or just the net?',
+      ph: 'e.g. full amount, fee as a separate expense...' },
+    { meta: 'A rule only you know',
+      ask: 'When you refund a client on the website, should Claude create a matching credit memo in QuickBooks, or leave it for your bookkeeper?',
+      ph: 'e.g. create the credit memo automatically...' }
   ];
 
   function checkEmpty() {
@@ -329,11 +420,12 @@
 
   function buildQuestion(p) {
     var q = document.createElement('div');
-    q.className = 'q enter' + (p.catch ? ' catch' : '');
+    q.className = 'q enter' + (p.catch ? ' catch' : '') + (p.secure ? ' secure' : '');
     q.innerHTML =
       '<div class="meta"><span class="dot"></span> ' + p.meta + '</div>' +
       '<div class="ask">' + p.ask + '</div>' +
-      '<textarea class="answer" rows="2" placeholder="' + p.ph + '"></textarea>' +
+      '<textarea class="answer' + (p.secure ? ' pw' : '') + '" rows="2" placeholder="' + p.ph + '"></textarea>' +
+      (p.secure ? '<div class="lock">🔒 Stored encrypted. Only used to run the tasks you ask for.</div>' : '') +
       '<div class="actions">' +
         '<button class="btn btn-save" data-q>Save</button>' +
         '<button class="btn-skip" data-q>Skip</button>' +
@@ -341,41 +433,77 @@
     return q;
   }
 
-  // typing cue element
+  function buildAnswered(p) {
+    var q = document.createElement('div');
+    q.className = 'q answered';
+    var proofHtml = '';
+    if (p.proof) {
+      proofHtml =
+        '<button class="used-toggle"><span class="chev">▶</span> ' + p.usedWhen + '</button>' +
+        '<div class="proof"><div class="cap">Where Claude used this</div>' +
+        p.proof.map(function (m) {
+          return '<div class="pline ' + m.cls + '"><span class="who">' + m.who + '</span>' + m.text + '</div>';
+        }).join('') +
+        '</div>';
+    }
+    q.innerHTML =
+      '<div class="meta"><span class="dot"></span> ✓ ' + p.meta + '</div>' +
+      '<div class="ask">' + p.ask + '</div>' +
+      '<div class="given">' + p.answer + '</div>' +
+      proofHtml;
+    return q;
+  }
+
+  // typing cue at the very top, where new questions land
   var typing = document.createElement('div');
   typing.className = 'typing';
   typing.innerHTML = 'Claude is working <span class="pips"><i></i><i></i><i></i></span>';
   qBody.insertBefore(typing, emptyMsg);
 
+  // seed the queue: one open question, one already answered (below it)
+  qBody.insertBefore(buildQuestion(SEED_OPEN), emptyMsg);
+  qBody.insertBefore(buildAnswered(SEED_ANSWERED), emptyMsg);
+
   function addQuestion(p) {
     var q = buildQuestion(p);
-    qBody.insertBefore(q, qBody.firstChild); // newest on top
-    // force reflow then animate in
-    void q.offsetHeight;
+    qBody.insertBefore(q, typing.nextSibling); // newest right under the working cue
+    void q.offsetHeight; // reflow, then animate in
     q.classList.remove('enter');
+    q.classList.add('fresh');
+    setTimeout(function () { q.classList.remove('fresh'); }, 1500); // bg glow fades out
     checkEmpty();
   }
 
+  // timing: first question at 6s, then one every 15s
+  var TYPING_MS = 1800, INTERVAL_MS = 15000;
   var idx = 0;
   function tick() {
-    if (idx >= PRESETS.length) return;
+    if (idx >= FEED.length) return;
     typing.classList.add('show');
     setTimeout(function () {
       typing.classList.remove('show');
-      addQuestion(PRESETS[idx]);
+      addQuestion(FEED[idx]);
       idx++;
-      if (idx < PRESETS.length) setTimeout(tick, 4200 + Math.round((idx % 3) * 700));
-    }, 1100);
+      if (idx < FEED.length) setTimeout(tick, INTERVAL_MS - TYPING_MS);
+    }, TYPING_MS);
   }
-  setTimeout(tick, 700);
+  setTimeout(tick, 6000 - TYPING_MS); // first card appears at ~6s
 
-  // answering / skipping removes the question (event delegation for dynamic nodes)
+  // event delegation for dynamic nodes
   qBody.addEventListener('click', function (e) {
+    // expand/collapse "how Claude used this"
+    var toggle = e.target.closest('.used-toggle');
+    if (toggle) {
+      toggle.classList.toggle('open');
+      toggle.nextElementSibling.classList.toggle('open');
+      return;
+    }
+    // answering / skipping removes the question
     var btn = e.target.closest('[data-q]');
     if (!btn) return;
     var q = btn.closest('.q');
     q.classList.add('gone');
-    setTimeout(checkEmpty, 420);
+    setTimeout(checkEmpty, 480);
   });
 </script>
 
