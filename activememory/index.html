@@ -102,9 +102,19 @@
 
   .q-body { flex: 1; overflow-y: auto; padding: 14px 28px 40px; }
 
-  .q { padding: 18px 0 20px; transition: opacity .35s, transform .35s, max-height .4s, padding .4s; max-height: 320px; overflow: hidden; }
+  .q { padding: 18px 0 20px; transition: opacity .4s ease, transform .4s ease, max-height .45s ease, padding .45s ease; max-height: 340px; overflow: hidden; }
   .q + .q { border-top: 1px solid var(--line); }
-  .q.gone { opacity: 0; transform: translateX(12px); max-height: 0; padding: 0; }
+  .q.enter { opacity: 0; transform: translateY(-8px); max-height: 0; padding-top: 0; padding-bottom: 0; }
+  .q.gone { opacity: 0; transform: translateX(12px); max-height: 0; padding-top: 0; padding-bottom: 0; }
+
+  /* typing cue while "Claude works" */
+  .typing { display: flex; align-items: center; gap: 8px; padding: 16px 0 4px; font-size: 12.5px; color: var(--faint); opacity: 0; transition: opacity .25s; }
+  .typing.show { opacity: 1; }
+  .typing .pips { display: inline-flex; gap: 3px; }
+  .typing .pips i { width: 5px; height: 5px; border-radius: 50%; background: var(--green); opacity: .35; animation: pip 1.1s infinite; }
+  .typing .pips i:nth-child(2) { animation-delay: .18s; }
+  .typing .pips i:nth-child(3) { animation-delay: .36s; }
+  @keyframes pip { 0%,100% { opacity: .25; } 50% { opacity: 1; } }
   .q .meta { font-size: 11px; letter-spacing: 0.04em; color: var(--faint); display: flex; align-items: center; gap: 7px; margin-bottom: 9px; }
   .q .meta .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex: 0 0 auto; }
   .q.catch .meta .dot { background: #cf9b34; }
@@ -237,42 +247,10 @@
         <h2>Questions</h2>
         <div class="synced"><span class="live"></span> Live with Claude Code</div>
       </div>
-      <div class="note">Answer when you have a second. No rush.</div>
+      <div class="note" id="qNote">Claude is working next door. Questions show up as it goes.</div>
     </div>
     <div class="q-body" id="qBody">
-
-      <div class="q">
-        <div class="meta"><span class="dot"></span> Caught from your last edit</div>
-        <div class="ask">You told Claude to drop "affordable." Should that be a permanent rule for all your copy?</div>
-        <textarea class="answer" rows="2" placeholder="e.g. yes, never use it..."></textarea>
-        <div class="actions">
-          <button class="btn btn-save" data-q>Save</button>
-          <button class="btn-skip" data-q>Skip</button>
-        </div>
-      </div>
-
-      <div class="q catch">
-        <div class="meta"><span class="dot"></span> Claude assumed something</div>
-        <div class="ask">The new page reads like you serve clients anywhere. You only practice in <b>California and Nevada</b>, right?</div>
-        <textarea class="answer" rows="2" placeholder="e.g. yes, CA and NV only..."></textarea>
-        <div class="actions">
-          <button class="btn btn-save" data-q>Save</button>
-          <button class="btn-skip" data-q>Skip</button>
-        </div>
-      </div>
-
-      <div class="q">
-        <div class="meta"><span class="dot"></span> Would sharpen your content</div>
-        <div class="ask">Are there clients you want more of right now? It changes how Claude writes your pages.</div>
-        <textarea class="answer" rows="2" placeholder="e.g. business owners setting up trusts..."></textarea>
-        <div class="actions">
-          <button class="btn btn-save" data-q>Save</button>
-          <button class="btn-skip" data-q>Skip</button>
-        </div>
-      </div>
-
       <div class="empty" id="emptyMsg" style="display:none;">All caught up. Nice.</div>
-
     </div>
   </div>
 
@@ -319,17 +297,85 @@
     }, 550);
   });
 
-  // ---- Right queue: answering removes the question ----
+  // ---- Right queue: preset questions fade in over time, as if Claude is working next door ----
+  var qBody = document.getElementById('qBody');
+  var emptyMsg = document.getElementById('emptyMsg');
+
+  var PRESETS = [
+    { meta: 'Caught from your last edit', catch: false,
+      ask: 'You told Claude to drop "affordable." Should that be a permanent rule for all your copy?',
+      ph: 'e.g. yes, never use it on any page...' },
+    { meta: 'Claude assumed something', catch: true,
+      ask: 'The new page reads like you serve clients anywhere. You only practice in <b>California and Nevada</b>, right?',
+      ph: 'e.g. yes, CA and NV only...' },
+    { meta: 'Would sharpen your content', catch: false,
+      ask: 'Are there clients you want more of right now? It changes how Claude writes your pages.',
+      ph: 'e.g. business owners setting up trusts...' },
+    { meta: 'Claude is unsure', catch: true,
+      ask: 'Claude wrote "call our office today." Do you take phone calls, or should everything go through the booking link?',
+      ph: 'e.g. booking link only, we do not list a phone number...' },
+    { meta: 'Worth pinning down', catch: false,
+      ask: 'Your trust page and will page use a different tone. Which one sounds more like you?',
+      ph: 'e.g. the will page, keep it that warm...' },
+    { meta: 'Gap Claude noticed', catch: false,
+      ask: 'There is no contact info for after-hours questions. Is there one, or do you want every page to say consults are by appointment?',
+      ph: 'e.g. by appointment only...' }
+  ];
+
   function checkEmpty() {
-    var left = document.querySelectorAll('#qBody .q:not(.gone)').length;
-    document.getElementById('emptyMsg').style.display = left ? 'none' : 'block';
+    var left = qBody.querySelectorAll('.q:not(.gone)').length;
+    emptyMsg.style.display = left ? 'none' : 'block';
   }
-  document.querySelectorAll('[data-q]').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var q = btn.closest('.q');
-      q.classList.add('gone');
-      setTimeout(checkEmpty, 360);
-    });
+
+  function buildQuestion(p) {
+    var q = document.createElement('div');
+    q.className = 'q enter' + (p.catch ? ' catch' : '');
+    q.innerHTML =
+      '<div class="meta"><span class="dot"></span> ' + p.meta + '</div>' +
+      '<div class="ask">' + p.ask + '</div>' +
+      '<textarea class="answer" rows="2" placeholder="' + p.ph + '"></textarea>' +
+      '<div class="actions">' +
+        '<button class="btn btn-save" data-q>Save</button>' +
+        '<button class="btn-skip" data-q>Skip</button>' +
+      '</div>';
+    return q;
+  }
+
+  // typing cue element
+  var typing = document.createElement('div');
+  typing.className = 'typing';
+  typing.innerHTML = 'Claude is working <span class="pips"><i></i><i></i><i></i></span>';
+  qBody.insertBefore(typing, emptyMsg);
+
+  function addQuestion(p) {
+    var q = buildQuestion(p);
+    qBody.insertBefore(q, qBody.firstChild); // newest on top
+    // force reflow then animate in
+    void q.offsetHeight;
+    q.classList.remove('enter');
+    checkEmpty();
+  }
+
+  var idx = 0;
+  function tick() {
+    if (idx >= PRESETS.length) return;
+    typing.classList.add('show');
+    setTimeout(function () {
+      typing.classList.remove('show');
+      addQuestion(PRESETS[idx]);
+      idx++;
+      if (idx < PRESETS.length) setTimeout(tick, 4200 + Math.round((idx % 3) * 700));
+    }, 1100);
+  }
+  setTimeout(tick, 700);
+
+  // answering / skipping removes the question (event delegation for dynamic nodes)
+  qBody.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-q]');
+    if (!btn) return;
+    var q = btn.closest('.q');
+    q.classList.add('gone');
+    setTimeout(checkEmpty, 420);
   });
 </script>
 
