@@ -584,12 +584,12 @@
   // already-answered seed (shows the queue -> profile loop, and how it improves Claude)
   var SEED_ANSWERED = {
     meta: 'A rule for your books', source: 'QuickBooks',
-    context: 'You asked Claude to "record yesterday\'s website payments in QuickBooks."',
+    context: 'You just asked Claude to "record yesterday\'s website payments in QuickBooks."',
     ask: 'When a payment comes in through your website, which QuickBooks account should it go to?',
     answer: 'Legal Fees for consults. Consulting for ongoing retainers.',
     ph: 'e.g. Legal Fees for consults...',
     improve: {
-      before: 'Which account each payment belongs in lived only in your head, never written anywhere Claude could see it. So every time it reconciled your books, it started fresh and either guessed or stopped to ask.',
+      before: 'The right account is not in the payment data. It is an accounting choice you keep in your head, and Claude stores memory as prose to recall, not a rule to run, so a fresh reconciliation pulls a fuzzy note at best and falls back to guessing or asking.',
       cost: 'Every reconciliation either pings you with the same question or files income in the wrong account.',
       now: 'it posts each one to Legal Fees on its own, and your consult income lands where it should without you touching it.'
     }
@@ -598,11 +598,11 @@
   // open seed (already waiting when the page loads)
   var SEED_OPEN = {
     meta: 'A rule for your website', source: 'WordPress',
-    context: 'You asked Claude to "add a new estate planning page to the site."',
+    context: 'You just asked Claude to "add a new estate planning page to the site."',
     ask: 'Claude can match your site\'s look on its own. What it can\'t know is what belongs on a service page. What does every one of yours need? Say a plain-English summary, your flat-fee pricing, and an FAQ.',
     ph: 'e.g. plain-English summary, flat-fee pricing, an FAQ section...',
     improve: {
-      before: 'Claude can read your live pages, but it can\'t tell which parts are your standard and which are one-offs. So it built each new page on its own best guess and left out sections you always include.',
+      before: 'Claude can read your live pages, but it cannot tell your required sections from one-off choices, and that standard was never written as a rule. Memory might recall that you like an FAQ, but a fresh writing pass recalls it loosely and still ships pages missing sections.',
       cost: 'New pages come back half-finished, and you add the missing pieces by hand every time.',
       now: 'it builds each page with your standard sections already in place, so new pages are complete on the first try.'
     }
@@ -613,66 +613,66 @@
   var FEED = [
     {
     meta: 'How you measure the site', source: 'WordPress',
-    context: 'You asked Claude to "report this month\'s leads from the site."',
+    context: 'You just asked Claude to "report this month\'s leads from the site."',
     ask: 'What counts as a lead? A booked consult, a contact-form fill, or a phone call from your tracked number? Claude needs your definition before it can report anything.',
     ph: 'e.g. a booked consult or a contact form, never raw traffic...',
     improve: {
-      before: 'Your site logs clicks, form fills, and bookings all the same. Which of those you actually count as a lead is your call, and it is written nowhere Claude can see.',
+      before: 'Your analytics log clicks, form fills, and bookings all the same. Which of those counts as a lead is your definition, not in the data, and Claude holds it in memory as a vague note a reporting run recalls inconsistently, so the count shifts every time.',
       cost: 'Every report counts the wrong things, so the numbers look busy but tell you nothing.',
       now: 'it counts leads your way, so the report reflects real prospects instead of noise.'
     }
   },
     {
     meta: 'A rule for your books', source: 'QuickBooks',
-    context: 'You asked Claude to "show this quarter\'s revenue."',
+    context: 'You just asked Claude to "show this quarter\'s revenue."',
     ask: 'Do you count revenue when the client signs, when they pay, or when the work is done? The same payments add up to very different numbers.',
     ph: 'e.g. when they pay, cash basis...',
     improve: {
-      before: 'When a dollar counts as revenue is an accounting choice only you make. Nothing in the payment data shows it, so Claude picks one and your reports may not match how you run the books.',
+      before: 'When a dollar becomes revenue is an accounting rule, invisible in the payment data. Even said once, the agent building your report starts fresh from a loose memory summary, not that conversation, and applies whatever recognition it half-remembers.',
       cost: 'Your revenue swings depending on what Claude assumed, and it may not match your accountant.',
       now: 'it recognizes revenue your way every time, so every report lines up with your books.'
     }
   },
     {
     meta: 'How you measure the site', source: 'WordPress',
-    context: 'You asked Claude to "tell me where my clients come from."',
+    context: 'You just asked Claude to "tell me where my clients come from."',
     ask: 'Your site can see a visit, but not that it started as a referral, a Google search, or your newsletter. How do you tag where a lead came from?',
     ph: 'e.g. referrals are noted in the booking, newsletter links use a code...',
     improve: {
-      before: 'Where a client actually came from lives in your head and your tagging habits, not in the raw website data. Claude cannot reconstruct it after the fact.',
+      before: 'When Claude pulls your analytics it usually runs as a fresh session or a spun-up sub-agent, starting from CLAUDE.md and a loose summary of past chats, not the conversation where you explained your tags. A rule that exact gets paraphrased or dropped, so the report attributes leads differently each run.',
       cost: 'You keep guessing which marketing works, and spend on whatever feels busy.',
       now: 'it ties each lead to its real source, so you can see what actually brings clients in.'
     }
   },
     {
     meta: 'A rule for your books', source: 'QuickBooks',
-    context: 'You asked Claude to "total this month\'s income."',
+    context: 'You just asked Claude to "total this month\'s income."',
     ask: 'Some money you take in is a retainer or trust deposit you are holding, not income yet. How should Claude tell those apart from earned revenue?',
     ph: 'e.g. anything in the trust account is held, not income until I bill against it...',
     improve: {
-      before: 'The line between money you are holding and money you have earned is a trust-accounting rule only you know. The deposit data does not show it, so Claude counts everything as income.',
+      before: 'The line between held funds and earned revenue is a trust-accounting rule, nowhere in the deposit data. Claude can keep a note in memory, but it reads your books fresh each time and cannot reliably apply a rule it only half-remembers, so it counts everything as income.',
       cost: 'Your income looks inflated, and mixing trust funds with revenue is the kind of thing that draws bar scrutiny.',
       now: 'it keeps held funds out of income until you earn them, so your numbers and your trust account stay clean.'
     }
   },
     {
     meta: 'A rule for your books', source: 'QuickBooks',
-    context: 'You asked Claude to "break down revenue by service."',
+    context: 'You just asked Claude to "break down revenue by service."',
     ask: 'How do you want revenue grouped so it actually means something, by package, by practice area, or flat-fee versus hourly?',
     ph: 'e.g. group by package: wills, trusts, probate...',
     improve: {
-      before: 'How you slice revenue to make decisions is your preference, not something the raw books suggest. Claude has to pick a grouping, and the default rarely matches how you think.',
+      before: 'How you slice revenue is a preference the raw books do not suggest. Claude stores it in memory as prose to recall, not a grouping to run, so each breakdown comes back in whatever shape the model reconstructs that session.',
       cost: 'The breakdown comes back in a shape you cannot act on, so you re-sort it by hand.',
       now: 'it groups revenue the way you think about your practice, so the breakdown is ready to use.'
     }
   },
     {
     meta: 'A rule for your website', source: 'WordPress',
-    context: 'You asked Claude to "rewrite the homepage intro."',
+    context: 'You just asked Claude to "rewrite the homepage intro."',
     ask: 'Your current pages read formal and lawyerly. Going forward, should Claude write warmer and plainer than what is on the site now, so first-timers feel at ease?',
     ph: 'e.g. yes, much warmer than the current site...',
     improve: {
-      before: 'Claude reads your site and copies the formal tone already there. The one thing it cannot guess is that you want to move away from it.',
+      before: 'Claude reads your site and copies the formal tone already there. That you want to move away from it is the opposite of the evidence, and memory holds it as a soft preference a fresh draft overrides by matching the page in front of it.',
       cost: 'Every new page reinforces the stiff voice you are trying to leave behind.',
       now: 'it writes in the warmer voice you are moving toward, so the site shifts the way you want.'
     }
@@ -680,107 +680,107 @@
     // ---- NEW: website + how the firm works, surfaced first ----
     // WordPress
     { meta: 'A rule for your website', source: 'WordPress',
-      context: 'You asked Claude to "update the services page."',
+      context: 'You just asked Claude to "update the services page."',
       ask: 'Are there services you do NOT want promoted on the site, like the DIY wills you turn away?',
       ph: 'e.g. never feature DIY wills or anything hourly...',
       improve: {
-        before: 'Nothing told Claude that you turn away DIY wills. So when it updated the page, it worked off your live site and kept featuring them, pulling in leads you just have to reject.',
+        before: 'Nothing in your live site says you turn away DIY wills; it features them. That exclusion is a rule only you hold, and recalled loosely from memory a page edit works off the visible site and keeps featuring them.',
         cost: 'Your site keeps advertising the work you turn down, and your inbox fills with leads you have to reject.',
         now: 'it keeps those off the site, so you stop fielding inquiries you only turn down.'
       } },
     // How you work -- labeling / vocabulary
     { meta: 'A rule for your website', source: 'WordPress',
-      context: 'You asked Claude to "write the new fees page."',
+      context: 'You just asked Claude to "write the new fees page."',
       ask: 'Are there words you never use with clients, like "cheap," "guarantee," or even "death"? Some are brand, some are bar advertising rules.',
       ph: 'e.g. never "guarantee" or "cheap"; say "when the time comes," not "death"...',
       improve: {
-        before: 'Which words are off-limits is a brand and compliance call only you know. Claude cannot read it off your site, so it writes naturally and reaches for words you would never put in front of a client.',
+        before: 'Your off-limits words are a brand and compliance rule, invisible in the copy. Claude keeps memory as prose to recall, not a banned-word list to enforce, so a fresh writing pass recalls it vaguely and still reaches for words you would never use.',
         cost: 'You proofread every page for the same forbidden words, and one wrong term can break a bar advertising rule.',
         now: 'it avoids your off-limits words everywhere it writes, so nothing needs a compliance proofread.'
       } },
     // How you work -- intake workflow
     { meta: 'How your firm works', source: 'Your business',
-      context: 'You asked Claude to "follow up with this week\'s consult bookings."',
+      context: 'You just asked Claude to "follow up with this week\'s consult bookings."',
       ask: 'Walk Claude through what happens after someone books a consult. What are the steps from first call to signed client?',
       ph: 'e.g. consult, conflict check, engagement letter, intake form...',
       improve: {
-        before: 'Your intake steps lived only in your head, never written down. So each time Claude ran them, it rebuilt the workflow from scratch and dropped or reordered steps.',
+        before: 'Your intake steps were never written as a procedure Claude could run. Memory may recall that an engagement letter exists, but a fresh run rebuilds the order from a loose summary and drops or reorders steps.',
         cost: 'New clients slip through a different crack each time, and you re-check every file by hand.',
         now: 'it follows your steps in order, so every new client gets the same path without you steering.'
       } },
     // How you work -- how the firm thinks (good fit)
     { meta: 'How your firm works', source: 'Your business',
-      context: 'You asked Claude to "sort this week\'s new inquiries."',
+      context: 'You just asked Claude to "sort this week\'s new inquiries."',
       ask: 'How do you tell a good-fit client from one you would rather pass on?',
       ph: 'e.g. flat-fee estate work yes, hourly disputes no...',
       improve: {
-        before: 'How you tell a good client from a time-sink lived only in your head, never written anywhere Claude could see it. So it scored every new inquiry the same and surfaced ones you would never take.',
+        before: 'How you tell a good client from a time-sink is a judgment call, nowhere in the inquiry data. Memory holds it as a fuzzy note, so a fresh triage scores every inquiry the same and surfaces ones you would never take.',
         cost: 'You still triage the inbox yourself, because the agent cannot tell a real client from a time-sink.',
         now: 'it surfaces the good-fit inquiries first, and your time goes to clients worth having.'
       } },
     // ---- existing WordPress ----
     { meta: 'A rule for your website', source: 'WordPress',
-      context: 'You asked Claude to "add a new estate planning page to the site."',
+      context: 'You just asked Claude to "add a new estate planning page to the site."',
       ask: 'When Claude writes or updates a page, should it always include your "Book a free 15-minute consult" button, or only on service pages?',
       ph: 'e.g. every page, near the top and bottom...',
       improve: {
-        before: 'Nothing told Claude that every page needs your booking button. With no rule written down, each new page shipped from the template without one unless you asked.',
+        before: 'That every page needs your booking button is a rule, not something the template enforces. Said once in chat, it lives in memory as a soft note a fresh page build recalls inconsistently, so pages still ship without it.',
         cost: 'Pages go live with no way to reach you, and you only notice after they are public.',
         now: 'it adds the button to every page it builds, so none ships without a way to book you.'
       } },
     { meta: 'A rule for your website', source: 'WordPress',
-      context: 'You asked Claude to "update the wording on the services page."',
+      context: 'You just asked Claude to "update the wording on the services page."',
       ask: 'Should Claude publish page changes live, or always leave them as drafts for you to review first?',
       ph: 'e.g. always drafts, I approve before it goes live...',
       improve: {
-        before: 'Your "always draft first" rule was something you said out loud, never written down. So when Claude edited the services page, it had no reason to hold back and could publish straight to your live site.',
+        before: 'Your always-draft-first rule was said out loud, never set as a constraint Claude runs under. A fresh edit session starts from a loose memory of it, has no hard guardrail, and can publish straight to your live site.',
         cost: 'A wrong edit can reach your clients before you have seen it.',
         now: 'it leaves a draft for you to approve, and nothing reaches clients until you sign off.'
       } },
     // ---- books / cross-app, now lower in the queue ----
     // relocated from the open seed
     { meta: 'Maps your data across both apps', source: 'WordPress + QuickBooks',
-      context: 'You asked Claude to "log the website Trust Package sale in QuickBooks."',
+      context: 'You just asked Claude to "log the website Trust Package sale in QuickBooks."',
       ask: 'Your website sells a "Trust Package." In QuickBooks the matching item is "Estate Plan Flat Fee." Should Claude always treat them as the same thing?',
       ph: 'e.g. yes, same item...',
       improve: {
-        before: 'The link between your site\'s "Trust Package" and QuickBooks\' "Estate Plan Flat Fee" lived only in your head. Neither app stores it and it was written nowhere Claude could see, so it logged them as two unrelated items.',
+        before: 'The link between Trust Package on your site and Estate Plan Flat Fee in QuickBooks lives in neither app. Claude can note it in memory, but a fresh logging run recalls the mapping loosely and records them as two unrelated items.',
         cost: 'Sales stop matching invoices, and your books quietly drift from what actually sold.',
         now: 'it links them on every payment, so no revenue slips and your books match your bank.'
       } },
     { meta: 'A rule for your books', source: 'QuickBooks',
-      context: 'You asked Claude to "reconcile this week\'s Stripe payouts."',
+      context: 'You just asked Claude to "reconcile this week\'s Stripe payouts."',
       ask: 'Stripe takes a 2.9% fee on website payments. How should Claude record that fee in QuickBooks?',
       ph: 'e.g. book the full amount, then the fee as a separate expense...',
       improve: {
-        before: 'How you book the 2.9% fee is your accounting choice, not something in the payout data. With no rule written down, Claude recorded only the net that hit your bank.',
+        before: 'How you book the 2.9% fee is an accounting choice, not in the payout data. Recalled as prose rather than a rule, a fresh reconciliation applies whatever it half-remembers and often records only the net that hit your bank.',
         cost: 'Your revenue looks smaller than it was, and the fees disappear instead of showing up as a deduction.',
         now: 'it books the full sale and the fee separately, so your revenue stays accurate and the fees show up as a deduction.'
       } },
     { meta: 'Connects your website and your books', source: 'WordPress + QuickBooks',
-      context: 'You asked Claude to "add the people who booked consults to QuickBooks."',
+      context: 'You just asked Claude to "add the people who booked consults to QuickBooks."',
       ask: 'When someone books a consult on your website, should Claude add them as a customer in QuickBooks right away, or wait until they pay?',
       ph: 'e.g. wait until they pay...',
       improve: {
-        before: 'Whether a booking counts as a customer yet is your call, and nothing in the booking data shows it. With no rule written down, Claude created a record the moment anyone booked.',
+        before: 'Whether a booking counts as a customer yet is your call, invisible in the booking data. Memory holds it as a vague preference, so a fresh sync recalls it inconsistently and creates a record the moment anyone books.',
         cost: 'Your client list fills with no-shows you then have to hunt down and delete.',
         now: 'it waits until they pay to create the record, so your client list stays real.'
       } },
     { meta: 'Maps your data across both apps', source: 'WordPress + QuickBooks',
-      context: 'You asked Claude to "match this week\'s website payments to client records."',
+      context: 'You just asked Claude to "match this week\'s website payments to client records."',
       ask: 'When the same client appears in both your website and QuickBooks under slightly different names, how should Claude decide it is one person?',
       ph: 'e.g. match by email first, then by full name...',
       improve: {
-        before: 'Deciding two slightly different names are the same person takes a rule only you know. It was written nowhere Claude could see, so it opened a second QuickBooks record instead of linking the existing one.',
+        before: 'Deciding two near-identical names are one person takes a matching rule only you know, nowhere in the data. A fresh reconciliation recalls it loosely from memory and opens a second record instead of linking the existing one.',
         cost: 'Duplicates pile up, and you reconcile the same client twice.',
         now: 'it matches them by your rule, and you stop cleaning up duplicates by hand.'
       } },
     { meta: 'A rule for your books', source: 'QuickBooks',
-      context: 'You asked Claude to "refund the Henderson consult."',
+      context: 'You just asked Claude to "refund the Henderson consult."',
       ask: 'When you refund a client on the website, should Claude create a matching credit memo in QuickBooks, or leave it for your bookkeeper?',
       ph: 'e.g. create the credit memo automatically...',
       improve: {
-        before: 'Whether Claude or your bookkeeper handles the credit memo was something you never wrote down. So when it processed a refund, Claude guessed, sometimes duplicating the memo, sometimes skipping it.',
+        before: 'Whether Claude or your bookkeeper owns the credit memo was never set as a rule. A fresh refund run pulls a fuzzy memory of your preference and guesses, sometimes duplicating the memo, sometimes skipping it.',
         cost: 'Refunds get booked twice or not at all, and you catch it at month end.',
         now: 'it handles refunds the way you told it, and your books and bookkeeper stay in sync.'
       } }
@@ -859,10 +859,8 @@
     return q;
   }
 
-  // seed the queue with one open question (nothing pre-answered on load)
-  var seedOpen = buildQuestion(SEED_OPEN);
-  seedOpen.classList.remove('enter'); // show immediately, no fade (it's not a new arrival)
-  qBody.insertBefore(seedOpen, emptyMsg);
+  // the queue starts empty; the first question types in at ~2s like any new arrival
+  FEED.unshift(SEED_OPEN);
 
   // anchor at the bottom, where new questions land (no visible cue)
   var typing = document.createElement('div');
@@ -908,7 +906,7 @@
       scheduleNext(INTERVAL_MS - TYPING_MS);
     }, TYPING_MS);
   }
-  scheduleNext(3000 - TYPING_MS);        // first card appears at ~3s
+  scheduleNext(2000 - TYPING_MS);        // first card appears at ~2s
 
   // connect / disconnect toggle: while disconnected, no new questions arrive
   var connToggle = document.getElementById('connToggle');
