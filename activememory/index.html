@@ -215,6 +215,15 @@
   .answer:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px var(--green-tint); }
   .answer.saved { background: var(--line-soft); border-color: transparent; cursor: text; margin-bottom: 0; }
   .answer.saved:focus { background: #fff; border-color: var(--green); }
+  .saved-actions { display: flex; align-items: center; gap: 10px; margin-top: 11px; }
+  .saved-actions[hidden] { display: none; }
+  .saved-flag { font-size: 12px; font-weight: 600; color: var(--green); display: none; }
+  .saved-actions.done .btn-save, .saved-actions.done .btn-skip { display: none; }
+  .saved-actions.done .saved-flag { display: inline; }
+
+  /* tone-matched primary action: amber cards get an amber Save */
+  .q.catch .btn-save { background: #b9831f; }
+  .q.catch .btn-save:hover { background: #986a12; }
   .actions { display: flex; align-items: center; gap: 10px; }
   .btn-skip { background: transparent; color: var(--muted); border: none; padding: 9px 8px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
   .btn-skip:hover { color: var(--ink); }
@@ -574,6 +583,11 @@
       '<div class="card-body">' +
         '<div class="ask">' + p.ask + '</div>' +
         '<textarea class="answer saved" rows="2">' + (p.answer || '') + '</textarea>' +
+        '<div class="saved-actions" hidden>' +
+          '<button class="btn btn-save" data-resave>Save</button>' +
+          '<button class="btn-skip" data-revert>Cancel</button>' +
+          '<span class="saved-flag">Saved ✓</span>' +
+        '</div>' +
         improveHtml +
       '</div>';
   }
@@ -620,29 +634,59 @@
   }
   setTimeout(tick, 3000 - TYPING_MS); // first card appears at ~3s
 
-  // Save -> saved card (with how it improves Claude). Skip -> hide fast.
   qBody.addEventListener('click', function (e) {
     var q = e.target.closest('.q');
     if (!q) return;
     var p = q._preset || {};
-    if (e.target.closest('.btn-save')) {             // save the answer
-      var ta = q.querySelector('.answer');
+    var ta, actions;
+
+    // re-save an edited saved answer
+    if (e.target.closest('[data-resave]')) {
+      ta = q.querySelector('.answer.saved');
+      p.answer = (ta && ta.value.trim()) ? ta.value.trim() : 'Yes.';
+      actions = q.querySelector('.saved-actions');
+      if (actions) {
+        actions.classList.add('done');           // hide buttons, show "Saved ✓"
+        setTimeout(function () { actions.hidden = true; actions.classList.remove('done'); }, 1500);
+      }
+      return;
+    }
+    // discard edits to a saved answer
+    if (e.target.closest('[data-revert]')) {
+      ta = q.querySelector('.answer.saved');
+      if (ta) ta.value = p.answer || '';
+      actions = q.querySelector('.saved-actions');
+      if (actions) { actions.hidden = true; actions.classList.remove('done'); }
+      return;
+    }
+    // answer an open question -> becomes a saved card
+    if (e.target.closest('.btn-save')) {
+      ta = q.querySelector('.answer');
       p.answer = (ta && ta.value.trim()) ? ta.value.trim() : 'Yes.';
       q.classList.add('answered');
       q.innerHTML = answeredInner(p);
       checkEmpty();
-    } else if (e.target.closest('.btn-skip')) {      // skip an unanswered question
+      return;
+    }
+    // skip an open question
+    if (e.target.closest('.btn-skip')) {
       q.classList.add('gone');
       setTimeout(checkEmpty, 300);
+      return;
     }
   });
 
-  // Saved answers stay editable in place: typing in them updates the stored fact.
+  // Editing a saved answer reveals Save/Cancel only when the value actually changes.
   qBody.addEventListener('input', function (e) {
     var ta = e.target.closest('.answer.saved');
     if (!ta) return;
     var q = e.target.closest('.q');
-    if (q && q._preset) q._preset.answer = ta.value;
+    if (!q || !q._preset) return;
+    var actions = q.querySelector('.saved-actions');
+    if (!actions) return;
+    var dirty = ta.value.trim() !== (q._preset.answer || '').trim();
+    actions.hidden = !dirty;
+    actions.classList.remove('done');
   });
 </script>
 
