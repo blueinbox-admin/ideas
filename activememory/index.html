@@ -333,9 +333,8 @@
         <span class="conn-label" id="connLabel">Live with Claude Code</span>
         <span class="conn-switch"><span class="conn-knob"></span></span>
       </button>
-      <span class="session-chip" id="sessionChip">working in <b>reyes-law-website</b></span>
     </div>
-    <div class="topbar-note" id="topbarNote">Preview. This is the panel you would see while you work. New questions show up as Claude works in your session.</div>
+    <div class="topbar-note" id="topbarNote">New questions show up as Claude works in your session.</div>
   </header>
 
   <div class="main-row">
@@ -612,14 +611,58 @@
   // Each carries a "context" line: what you said in Claude Code that prompted the question.
   var FEED = [
     {
-    meta: 'How your practice runs', source: 'How you work',
-    context: 'You asked Claude to "set up the file for a new client."',
-    ask: 'When a new client signs, who does what? Does Lena open the matter and gather documents, and you only step in to review before anything goes out?',
-    ph: 'e.g. Lena handles intake and drafts, I review and sign everything...',
+    meta: 'How you measure the site', source: 'WordPress',
+    context: 'You asked Claude to "report this month\'s leads from the site."',
+    ask: 'What counts as a lead? A booked consult, a contact-form fill, or a phone call from your tracked number? Claude needs your definition before it can report anything.',
+    ph: 'e.g. a booked consult or a contact form, never raw traffic...',
     improve: {
-      before: 'Claude has no idea how you and Lena split the work, so it either does steps that are her job or stops to ask you about every little thing.',
-      cost: 'Tasks land on the wrong person, and you get pinged on things Lena already handles.',
-      now: 'it routes each step to the right person, so a new file moves without you babysitting it.'
+      before: 'Your site logs clicks, form fills, and bookings all the same. Which of those you actually count as a lead is your call, and it is written nowhere Claude can see.',
+      cost: 'Every report counts the wrong things, so the numbers look busy but tell you nothing.',
+      now: 'it counts leads your way, so the report reflects real prospects instead of noise.'
+    }
+  },
+    {
+    meta: 'A rule for your books', source: 'QuickBooks',
+    context: 'You asked Claude to "show this quarter\'s revenue."',
+    ask: 'Do you count revenue when the client signs, when they pay, or when the work is done? The same payments add up to very different numbers.',
+    ph: 'e.g. when they pay, cash basis...',
+    improve: {
+      before: 'When a dollar counts as revenue is an accounting choice only you make. Nothing in the payment data shows it, so Claude picks one and your reports may not match how you run the books.',
+      cost: 'Your revenue swings depending on what Claude assumed, and it may not match your accountant.',
+      now: 'it recognizes revenue your way every time, so every report lines up with your books.'
+    }
+  },
+    {
+    meta: 'How you measure the site', source: 'WordPress',
+    context: 'You asked Claude to "tell me where my clients come from."',
+    ask: 'Your site can see a visit, but not that it started as a referral, a Google search, or your newsletter. How do you tag where a lead came from?',
+    ph: 'e.g. referrals are noted in the booking, newsletter links use a code...',
+    improve: {
+      before: 'Where a client actually came from lives in your head and your tagging habits, not in the raw website data. Claude cannot reconstruct it after the fact.',
+      cost: 'You keep guessing which marketing works, and spend on whatever feels busy.',
+      now: 'it ties each lead to its real source, so you can see what actually brings clients in.'
+    }
+  },
+    {
+    meta: 'A rule for your books', source: 'QuickBooks',
+    context: 'You asked Claude to "total this month\'s income."',
+    ask: 'Some money you take in is a retainer or trust deposit you are holding, not income yet. How should Claude tell those apart from earned revenue?',
+    ph: 'e.g. anything in the trust account is held, not income until I bill against it...',
+    improve: {
+      before: 'The line between money you are holding and money you have earned is a trust-accounting rule only you know. The deposit data does not show it, so Claude counts everything as income.',
+      cost: 'Your income looks inflated, and mixing trust funds with revenue is the kind of thing that draws bar scrutiny.',
+      now: 'it keeps held funds out of income until you earn them, so your numbers and your trust account stay clean.'
+    }
+  },
+    {
+    meta: 'A rule for your books', source: 'QuickBooks',
+    context: 'You asked Claude to "break down revenue by service."',
+    ask: 'How do you want revenue grouped so it actually means something, by package, by practice area, or flat-fee versus hourly?',
+    ph: 'e.g. group by package: wills, trusts, probate...',
+    improve: {
+      before: 'How you slice revenue to make decisions is your preference, not something the raw books suggest. Claude has to pick a grouping, and the default rarely matches how you think.',
+      cost: 'The breakdown comes back in a shape you cannot act on, so you re-sort it by hand.',
+      now: 'it groups revenue the way you think about your practice, so the breakdown is ready to use.'
     }
   },
     {
@@ -880,7 +923,7 @@
     var _note = document.getElementById('topbarNote');
     if (_chip) _chip.style.display = on ? '' : 'none';
     if (_note) _note.textContent = on
-      ? 'Preview. This is the panel you would see while you work. New questions show up as Claude works in your session.'
+      ? 'New questions show up as Claude works in your session.'
       : 'Disconnected. While the session is off, no new questions arrive.';
     pausedMsg.classList.toggle('show', !on);
     if (on) { scheduleNext(1200); }      // reconnected: resume shortly
