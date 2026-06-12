@@ -596,12 +596,12 @@
   var SEED_OPEN = {
     meta: 'A rule for your website', source: 'WordPress',
     context: 'You asked Claude to "add a new estate planning page to the site."',
-    ask: 'Claude can write the page, but it has no idea how your site is built. Which page builder do you use, and which existing page should it copy so new ones match your layout?',
-    ph: 'e.g. Elementor, copy the "Wills" page as the template...',
+    ask: 'Claude can match your site\'s look on its own. What it can\'t know is what belongs on a service page. What does every one of yours need? Say a plain-English summary, your flat-fee pricing, and an FAQ.',
+    ph: 'e.g. plain-English summary, flat-fee pricing, an FAQ section...',
     improve: {
-      before: 'Claude has no map of your site. It cannot see your theme, your page builder, or the template your pages follow, so it builds each new page from scratch.',
-      cost: 'New pages come out clashing with the rest of the site, and you rebuild the layout by hand.',
-      now: 'it copies your standard template in the right builder, so new pages match the site on the first try.'
+      before: 'Claude can read your live pages, but it can\'t tell which parts are your standard and which are one-offs. So it built each new page on its own best guess and left out sections you always include.',
+      cost: 'New pages come back half-finished, and you add the missing pieces by hand every time.',
+      now: 'it builds each page with your standard sections already in place, so new pages are complete on the first try.'
     }
   };
 
@@ -790,7 +790,7 @@
           '<div class="improve-row now"><span class="lbl">Now</span><span class="txt">' + p.improve.now + '</span></div>' +
         '</div></div>'
       : '';
-    return '<div class="card-head"><span class="cico check">✓</span>Saved to your profile' +
+    return '<div class="card-head"><span class="cico check">✓</span>' + p.meta +
         '<div class="saved-actions" hidden>' +
           '<button class="btn btn-save" data-resave>Save</button>' +
           '<button class="btn-skip" data-revert>Cancel</button>' +
