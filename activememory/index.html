@@ -749,8 +749,7 @@
     var secondBtn = editing
       ? '<button class="btn-skip" data-cancel>Cancel</button>'
       : '<button class="btn-skip" data-q>Skip</button>';
-    return '<div class="card-head"><span class="cico"></span>' + p.meta +
-        (p.source ? '<span class="src">' + p.source + '</span>' : '') + '</div>' +
+    return '<div class="card-head"><span class="cico"></span>' + (p.source || p.meta) + '</div>' +
       '<div class="card-body">' +
         (p.context ? '<div class="context">' + p.context + '</div>' : '') +
         '<div class="ask">' + p.ask + '</div>' +
@@ -790,7 +789,7 @@
           '<div class="improve-row now"><span class="lbl">Now</span><span class="txt">' + p.improve.now + '</span></div>' +
         '</div></div>'
       : '';
-    return '<div class="card-head"><span class="cico check">✓</span>' + p.meta +
+    return '<div class="card-head"><span class="cico check">✓</span>' + (p.source || p.meta) +
         '<div class="saved-actions" hidden>' +
           '<button class="btn btn-save" data-resave>Save</button>' +
           '<button class="btn-skip" data-revert>Cancel</button>' +
