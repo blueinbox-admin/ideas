@@ -80,7 +80,6 @@
   .field { margin-bottom: 16px; }
   .field:last-child { margin-bottom: 4px; }
   .field label { display: block; font-size: 12.5px; color: var(--muted); margin-bottom: 6px; }
-  .field label .new { margin-left: 7px; font-size: 10px; font-weight: 600; color: var(--green); background: var(--green-tint); border: 1px solid var(--green-line); padding: 1px 7px; border-radius: 20px; }
   .input, .textarea {
     width: 100%; font: inherit; font-size: 14px; color: var(--ink); line-height: 1.5;
     border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px;
@@ -125,8 +124,8 @@
   }
   .q + .q { border-top: 1px solid var(--line); }
   .q.enter { opacity: 0; transform: translateY(-10px); max-height: 0; padding-top: 0; padding-bottom: 0; }
-  .q.fresh { background-color: var(--green-tint); }
-  .q.catch.fresh { background-color: #fbf3df; }
+  .q.fresh { background-color: #bce3d2; }
+  .q.catch.fresh { background-color: #f3e2b6; }
   .q.gone { opacity: 0; transform: translateX(14px); max-height: 0; padding-top: 0; padding-bottom: 0; }
 
   /* secure / credential variant */
@@ -141,21 +140,10 @@
   .q .edit { font: inherit; font-size: 12px; font-weight: 600; color: var(--muted); background: none; border: none; cursor: pointer; margin-top: 9px; padding: 0; }
   .q .edit:hover { color: var(--green-deep); }
 
-  /* "how it helped Claude" reveal */
-  .used-toggle {
-    font: inherit; font-size: 12px; font-weight: 600; color: var(--green); background: none; border: none;
-    cursor: pointer; margin-top: 11px; padding: 0; display: inline-flex; align-items: center; gap: 5px;
-  }
-  .used-toggle .chev { transition: transform .25s; font-size: 10px; }
-  .used-toggle.open .chev { transform: rotate(90deg); }
-  .proof { max-height: 0; overflow: hidden; opacity: 0; transition: max-height .35s ease, opacity .3s ease, margin .35s ease; }
-  .proof.open { max-height: 240px; opacity: 1; margin-top: 11px; }
-  .proof .cap { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
-  .pline { font-size: 12.5px; line-height: 1.5; padding: 9px 12px; border-radius: 9px; margin-bottom: 6px; }
-  .pline .who { display: block; font-size: 9.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--faint); margin-bottom: 3px; }
-  .pline.you { background: var(--line-soft); color: var(--ink); }
-  .pline.claude { background: var(--green-tint); color: #284a3f; border: 1px solid var(--green-line); }
-  .pline.claude b { color: var(--green-deep); }
+  /* "how this will improve Claude" on saved cards */
+  .improve { margin-top: 12px; padding: 10px 13px; background: var(--green-tint); border: 1px solid var(--green-line); border-radius: 9px; }
+  .improve-label { font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--green); font-weight: 600; margin-bottom: 5px; }
+  .improve-eg { font-size: 12.5px; line-height: 1.5; color: #2c4a40; }
 
   /* left form: connection rows + status pills */
   .conn { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -204,7 +192,7 @@
     <div class="tabs" id="tabs">
       <button class="tab active" data-tab="basics">Business basics</button>
       <button class="tab" data-tab="wordpress">WordPress <span class="tdot ok"></span></button>
-      <button class="tab" data-tab="quickbooks">QuickBooks <span class="tdot wait"></span></button>
+      <button class="tab" data-tab="quickbooks">QuickBooks <span class="tdot ok"></span></button>
     </div>
 
     <div class="p-body" id="formBody">
@@ -224,8 +212,8 @@
               <input class="input" value="diskintlaw.com">
             </div>
             <div class="field">
-              <label>Industry</label>
-              <input class="input" value="Estate planning law firm">
+              <label>Locations served</label>
+              <input class="input" value="California, Nevada">
             </div>
           </div>
           <div class="field">
@@ -235,62 +223,22 @@
         </div>
 
         <div class="fieldset">
-          <div class="legend">Practice</div>
-          <div class="row2">
-            <div class="field">
-              <label>Locations served</label>
-              <input class="input" value="California, Nevada">
-            </div>
-            <div class="field">
-              <label>Pricing model</label>
-              <input class="input" value="Flat fee, quoted up front">
-            </div>
-          </div>
-          <div class="field">
-            <label>Services offered</label>
-            <input class="input" value="Wills, trusts, estate plans, probate">
-          </div>
-          <div class="field">
-            <label>Services we do NOT offer</label>
-            <input class="input" value="Family law, criminal defense">
-          </div>
-        </div>
-
-        <div class="fieldset">
-          <div class="legend">Voice &amp; tone</div>
+          <div class="legend">Voice &amp; rules</div>
           <div class="field">
             <label>How we sound</label>
             <textarea class="textarea" rows="2">Plain English, no legal jargon. Warm and clear. Clients are everyday people, not lawyers.</textarea>
           </div>
           <div class="field">
-            <label>Words to never use <span class="new">updated just now</span></label>
+            <label>Words to never use</label>
             <input class="input" value="cheap, affordable, discount, budget">
-          </div>
-          <div class="field">
-            <label>Positioning</label>
-            <input class="input" value="Not the discount firm. We compete on clarity and quality.">
-          </div>
-        </div>
-
-        <div class="fieldset">
-          <div class="legend">Compliance</div>
-          <div class="field">
-            <label>Rules that apply to all copy</label>
-            <textarea class="textarea" rows="2">No superlatives or guarantees (state bar advertising rules). Every page ends with the "not legal advice" disclaimer.</textarea>
           </div>
         </div>
 
         <div class="fieldset">
           <div class="legend">Getting clients</div>
-          <div class="row2">
-            <div class="field">
-              <label>Call to action</label>
-              <input class="input" value="Book a free 15-minute consult">
-            </div>
-            <div class="field">
-              <label>Booking link</label>
-              <input class="input" value="calendly.com/diskintlaw">
-            </div>
+          <div class="field">
+            <label>Call to action</label>
+            <input class="input" value="Book a free 15-minute consult, links to Calendly">
           </div>
           <div class="field">
             <label>Clients we want more of</label>
@@ -305,10 +253,6 @@
 
         <div class="fieldset">
           <div class="legend">Connection</div>
-          <div class="field">
-            <label>Status</label>
-            <div class="conn"><span class="stat-pill ok">Connected</span> <span class="conn-sub">Claude can edit your site.</span></div>
-          </div>
           <div class="row2">
             <div class="field">
               <label>Site URL</label>
@@ -320,17 +264,13 @@
             </div>
           </div>
           <div class="field">
-            <label>Application password <span class="new">saved</span></label>
-            <input class="input pw" type="password" value="x8Kd92mfQ1aZ">
+            <label>Application password</label>
+            <input class="input pw" type="password" value="x8Kd92mfQ1aZpL0w">
           </div>
         </div>
 
         <div class="fieldset">
-          <div class="legend">Site setup</div>
-          <div class="field">
-            <label>Pages Claude maintains</label>
-            <input class="input" value="Home, Services, Estate Planning, About, Contact">
-          </div>
+          <div class="legend">Site rules</div>
           <div class="field">
             <label>Include on every page</label>
             <textarea class="textarea" rows="2">The "not legal advice" disclaimer in the footer, and the "Book a free 15-minute consult" button.</textarea>
@@ -348,17 +288,19 @@
 
         <div class="fieldset">
           <div class="legend">Connection</div>
-          <div class="field">
-            <label>Status</label>
-            <div class="conn"><span class="stat-pill wait">Needs login</span> <span class="conn-sub">Answer the question on the right to connect.</span></div>
+          <div class="row2">
+            <div class="field">
+              <label>Company file</label>
+              <input class="input" value="Diskint Law, PC">
+            </div>
+            <div class="field">
+              <label>Realm ID</label>
+              <input class="input" value="9341 4520 6677 1042">
+            </div>
           </div>
           <div class="field">
-            <label>Company file</label>
-            <input class="input" value="Diskint Law, PC">
-          </div>
-          <div class="field">
-            <label>Login or API token</label>
-            <input class="input" placeholder="Not connected yet. The question on the right will fill this in.">
+            <label>API token</label>
+            <input class="input pw" type="password" value="qbo_live_7Yc2Lm9Qx4Vd">
           </div>
         </div>
 
@@ -369,23 +311,11 @@
             <input class="input" value="QuickBooks item: Estate Plan Flat Fee">
           </div>
           <div class="field">
-            <label>Online payments post to <span class="new">used 4× this week</span></label>
+            <label>Online payments post to</label>
             <input class="input" value="Income account: Legal Fees">
           </div>
           <div class="field">
             <label>Matching the same client across both apps</label>
-            <input class="input" value="Match by email. If no email, match by full name.">
-          </div>
-          <div class="field">
-            <label>"Maria's accounts" means</label>
-            <input class="input" placeholder="Not set yet. A question on the right can fill this in.">
-          </div>
-          <div class="field">
-            <label>Stripe card fee (2.9%)</label>
-            <input class="input" placeholder="Not set yet. A question on the right can fill this in.">
-          </div>
-          <div class="field">
-            <label>Refunds on the website</label>
             <input class="input" placeholder="Not set yet. A question on the right can fill this in.">
           </div>
         </div>
@@ -407,7 +337,7 @@
         <h2>Questions</h2>
         <div class="synced"><span class="live"></span> Live with Claude Code</div>
       </div>
-      <div class="note" id="qNote">Claude is working next door. Questions show up as it goes.</div>
+      <div class="note" id="qNote">Things Claude can't figure out on its own. Answer anytime. Each one teaches it for good.</div>
     </div>
     <div class="q-body" id="qBody">
       <div class="empty" id="emptyMsg" style="display:none;">All caught up. Nice.</div>
@@ -474,45 +404,39 @@
   var qBody = document.getElementById('qBody');
   var emptyMsg = document.getElementById('emptyMsg');
 
-  // already-answered seed (shows the queue -> profile loop, and HOW Claude used it)
+  // Questions are DURABLE facts about the business, not live "Claude is stuck right now"
+  // questions. The user answers whenever. Each one teaches Claude something it can't infer
+  // on its own, and improves every future task.
+
+  // already-answered seed (shows the queue -> profile loop, and how it improves Claude)
   var SEED_ANSWERED = {
     meta: 'Saved to your profile',
-    ask: 'A website payment just came in. QuickBooks has three income accounts: Legal Fees, Consulting, Other. Which should online payments land in?',
+    ask: 'When a payment comes in through your website, which QuickBooks account should it go to?',
     answer: 'Legal Fees for consults. Consulting for ongoing retainers.',
-    usedWhen: 'Claude used this 2 min ago',
-    proof: [
-      { who: 'You', cls: 'you', text: 'Record yesterday\'s website payments in QuickBooks.' },
-      { who: 'Claude', cls: 'claude', text: 'Done. The $350 consult payment went to <b>Legal Fees</b>, the account you set. The $1,200 retainer went to <b>Consulting</b>. Nothing landed in Other.' }
-    ]
+    improve: 'From now on Claude books website payments to the right account on its own, instead of guessing or asking.'
   };
 
   // open seed (already waiting when the page loads)
   var SEED_OPEN = {
-    meta: 'Claude needs to log in', secure: true,
-    ask: 'To edit your site, Claude has to sign in to WordPress. It cannot see your saved passwords. Add the admin login once and it is stored encrypted.',
-    ph: 'WordPress admin password'
+    meta: 'Maps your data across both apps',
+    ask: 'Your website sells a "Trust Package." In QuickBooks the matching item is "Estate Plan Flat Fee." Should Claude always treat them as the same thing?',
+    ph: 'e.g. yes, same item...'
   };
 
   // these fade in over time
   var FEED = [
-    { meta: 'Claude needs to log in', secure: true,
-      ask: 'Now connect QuickBooks the same way, so Claude can pull invoices and match payments to your books.',
-      ph: 'QuickBooks login or API token' },
-    { meta: 'These might be the same thing', catch: true,
-      ask: 'Your website sells a "Trust Package." QuickBooks has an item called "Estate Plan Flat Fee." When a Trust Package sells online, should Claude record it as that QuickBooks item?',
-      ph: 'e.g. yes, same thing...' },
-    { meta: 'Claude heard a word it does not know',
-      ask: 'You told Claude to "send Maria\'s accounts to billing." It cannot tell who Maria is. Which clients count as hers?',
-      ph: 'e.g. Maria is our paralegal, her clients are tagged "MR" in QuickBooks...' },
-    { meta: 'Same client, two systems?', catch: true,
-      ask: 'Your site has a client "jdsmith@gmail.com." QuickBooks lists "John D. Smith." Should Claude treat them as one client when it reconciles?',
-      ph: 'e.g. yes, same person...' },
-    { meta: 'A rule for the books',
-      ask: 'Stripe takes a 2.9% fee on website payments. In QuickBooks, do you record the full amount and the fee as its own line, or just the net?',
-      ph: 'e.g. full amount, fee as a separate expense...' },
-    { meta: 'A rule only you know',
+    { meta: 'Maps your data across both apps',
+      ask: 'When the same client appears in both apps under slightly different names, how should Claude decide it is one person?',
+      ph: 'e.g. match by email first, then by full name...' },
+    { meta: 'A rule for your books',
+      ask: 'Stripe takes a 2.9% fee on website payments. How should Claude record that fee in QuickBooks?',
+      ph: 'e.g. book the full amount, then the fee as a separate expense...' },
+    { meta: 'A rule for your books',
       ask: 'When you refund a client on the website, should Claude create a matching credit memo in QuickBooks, or leave it for your bookkeeper?',
-      ph: 'e.g. create the credit memo automatically...' }
+      ph: 'e.g. create the credit memo automatically...' },
+    { meta: 'Helps Claude sound like you',
+      ask: 'Should "transparent flat-fee pricing" be the standard way Claude describes your prices everywhere it writes?',
+      ph: 'e.g. yes, never frame it as cheap or a deal...' }
   ];
 
   function checkEmpty() {
@@ -538,21 +462,15 @@
   function buildAnswered(p) {
     var q = document.createElement('div');
     q.className = 'q answered';
-    var proofHtml = '';
-    if (p.proof) {
-      proofHtml =
-        '<button class="used-toggle"><span class="chev">▶</span> ' + p.usedWhen + '</button>' +
-        '<div class="proof"><div class="cap">Where Claude used this</div>' +
-        p.proof.map(function (m) {
-          return '<div class="pline ' + m.cls + '"><span class="who">' + m.who + '</span>' + m.text + '</div>';
-        }).join('') +
-        '</div>';
-    }
+    var improveHtml = p.improve
+      ? '<div class="improve"><div class="improve-label">How this will improve Claude</div>' +
+        '<div class="improve-eg">' + p.improve + '</div></div>'
+      : '';
     q.innerHTML =
       '<div class="meta"><span class="dot"></span> ✓ ' + p.meta + '</div>' +
       '<div class="ask">' + p.ask + '</div>' +
       '<div class="given">' + p.answer + '</div>' +
-      proofHtml;
+      improveHtml;
     return q;
   }
 
@@ -577,7 +495,7 @@
   }
 
   // timing: first question at 6s, then one every 15s
-  var TYPING_MS = 1800, INTERVAL_MS = 20000;
+  var TYPING_MS = 1800, INTERVAL_MS = 25000;
   var idx = 0;
   function tick() {
     if (idx >= FEED.length) return;
@@ -591,16 +509,8 @@
   }
   setTimeout(tick, 6000 - TYPING_MS); // first card appears at ~6s
 
-  // event delegation for dynamic nodes
+  // answering / skipping removes the question (event delegation for dynamic nodes)
   qBody.addEventListener('click', function (e) {
-    // expand/collapse "how Claude used this"
-    var toggle = e.target.closest('.used-toggle');
-    if (toggle) {
-      toggle.classList.toggle('open');
-      toggle.nextElementSibling.classList.toggle('open');
-      return;
-    }
-    // answering / skipping removes the question
     var btn = e.target.closest('[data-q]');
     if (!btn) return;
     var q = btn.closest('.q');
