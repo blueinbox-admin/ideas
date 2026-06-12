@@ -333,7 +333,7 @@
         <span class="conn-label" id="connLabel">Live with Claude Code</span>
         <span class="conn-switch"><span class="conn-knob"></span></span>
       </button>
-      <span class="session-chip" id="sessionChip">working in <b>diskint-law-website</b></span>
+      <span class="session-chip" id="sessionChip">working in <b>reyes-law-website</b></span>
     </div>
     <div class="topbar-note" id="topbarNote">Preview. This is the panel you would see while you work. New questions show up as Claude works in your session.</div>
   </header>
@@ -343,7 +343,7 @@
   <!-- ===================== LEFT: STRUCTURED PROFILE FORM ===================== -->
   <div class="col profile">
     <div class="p-head">
-      <h1><span class="mark">◧</span> Diskint Law</h1>
+      <h1><span class="mark">◧</span> Reyes Law</h1>
     </div>
 
     <div class="tabs" id="tabs">
@@ -361,17 +361,17 @@
           <div class="legend">Business</div>
           <div class="field">
             <label>Business name</label>
-            <input class="input" value="Diskint Law, PC">
+            <input class="input" value="Reyes Law, PC">
           </div>
           <div class="field">
             <label>Website</label>
-            <input class="input" value="diskintlaw.com">
+            <input class="input" value="reyeslaw.com">
           </div>
         </div>
 
         <div class="fieldset">
           <div class="legend">Things Claude can't read anywhere</div>
-          <p class="facts-note">The judgment calls and history that live only in your head, not on your website or in your books, so no agent can read them. Saved here, each one becomes a memory that loads into every session and every sub-agent, so Claude stops guessing at the calls only you can make. Add one at a time.</p>
+          <p class="facts-note">The judgment calls and history that live only in your head, not on your website or in your books, so Claude has no way to read them. Saved here, each one loads into every task, so Claude stops guessing at the calls only you can make. Add one at a time.</p>
           <div class="factlist" id="factlist">
             <div class="fact"><span class="tick">✓</span> We don't take DIY-will clients. Too much back-and-forth for the fee.<button class="fact-del" type="button">Delete</button></div>
             <div class="fact"><span class="tick">✓</span> Busy season is January to April. Push estate reviews then.<button class="fact-del" type="button">Delete</button></div>
@@ -393,11 +393,11 @@
           <div class="row2">
             <div class="field">
               <label>Site URL</label>
-              <input class="input" value="diskintlaw.com">
+              <input class="input" value="reyeslaw.com">
             </div>
             <div class="field">
               <label>Admin username</label>
-              <input class="input" value="dlaw">
+              <input class="input" value="dreyes">
             </div>
           </div>
           <div class="field">
@@ -417,7 +417,7 @@
           <div class="row2">
             <div class="field">
               <label>Company file</label>
-              <input class="input" value="Diskint Law, PC">
+              <input class="input" value="Reyes Law, PC">
             </div>
             <div class="field">
               <label>Realm ID</label>
@@ -609,6 +609,17 @@
   // Each carries a "context" line: what you said in Claude Code that prompted the question.
   var FEED = [
     {
+    meta: 'How your practice runs', source: 'How you work',
+    context: 'You asked Claude to "set up the file for a new client."',
+    ask: 'When a new client signs, who does what? Does Lena open the matter and gather documents, and you only step in to review before anything goes out?',
+    ph: 'e.g. Lena handles intake and drafts, I review and sign everything...',
+    improve: {
+      before: 'Claude has no idea how you and Lena split the work, so it either does steps that are her job or stops to ask you about every little thing.',
+      cost: 'Tasks land on the wrong person, and you get pinged on things Lena already handles.',
+      now: 'it routes each step to the right person, so a new file moves without you babysitting it.'
+    }
+  },
+    {
     meta: 'A rule for your website', source: 'WordPress',
     context: 'You asked Claude to "write the new estate planning page."',
     ask: 'When Claude writes for your site, should it sound formal and lawyerly, or warm and plain so first-timers feel at ease?',
@@ -704,7 +715,7 @@
       ask: 'When someone books a consult on your website, should Claude add them as a customer in QuickBooks right away, or wait until they pay?',
       ph: 'e.g. wait until they pay...',
       improve: {
-        before: 'Whether a booking counts as a customer yet is a policy call, invisible in the booking data. With nothing saved, the agent created a record the moment anyone booked.',
+        before: 'Whether a booking counts as a customer yet is your call, and nothing in the booking data shows it. With no rule written down, Claude created a record the moment anyone booked.',
         cost: 'Your client list fills with no-shows you then have to hunt down and delete.',
         now: 'it waits until they pay to create the record, so your client list stays real.'
       } },
@@ -713,7 +724,7 @@
       ask: 'When the same client appears in both your website and QuickBooks under slightly different names, how should Claude decide it is one person?',
       ph: 'e.g. match by email first, then by full name...',
       improve: {
-        before: 'Deciding two slightly different names are the same person takes a matching rule. None was in CLAUDE.md or recalled, so the agent opened a second QuickBooks record instead of linking the existing one.',
+        before: 'Deciding two slightly different names are the same person takes a rule only you know. It was written nowhere Claude could see, so it opened a second QuickBooks record instead of linking the existing one.',
         cost: 'Duplicates pile up, and you reconcile the same client twice.',
         now: 'it matches them by your rule, and you stop cleaning up duplicates by hand.'
       } },
@@ -722,7 +733,7 @@
       ask: 'When you refund a client on the website, should Claude create a matching credit memo in QuickBooks, or leave it for your bookkeeper?',
       ph: 'e.g. create the credit memo automatically...',
       improve: {
-        before: 'Whether Claude or your bookkeeper owns the credit memo is a division-of-labor rule, written nowhere. Without it, the refund agent guessed, sometimes duplicating the memo, sometimes skipping it.',
+        before: 'Whether Claude or your bookkeeper handles the credit memo was something you never wrote down. So when it processed a refund, Claude guessed, sometimes duplicating the memo, sometimes skipping it.',
         cost: 'Refunds get booked twice or not at all, and you catch it at month end.',
         now: 'it handles refunds the way you told it, and your books and bookkeeper stay in sync.'
       } }
