@@ -151,8 +151,24 @@
   .q-head .top, .q-head .note { max-width: 720px; margin-left: auto; margin-right: auto; }
   .q-head .top { display: flex; align-items: center; justify-content: space-between; }
   .q-head h2 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
-  .synced { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); }
-  .live { width: 7px; height: 7px; border-radius: 50%; background: #2bbd7e; box-shadow: 0 0 0 0 rgba(43,189,126,0.6); animation: pulse 2s infinite; }
+  /* connect / disconnect toggle */
+  .conn-toggle {
+    display: inline-flex; align-items: center; gap: 9px; font: inherit; cursor: pointer;
+    border: 1px solid var(--green-line); background: var(--green-tint);
+    border-radius: 999px; padding: 7px 9px 7px 14px; transition: background .15s, border-color .15s;
+  }
+  .conn-toggle .conn-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #2bbd7e;
+    box-shadow: 0 0 0 0 rgba(43,189,126,0.6); animation: pulse 2s infinite;
+  }
+  .conn-toggle .conn-label { font-size: 13.5px; font-weight: 600; color: var(--green-deep); letter-spacing: -0.01em; }
+  .conn-switch { width: 36px; height: 20px; border-radius: 999px; background: var(--green); position: relative; flex: 0 0 auto; transition: background .15s; }
+  .conn-knob { position: absolute; top: 2px; left: 18px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.22); transition: left .16s; }
+  .conn-toggle.off { background: #f4f5f4; border-color: var(--line); }
+  .conn-toggle.off .conn-dot { background: #c2c7c4; animation: none; box-shadow: none; }
+  .conn-toggle.off .conn-label { color: var(--muted); }
+  .conn-toggle.off .conn-switch { background: #c5cac7; }
+  .conn-toggle.off .conn-knob { left: 2px; }
   @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(43,189,126,0.5);} 70% { box-shadow: 0 0 0 6px rgba(43,189,126,0);} 100% { box-shadow: 0 0 0 0 rgba(43,189,126,0);} }
   .q-head .note { margin-top: 6px; font-size: 12.5px; color: var(--faint); }
 
@@ -211,9 +227,9 @@
   .improve-row.so .txt { font-weight: 600; color: #1c3b32; }
 
   /* open-card hook: the present-tense cost of leaving this unanswered. Hugs its text. */
-  .hookbox { margin: 12px 0; padding: 10px 13px; background: var(--line-soft); border: 1px solid var(--line); border-radius: 9px; }
-  .hookbox .hl { font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--faint); font-weight: 600; margin-bottom: 7px; }
-  .hookbox .ht { font-size: 12.5px; line-height: 1.45; color: var(--muted); }
+  .hookbox { margin: 12px 0; padding: 0; }
+  .hookbox .hl { display: inline; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #b8862f; font-weight: 700; margin-right: 8px; }
+  .hookbox .ht { display: inline; font-size: 13px; line-height: 1.5; color: var(--muted); }
 
   /* left form: connection rows + status pills */
   .conn { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -303,19 +319,31 @@
     </div>
 
     <div class="tabs" id="tabs">
-      <button class="tab active" data-tab="wordpress">WordPress <span class="tdot ok"></span></button>
-      <button class="tab" data-tab="quickbooks">QuickBooks <span class="tdot ok"></span></button>
-      <button class="tab" data-tab="facts">Other facts</button>
+      <button class="tab active" data-tab="general">General</button>
+      <button class="tab" data-tab="wordpress">WordPress</button>
+      <button class="tab" data-tab="quickbooks">QuickBooks</button>
     </div>
 
     <div class="p-body" id="formBody">
 
-      <!-- ====== TAB: OTHER FACTS (freeform, add one at a time) ====== -->
-      <div class="panel" data-panel="facts">
+      <!-- ====== TAB: GENERAL (business identity + freeform facts) ====== -->
+      <div class="panel active" data-panel="general">
+
+        <div class="fieldset">
+          <div class="legend">Business</div>
+          <div class="field">
+            <label>Business name</label>
+            <input class="input" value="Diskint Law, PC">
+          </div>
+          <div class="field">
+            <label>Website</label>
+            <input class="input" value="diskintlaw.com">
+          </div>
+        </div>
 
         <div class="fieldset">
           <div class="legend">Things Claude can't see</div>
-          <p class="facts-note">Not on your website, not in your books. The judgment calls and history only you know. Add one at a time.</p>
+          <p class="facts-note">The judgment calls and history only you know, nothing it can read from your website or books. Add one at a time.</p>
           <div class="factlist" id="factlist">
             <div class="fact"><span class="tick">✓</span> We don't take DIY-will clients. Too much back-and-forth for the fee.<button class="fact-del" type="button">Delete</button></div>
             <div class="fact"><span class="tick">✓</span> Busy season is January to April. Push estate reviews then.<button class="fact-del" type="button">Delete</button></div>
@@ -330,7 +358,7 @@
       </div>
 
       <!-- ====== TAB: WORDPRESS ====== -->
-      <div class="panel active" data-panel="wordpress">
+      <div class="panel" data-panel="wordpress">
 
         <div class="fieldset">
           <div class="legend">Connection</div>
@@ -392,7 +420,11 @@
     <div class="q-head">
       <div class="top">
         <h2>Questions</h2>
-        <div class="synced"><span class="live"></span> Live with Claude Code</div>
+        <button class="conn-toggle" id="connToggle" type="button" aria-pressed="true" title="Connection to Claude Code">
+          <span class="conn-dot"></span>
+          <span class="conn-label" id="connLabel">Live with Claude Code</span>
+          <span class="conn-switch"><span class="conn-knob"></span></span>
+        </button>
       </div>
       <div class="note" id="qNote">Things Claude can't figure out on its own. Answer anytime. Each one teaches it for good.</div>
     </div>
@@ -528,7 +560,7 @@
     answer: 'Legal Fees for consults. Consulting for ongoing retainers.',
     ph: 'e.g. Legal Fees for consults...',
     improve: {
-      before: 'Claude guessed the account or stopped to ask you on every payment.',
+      before: 'Claude couldn\'t know which account consult income belongs in, so it guessed or asked you on every payment.',
       now: 'it posts each one to Legal Fees on its own.',
       so: 'your consult income lands in the right place without you touching it.'
     }
@@ -541,7 +573,7 @@
     ask: 'When Claude writes for your site, should it sound formal and lawyerly, or warm and plain so first-timers feel at ease?',
     ph: 'e.g. warm and plain, skip the legal jargon...',
     improve: {
-      before: 'Claude guessed your tone and you rewrote half of what it drafted.',
+      before: 'Claude had no read on your voice, so it guessed the tone and you rewrote half of every draft.',
       now: 'it writes in your voice the first time.',
       so: 'new pages sound like you and need almost no editing.'
     }
@@ -557,7 +589,7 @@
       ask: 'Are there services you do NOT want promoted on the site, like the DIY wills you turn away?',
       ph: 'e.g. never feature DIY wills or anything hourly...',
       improve: {
-        before: 'Claude could feature work you do not want, pulling in bad-fit leads.',
+        before: 'Claude has no way to know which work you turn away, so it could feature DIY wills and pull in leads you just have to reject.',
         now: 'it keeps those off the site.',
         so: 'you stop fielding inquiries you only have to turn down.'
       } },
@@ -567,7 +599,7 @@
       ask: 'What do you call the people you work with and the work you do for them? Clients and matters, customers and cases, something else?',
       ph: 'e.g. clients and matters, never customers or cases...',
       improve: {
-        before: 'Claude used generic words like "customer" that sound wrong for a law office.',
+        before: 'Claude can\'t guess your house words, so it wrote "customer" and "case," which sound wrong for a law office.',
         now: 'it uses your terms everywhere, on the site and in your books.',
         so: 'everything Claude writes sounds like it came from your firm.'
       } },
@@ -577,7 +609,7 @@
       ask: 'Walk Claude through what happens after someone books a consult. What are the steps from first call to signed client?',
       ph: 'e.g. consult, conflict check, engagement letter, intake form...',
       improve: {
-        before: 'Claude did not know your intake steps and skipped or reordered them.',
+        before: 'Your intake steps live in your head, so Claude skipped some and reordered others.',
         now: 'it follows your process in the right order.',
         so: 'every new client goes through the same steps without you steering each one.'
       } },
@@ -587,7 +619,7 @@
       ask: 'How do you tell a good-fit client from one you would rather pass on?',
       ph: 'e.g. flat-fee estate work yes, hourly disputes no...',
       improve: {
-        before: 'Claude treated every inquiry the same and surfaced ones you would never take.',
+        before: 'Claude can\'t tell a good-fit client from a bad one, so it treated every inquiry the same and surfaced ones you would never take.',
         now: 'it flags the good-fit ones first.',
         so: 'you spend your time on the clients worth having.'
       } },
@@ -597,7 +629,7 @@
       ask: 'When Claude writes or updates a page, should it always include your "Book a free 15-minute consult" button, or only on service pages?',
       ph: 'e.g. every page, near the top and bottom...',
       improve: {
-        before: 'Claude left the booking button off new pages unless you remembered to ask.',
+        before: 'Claude didn\'t know the booking button was a must, so it left it off new pages unless you remembered to ask.',
         now: 'it adds it to every page it builds.',
         so: 'no page goes live without a way to book you.'
       } },
@@ -606,7 +638,7 @@
       ask: 'Should Claude publish page changes live, or always leave them as drafts for you to review first?',
       ph: 'e.g. always drafts, I approve before it goes live...',
       improve: {
-        before: 'Claude could push a change straight to your live site.',
+        before: 'Claude had no idea you want to see changes first, so it could push edits straight to your live site.',
         now: 'it leaves a draft for you to approve first.',
         so: 'nothing reaches clients until you say so.'
       } },
@@ -617,7 +649,7 @@
       ask: 'Your website sells a "Trust Package." In QuickBooks the matching item is "Estate Plan Flat Fee." Should Claude always treat them as the same thing?',
       ph: 'e.g. yes, same item...',
       improve: {
-        before: 'Claude saw the website sale and the QuickBooks item as two unrelated things.',
+        before: 'Nothing connects "Trust Package" to "Estate Plan Flat Fee," so Claude saw the sale and the item as two unrelated things.',
         now: 'it links them on every payment.',
         so: 'no revenue goes uncounted and your books match your bank.'
       } },
@@ -626,7 +658,7 @@
       ask: 'Stripe takes a 2.9% fee on website payments. How should Claude record that fee in QuickBooks?',
       ph: 'e.g. book the full amount, then the fee as a separate expense...',
       improve: {
-        before: 'Claude recorded only what landed in your bank, so your income looked short.',
+        before: 'Claude didn\'t know how you handle the Stripe fee, so it recorded only what landed in your bank and your income looked short.',
         now: 'it books the full sale and the fee on its own line.',
         so: 'your revenue is accurate and the fees show up as a deduction at tax time.'
       } },
@@ -635,7 +667,7 @@
       ask: 'When someone books a consult on your website, should Claude add them as a customer in QuickBooks right away, or wait until they pay?',
       ph: 'e.g. wait until they pay...',
       improve: {
-        before: 'Claude added every booking as a customer, no-shows included.',
+        before: 'Claude didn\'t know when a booking becomes a real client, so it added everyone, no-shows included.',
         now: 'it waits until they pay to create the record.',
         so: 'your client list stays real and you stop deleting no-shows.'
       } },
@@ -644,7 +676,7 @@
       ask: 'When the same client appears in both your website and QuickBooks under slightly different names, how should Claude decide it is one person?',
       ph: 'e.g. match by email first, then by full name...',
       improve: {
-        before: 'Claude created a second QuickBooks record for someone already in your website.',
+        before: 'Claude had no rule for matching names across the two apps, so it created a second record for someone you already had.',
         now: 'it matches them by your rule.',
         so: 'you stop cleaning up duplicate clients by hand.'
       } },
@@ -653,7 +685,7 @@
       ask: 'When you refund a client on the website, should Claude create a matching credit memo in QuickBooks, or leave it for your bookkeeper?',
       ph: 'e.g. create the credit memo automatically...',
       improve: {
-        before: 'Claude would guess, and either create a duplicate credit memo or skip the refund entirely.',
+        before: 'Claude didn\'t know whose job the credit memo was, so it guessed and either duplicated it or skipped the refund.',
         now: 'it handles refunds exactly the way you told it.',
         so: 'your books and your bookkeeper never end up out of sync.'
       } }
@@ -758,20 +790,43 @@
     checkEmpty();
   }
 
-  // timing: first question at 6s, then one every 15s
+  // timing: first question a few seconds in, then one at a steady interval.
+  // New questions only arrive while connected to Claude Code.
   var TYPING_MS = 1800, INTERVAL_MS = 25000;
   var idx = 0;
-  function tick() {
-    if (idx >= FEED.length) return;
+  var connected = true;
+  var feedTimer = null;
+
+  function scheduleNext(delay) {
+    clearTimeout(feedTimer);
+    if (!connected || idx >= FEED.length) return;
+    feedTimer = setTimeout(runTick, delay);
+  }
+  function runTick() {
+    if (!connected || idx >= FEED.length) return;
     typing.classList.add('show');
     setTimeout(function () {
       typing.classList.remove('show');
+      if (!connected) return;            // disconnected mid-type: hold, resume on reconnect
       addQuestion(FEED[idx]);
       idx++;
-      if (idx < FEED.length) setTimeout(tick, INTERVAL_MS - TYPING_MS);
+      scheduleNext(INTERVAL_MS - TYPING_MS);
     }, TYPING_MS);
   }
-  setTimeout(tick, 3000 - TYPING_MS); // first card appears at ~3s
+  scheduleNext(3000 - TYPING_MS);        // first card appears at ~3s
+
+  // connect / disconnect toggle: while disconnected, no new questions arrive
+  var connToggle = document.getElementById('connToggle');
+  var connLabel = document.getElementById('connLabel');
+  function setConnected(on) {
+    connected = on;
+    connToggle.classList.toggle('off', !on);
+    connToggle.setAttribute('aria-pressed', on ? 'true' : 'false');
+    connLabel.textContent = on ? 'Live with Claude Code' : 'Disconnected';
+    if (on) { scheduleNext(1200); }      // reconnected: resume shortly
+    else { clearTimeout(feedTimer); typing.classList.remove('show'); }
+  }
+  connToggle.addEventListener('click', function () { setConnected(!connected); });
 
   qBody.addEventListener('click', function (e) {
     var q = e.target.closest('.q');
