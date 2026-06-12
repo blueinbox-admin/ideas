@@ -478,15 +478,14 @@
   qBody.insertBefore(buildAnswered(SEED_ANSWERED), emptyMsg);
   qBody.insertBefore(buildQuestion(SEED_OPEN), emptyMsg);
 
-  // typing cue sits at the bottom, where new questions land
+  // anchor at the bottom, where new questions land (no visible cue)
   var typing = document.createElement('div');
-  typing.className = 'typing';
-  typing.innerHTML = 'Claude is working <span class="pips"><i></i><i></i><i></i></span>';
+  typing.style.cssText = 'height:0;';
   qBody.insertBefore(typing, emptyMsg);
 
   function addQuestion(p) {
     var q = buildQuestion(p);
-    qBody.insertBefore(q, typing); // newest at the bottom, just above the working cue
+    qBody.insertBefore(q, typing); // newest at the bottom
     void q.offsetHeight; // reflow, then animate in
     q.classList.remove('enter');
     q.classList.add('fresh');
