@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memory Panel — Mockup</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --green: #1f6b54;
+    --green-deep: #16513f;
+    --green-tint: #eef5f1;
+    --green-line: #cfe3da;
+    --ink: #1a2420;
+    --muted: #6b7670;
+    --faint: #9aa39e;
+    --line: #e6e9e7;
+    --app-bg: #f6f8f7;
+  }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif;
+    color: var(--ink);
+    background: #0f1110;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ============ LEFT: Claude Code session ============ */
+  .code {
+    width: 54%;
+    background: #1b1d1c;
+    color: #d6d9d6;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #000;
+  }
+  .code-bar {
+    height: 44px; flex: 0 0 44px;
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 16px;
+    background: #232624; border-bottom: 1px solid #000;
+    font-size: 13px; color: #9aa09b;
+  }
+  .dots { display: flex; gap: 7px; }
+  .dots span { width: 11px; height: 11px; border-radius: 50%; }
+  .dots .r { background: #ff5f56; } .dots .y { background: #ffbd2e; } .dots .g { background: #27c93f; }
+  .code-title { margin-left: 6px; font-family: ui-monospace, monospace; }
+  .code-title b { color: #d6d9d6; font-weight: 600; }
+  .code-body { flex: 1; overflow-y: auto; padding: 22px 24px; font-size: 14.5px; line-height: 1.6; }
+  .turn { margin-bottom: 22px; }
+  .who { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 7px; }
+  .who.you { color: #7fb3a3; }
+  .who.claude { color: #d99a6c; }
+  .msg { color: #cfd3cf; }
+  .msg .strike { color: #c98b8b; text-decoration: line-through; }
+  .msg .fix { color: #8fd0b6; }
+  .tool {
+    font-family: ui-monospace, monospace; font-size: 12.5px; color: #8a908b;
+    background: #232624; border: 1px solid #2f322f; border-radius: 7px;
+    padding: 8px 12px; margin-top: 8px;
+  }
+  .tool .ok { color: #6fc28f; }
+  .caret { display:inline-block; width: 8px; height: 16px; background:#7fb3a3; vertical-align: -3px; margin-left: 2px; animation: blink 1.1s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .code-input {
+    flex: 0 0 auto; margin: 0 16px 16px; padding: 12px 14px;
+    background: #232624; border: 1px solid #34383a; border-radius: 9px;
+    font-family: ui-monospace, monospace; font-size: 13.5px; color: #6b716c;
+    display:flex; align-items:center; gap:8px;
+  }
+  .code-input .pl { color:#5c625d; }
+
+  /* ============ RIGHT: Memory app panel ============ */
+  .app {
+    width: 46%;
+    background: var(--app-bg);
+    display: flex; flex-direction: column;
+  }
+  .app-bar {
+    flex: 0 0 auto; padding: 14px 20px;
+    background: #fff; border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .brand { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
+  .brand .logo {
+    width: 26px; height: 26px; border-radius: 7px; background: var(--green);
+    display: grid; place-items: center; color: #fff; font-size: 14px;
+  }
+  .synced { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+  .live { width: 8px; height: 8px; border-radius: 50%; background: #2bbd7e; box-shadow: 0 0 0 0 rgba(43,189,126,0.6); animation: pulse 1.8s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(43,189,126,0.5);} 70% { box-shadow: 0 0 0 7px rgba(43,189,126,0);} 100% { box-shadow: 0 0 0 0 rgba(43,189,126,0);} }
+
+  .stat-row {
+    flex: 0 0 auto; padding: 12px 20px; background: #fff; border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted);
+  }
+  .stat-row b { color: var(--ink); }
+
+  .app-body { flex: 1; overflow-y: auto; padding: 18px 20px 28px; }
+
+  /* value toast */
+  .toast {
+    background: var(--green-tint); border: 1px solid var(--green-line); border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 22px;
+  }
+  .toast .t-top { display:flex; align-items:center; gap:8px; font-size: 13px; font-weight: 600; color: var(--green-deep); margin-bottom: 6px; }
+  .toast .check { width:18px;height:18px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-size:11px; }
+  .toast ul { list-style: none; font-size: 12.5px; color: #46594f; }
+  .toast li { padding: 2px 0 2px 16px; position: relative; }
+  .toast li::before { content: "•"; position:absolute; left:4px; color: var(--green); }
+
+  .section-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); margin: 6px 0 12px; font-weight: 600; }
+
+  /* remember cards */
+  .card {
+    background: #fff; border: 1px solid var(--green-line); border-radius: 12px;
+    padding: 0; margin-bottom: 14px; overflow: hidden;
+    box-shadow: 0 1px 2px rgba(20,40,30,0.04);
+  }
+  .card-head {
+    display:flex; align-items:center; gap: 8px;
+    padding: 11px 14px; background: var(--green-tint); border-bottom: 1px solid var(--green-line);
+    font-size: 13px; font-weight: 600; color: var(--green-deep);
+  }
+  .card-head .ico { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+  .card-head .src { margin-left: auto; font-size: 11px; font-weight: 500; color: #7d9a8e; }
+  .card-body { padding: 13px 14px; }
+  .field {
+    width: 100%; font: inherit; font-size: 14px; color: var(--ink); line-height: 1.45;
+    border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; resize: none;
+    background: #fcfdfc;
+  }
+  .card-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 11px; }
+  .btn { font: inherit; font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 8px; cursor: pointer; border: 1px solid transparent; }
+  .btn-dismiss { background: #fff; border-color: var(--line); color: var(--muted); }
+  .btn-dismiss:hover { background: #f1f3f2; }
+  .btn-save { background: var(--green); color: #fff; }
+  .btn-save:hover { background: var(--green-deep); }
+
+  /* a "catch" variant */
+  .card.catch { border-color: #e7d7b0; }
+  .card.catch .card-head { background: #fbf3df; border-bottom-color: #ecdcb4; color: #8a6a1f; }
+  .card.catch .card-head .ico { background: #d99a2b; }
+  .card.catch .btn-save { background: #b9831f; }
+  .card.catch .btn-save:hover { background: #986a12; }
+
+  /* brain list */
+  .brain { margin-top: 26px; }
+  .brain-group { margin-bottom: 16px; }
+  .brain-group h4 { font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 8px; }
+  .fact {
+    display: flex; align-items: flex-start; gap: 9px;
+    padding: 9px 12px; background: #fff; border: 1px solid var(--line); border-radius: 9px; margin-bottom: 7px;
+    font-size: 13px; color: #36433d;
+  }
+  .fact .tick { color: var(--green); flex: 0 0 auto; margin-top: 1px; }
+  .fact .recent { margin-left: auto; font-size: 10px; color: var(--green); background: var(--green-tint); padding: 2px 7px; border-radius: 20px; flex:0 0 auto; }
+
+  ::-webkit-scrollbar { width: 9px; }
+  ::-webkit-scrollbar-thumb { background: rgba(120,130,125,0.35); border-radius: 6px; }
+  .code ::-webkit-scrollbar-thumb { background: rgba(200,200,200,0.18); }
+
+  .mock-note {
+    position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
+    font-size: 11px; color: rgba(255,255,255,0.4); font-family: -apple-system, sans-serif;
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===================== LEFT: CLAUDE CODE ===================== -->
+  <div class="code">
+    <div class="code-bar">
+      <div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="code-title">Claude Code &nbsp;·&nbsp; <b>diskint-law-website</b></div>
+    </div>
+    <div class="code-body">
+
+      <div class="turn">
+        <div class="who you">You</div>
+        <div class="msg">Add a new page for our estate planning services.</div>
+      </div>
+
+      <div class="turn">
+        <div class="who claude">Claude</div>
+        <div class="msg">Created <b style="color:#cdd1cd">estate-planning.php</b> and added it to the site. Here's the draft headline and intro:</div>
+        <div class="tool">"<span style="color:#c98b8b">Affordable wills</span>, starting at low rates. Get your estate plan done without breaking the bank."</div>
+      </div>
+
+      <div class="turn">
+        <div class="who you">You</div>
+        <div class="msg">No, don't say <span class="strike">affordable</span> or <span class="strike">cheap</span>. We do transparent flat-fee pricing. We are not the discount firm.</div>
+      </div>
+
+      <div class="turn">
+        <div class="who claude">Claude</div>
+        <div class="msg">Updated. New headline: <span class="fix">"Transparent flat-fee estate planning."</span> Removed the budget framing throughout the page.</div>
+        <div class="tool"><span class="ok">✓</span> estate-planning.php updated &nbsp;·&nbsp; live on your site</div>
+      </div>
+
+      <div class="turn">
+        <div class="who you">You</div>
+        <div class="msg"><span class="caret"></span></div>
+      </div>
+
+    </div>
+    <div class="code-input"><span class="pl">›</span> Ask Claude to make a change...</div>
+  </div>
+
+  <!-- ===================== RIGHT: MEMORY PANEL ===================== -->
+  <div class="app">
+    <div class="app-bar">
+      <div class="brand"><span class="logo">◧</span> Memory</div>
+      <div class="synced"><span class="live"></span> Synced with Claude Code</div>
+    </div>
+
+    <div class="stat-row">
+      🧠 &nbsp;Claude now knows <b>&nbsp;23 things&nbsp;</b> about Diskint Law
+    </div>
+
+    <div class="app-body">
+
+      <!-- value toast: real-time attribution -->
+      <div class="toast">
+        <div class="t-top"><span class="check">✓</span> Claude's last reply used 2 things you taught it</div>
+        <ul>
+          <li>Your plain-English voice</li>
+          <li>"Free 15-min consult" as your call to action</li>
+        </ul>
+      </div>
+
+      <div class="section-label">Want me to remember this?</div>
+
+      <!-- card 1: caught from his correction -->
+      <div class="card">
+        <div class="card-head"><span class="ico"></span> New rule from your last message <span class="src">from your edit</span></div>
+        <div class="card-body">
+          <textarea class="field" rows="2">Never use "cheap" or "affordable." Say "transparent flat-fee pricing." We are not the discount firm.</textarea>
+          <div class="card-actions">
+            <button class="btn btn-dismiss">Dismiss</button>
+            <button class="btn btn-save">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- card 2: a catch / assumption to confirm -->
+      <div class="card catch">
+        <div class="card-head"><span class="ico"></span> Claude made an assumption <span class="src">worth checking</span></div>
+        <div class="card-body">
+          <textarea class="field" rows="2">The page implies you serve clients everywhere. Diskint Law only practices in California and Nevada, correct?</textarea>
+          <div class="card-actions">
+            <button class="btn btn-dismiss">Not now</button>
+            <button class="btn btn-save">Yes, remember</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- card 3: a gap-detection question -->
+      <div class="card">
+        <div class="card-head"><span class="ico"></span> One question for better content <span class="src">from this task</span></div>
+        <div class="card-body">
+          <textarea class="field" rows="2">Are there types of clients you want more of, or less of, right now? (It changes how Claude writes your pages.)</textarea>
+          <div class="card-actions">
+            <button class="btn btn-dismiss">Skip</button>
+            <button class="btn btn-save">Answer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- brain: what Claude knows -->
+      <div class="brain">
+        <div class="section-label">What Claude knows about your firm</div>
+
+        <div class="brain-group">
+          <h4>Voice &amp; tone</h4>
+          <div class="fact"><span class="tick">✓</span> Plain English, no legal jargon. Clients are everyday people.</div>
+          <div class="fact"><span class="tick">✓</span> Never "cheap" or "affordable." Use "transparent flat-fee." <span class="recent">just now</span></div>
+        </div>
+
+        <div class="brain-group">
+          <h4>Practice &amp; rules</h4>
+          <div class="fact"><span class="tick">✓</span> Practices in California and Nevada only.</div>
+          <div class="fact"><span class="tick">✓</span> No superlatives or guarantees (bar advertising rules).</div>
+          <div class="fact"><span class="tick">✓</span> Every page ends with the "not legal advice" disclaimer.</div>
+        </div>
+
+        <div class="brain-group">
+          <h4>Getting clients</h4>
+          <div class="fact"><span class="tick">✓</span> Call to action: "Book a free 15-minute consult" → Calendly.</div>
+          <div class="fact"><span class="tick">✓</span> Push the booking link, not the office phone number.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="mock-note">Mockup · how the memory panel sits beside a live Claude Code session</div>
+
+</body>
+</html>
