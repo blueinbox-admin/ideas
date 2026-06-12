@@ -373,7 +373,10 @@
           <div class="legend">Things Claude can't read anywhere</div>
           <p class="facts-note">The judgment calls and history that live only in your head, not on your website or in your books, so Claude has no way to read them. Saved here, each one loads into every task, so Claude stops guessing at the calls only you can make. Add one at a time.</p>
           <div class="factlist" id="factlist">
+            <div class="fact"><span class="tick">✓</span> Lena is my paralegal. She opens new matters and does first drafts. I review and sign everything that goes out.<button class="fact-del" type="button">Delete</button></div>
             <div class="fact"><span class="tick">✓</span> We don't take DIY-will clients. Too much back-and-forth for the fee.<button class="fact-del" type="button">Delete</button></div>
+            <div class="fact"><span class="tick">✓</span> I've stopped taking litigation. Estate planning and probate only now.<button class="fact-del" type="button">Delete</button></div>
+            <div class="fact"><span class="tick">✓</span> Anything with a court deadline is urgent. Probate cutoffs are hard and I can't miss them.<button class="fact-del" type="button">Delete</button></div>
             <div class="fact"><span class="tick">✓</span> Busy season is January to April. Push estate reviews then.<button class="fact-del" type="button">Delete</button></div>
             <div class="fact"><span class="tick">✓</span> Referrals from Dr. Lin's office get a same-week appointment.<button class="fact-del" type="button">Delete</button></div>
           </div>
@@ -621,13 +624,13 @@
   },
     {
     meta: 'A rule for your website', source: 'WordPress',
-    context: 'You asked Claude to "write the new estate planning page."',
-    ask: 'When Claude writes for your site, should it sound formal and lawyerly, or warm and plain so first-timers feel at ease?',
-    ph: 'e.g. warm and plain, skip the legal jargon...',
+    context: 'You asked Claude to "rewrite the homepage intro."',
+    ask: 'Your current pages read formal and lawyerly. Going forward, should Claude write warmer and plainer than what is on the site now, so first-timers feel at ease?',
+    ph: 'e.g. yes, much warmer than the current site...',
     improve: {
-      before: 'Your voice lived only in your head, never written anywhere Claude could find it. So every new draft started from scratch and reset to a generic tone.',
-      cost: 'Every new page comes back sounding generic, and you rewrite it by hand before it goes out.',
-      now: 'it writes in your voice on the first try, and new pages need almost no editing.'
+      before: 'Claude reads your site and copies the formal tone already there. The one thing it cannot guess is that you want to move away from it.',
+      cost: 'Every new page reinforces the stiff voice you are trying to leave behind.',
+      now: 'it writes in the warmer voice you are moving toward, so the site shifts the way you want.'
     }
   },
     // ---- NEW: website + how the firm works, surfaced first ----
@@ -642,14 +645,14 @@
         now: 'it keeps those off the site, so you stop fielding inquiries you only turn down.'
       } },
     // How you work -- labeling / vocabulary
-    { meta: 'Your words for things', source: 'Your business',
-      context: 'You asked Claude to "draft a welcome note for a new client."',
-      ask: 'What do you call the people you work with and the work you do for them? Clients and matters, customers and cases, something else?',
-      ph: 'e.g. clients and matters, never customers or cases...',
+    { meta: 'A rule for your website', source: 'WordPress',
+      context: 'You asked Claude to "write the new fees page."',
+      ask: 'Are there words you never use with clients, like "cheap," "guarantee," or even "death"? Some are brand, some are bar advertising rules.',
+      ph: 'e.g. never "guarantee" or "cheap"; say "when the time comes," not "death"...',
       improve: {
-        before: 'Your words for things, clients and matters, were never written anywhere Claude could see them. So every new draft fell back on "customer" and "case," which sound wrong for a law office.',
-        cost: 'Everything Claude writes reads a little off, like it came from someone who does not know the firm.',
-        now: 'it uses your terms across the site and your books, so everything reads like your firm wrote it.'
+        before: 'Which words are off-limits is a brand and compliance call only you know. Claude cannot read it off your site, so it writes naturally and reaches for words you would never put in front of a client.',
+        cost: 'You proofread every page for the same forbidden words, and one wrong term can break a bar advertising rule.',
+        now: 'it avoids your off-limits words everywhere it writes, so nothing needs a compliance proofread.'
       } },
     // How you work -- intake workflow
     { meta: 'How your firm works', source: 'Your business',
