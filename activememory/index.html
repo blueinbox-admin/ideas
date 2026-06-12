@@ -24,11 +24,14 @@
     color: var(--ink);
     background: var(--bg);
     display: flex;
+    flex-direction: column;
     height: 100vh;
     overflow: hidden;
     -webkit-font-smoothing: antialiased;
   }
   .col { display: flex; flex-direction: column; height: 100%; }
+  .topbar { flex: 0 0 auto; display: flex; align-items: center; justify-content: center; padding: 11px 16px; background: #fff; border-bottom: 1px solid var(--line); }
+  .main-row { flex: 1 1 auto; display: flex; min-height: 0; }
 
   /* ============ LEFT: structured profile form ============ */
   .profile {
@@ -225,11 +228,14 @@
   .improve-row.so { margin-top: 2px; padding-top: 6px; border-top: 1px solid var(--green-line); }
   .improve-row.so .lbl { color: var(--green); }
   .improve-row.so .txt { font-weight: 600; color: #1c3b32; }
+  /* plain-English gloss under the technical "Before" line */
+  .improve-row .cost { display: block; margin-top: 4px; font-size: 12px; color: #6f8a7e; }
 
   /* open-card hook: the present-tense cost of leaving this unanswered. Hugs its text. */
   .hookbox { margin: 12px 0; padding: 0; }
   .hookbox .hl { display: inline; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #b8862f; font-weight: 700; margin-right: 8px; }
   .hookbox .ht { display: inline; font-size: 13px; line-height: 1.5; color: var(--muted); }
+  .hookbox .ht-cost { display: block; margin-top: 6px; font-size: 12.5px; line-height: 1.5; color: #98a09a; }
 
   /* left form: connection rows + status pills */
   .conn { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -315,6 +321,16 @@
 </style>
 </head>
 <body>
+
+  <header class="topbar">
+    <button class="conn-toggle" id="connToggle" type="button" aria-pressed="true" title="Connection to Claude Code">
+      <span class="conn-dot"></span>
+      <span class="conn-label" id="connLabel">Live with Claude Code</span>
+      <span class="conn-switch"><span class="conn-knob"></span></span>
+    </button>
+  </header>
+
+  <div class="main-row">
 
   <!-- ===================== LEFT: STRUCTURED PROFILE FORM ===================== -->
   <div class="col profile">
@@ -424,11 +440,6 @@
     <div class="q-head">
       <div class="top">
         <h2>Questions</h2>
-        <button class="conn-toggle" id="connToggle" type="button" aria-pressed="true" title="Connection to Claude Code">
-          <span class="conn-dot"></span>
-          <span class="conn-label" id="connLabel">Live with Claude Code</span>
-          <span class="conn-switch"><span class="conn-knob"></span></span>
-        </button>
       </div>
       <div class="note" id="qNote">Things Claude can't figure out on its own. Answer anytime. Each one teaches it for good.</div>
     </div>
@@ -437,6 +448,8 @@
       <div class="paused-note" id="pausedMsg"><span class="pdot"></span> Paused. Reconnect to Claude Code to get new questions.</div>
     </div>
   </div>
+
+  </div><!-- /main-row -->
 
 <script>
   // ---- Left tabs ----
@@ -566,6 +579,7 @@
     ph: 'e.g. Legal Fees for consults...',
     improve: {
       before: 'When a books sub-agent runs your reconciliation, it starts fresh with only CLAUDE.md and whatever memories get recalled, not your earlier chat. The account mapping was in neither, so each run guessed or stopped to ask.',
+      cost: 'Every reconciliation either pings you with the same question or files income in the wrong account.',
       now: 'it posts each one to Legal Fees on its own.',
       so: 'your consult income lands in the right place without you touching it.'
     }
@@ -579,6 +593,7 @@
     ph: 'e.g. warm and plain, skip the legal jargon...',
     improve: {
       before: 'Your tone only ever lived in the active context window. A new session, or a writing agent spun up to draft the page, begins from CLAUDE.md and recalled memories, where it was never written, so the tone reset and you rewrote half the draft.',
+      cost: 'Every new page comes back sounding generic, and you rewrite it before it can go out.',
       now: 'it writes in your voice the first time.',
       so: 'new pages sound like you and need almost no editing.'
     }
@@ -595,6 +610,7 @@
       ph: 'e.g. never feature DIY wills or anything hourly...',
       improve: {
         before: 'A saved memory only helps if its description matches and it gets recalled at the moment of the edit. Nothing flagged the DIY wills you turn away, so the page agent worked from your live site and kept featuring them, pulling in leads you just have to reject.',
+        cost: 'Your site keeps advertising the work you turn down, and your inbox fills with leads you have to reject.',
         now: 'it keeps those off the site.',
         so: 'you stop fielding inquiries you only have to turn down.'
       } },
@@ -605,6 +621,7 @@
       ph: 'e.g. clients and matters, never customers or cases...',
       improve: {
         before: 'House words like "clients and matters" only stick if someone writes them into CLAUDE.md by hand. No one had, so each drafting run fell back on "customer" and "case," which sound wrong for a law office.',
+        cost: 'Everything Claude writes reads a little off, like it came from someone who does not know the firm.',
         now: 'it uses your terms everywhere, on the site and in your books.',
         so: 'everything Claude writes sounds like it came from your firm.'
       } },
@@ -614,7 +631,8 @@
       ask: 'Walk Claude through what happens after someone books a consult. What are the steps from first call to signed client?',
       ph: 'e.g. consult, conflict check, engagement letter, intake form...',
       improve: {
-        before: 'Your intake steps live in your head, so Claude skipped some and reordered others.',
+        before: 'A multi-step workflow only runs the same way every time if it is written down. Yours was not in CLAUDE.md, so each orchestrated run rebuilt the steps from scratch and dropped or reordered them.',
+        cost: 'New clients slip through a different crack each time, and you re-check every file by hand.',
         now: 'it follows your process in the right order.',
         so: 'every new client goes through the same steps without you steering each one.'
       } },
@@ -625,6 +643,7 @@
       ph: 'e.g. flat-fee estate work yes, hourly disputes no...',
       improve: {
         before: 'Your good-fit rule lived only in your head, never in CLAUDE.md or a recalled memory, so the triage agent scored every new inquiry the same and surfaced ones you would never take.',
+        cost: 'You still triage the inbox yourself, because the agent cannot tell a real client from a time-sink.',
         now: 'it flags the good-fit ones first.',
         so: 'you spend your time on the clients worth having.'
       } },
@@ -634,7 +653,8 @@
       ask: 'When Claude writes or updates a page, should it always include your "Book a free 15-minute consult" button, or only on service pages?',
       ph: 'e.g. every page, near the top and bottom...',
       improve: {
-        before: 'Claude didn\'t know the booking button was a must, so it left it off new pages unless you remembered to ask.',
+        before: 'Nothing on a page tells an agent that a booking button belongs on it. With no rule saved in CLAUDE.md, each new page shipped from the template without one unless you asked.',
+        cost: 'Pages go live with no way to reach you, and you only notice after they are public.',
         now: 'it adds it to every page it builds.',
         so: 'no page goes live without a way to book you.'
       } },
@@ -644,6 +664,7 @@
       ph: 'e.g. always drafts, I approve before it goes live...',
       improve: {
         before: 'A sub-agent editing the services page sees only CLAUDE.md and recalled memories, not your spoken "always draft first." With no such rule saved, it had no reason to hold back and could publish straight to your live site.',
+        cost: 'A wrong edit can reach your clients before you have seen it.',
         now: 'it leaves a draft for you to approve first.',
         so: 'nothing reaches clients until you say so.'
       } },
@@ -654,7 +675,8 @@
       ask: 'Your website sells a "Trust Package." In QuickBooks the matching item is "Estate Plan Flat Fee." Should Claude always treat them as the same thing?',
       ph: 'e.g. yes, same item...',
       improve: {
-        before: 'Nothing connects "Trust Package" to "Estate Plan Flat Fee," so Claude saw the sale and the item as two unrelated things.',
+        before: 'The link between your site\'s "Trust Package" and QuickBooks\' "Estate Plan Flat Fee" lives only in your head. Neither app stores it and no memory carried it, so each agent logged them as two unrelated items.',
+        cost: 'Sales stop matching invoices, and your books quietly drift from what actually sold.',
         now: 'it links them on every payment.',
         so: 'no revenue goes uncounted and your books match your bank.'
       } },
@@ -663,7 +685,8 @@
       ask: 'Stripe takes a 2.9% fee on website payments. How should Claude record that fee in QuickBooks?',
       ph: 'e.g. book the full amount, then the fee as a separate expense...',
       improve: {
-        before: 'Claude didn\'t know how you handle the Stripe fee, so it recorded only what landed in your bank and your income looked short.',
+        before: 'How you book the 2.9% fee is an accounting choice, not something in the payout data. With no saved rule, the reconciliation agent recorded only the net that hit your bank.',
+        cost: 'Your revenue looks smaller than it was, and the fees disappear instead of showing up as a deduction.',
         now: 'it books the full sale and the fee on its own line.',
         so: 'your revenue is accurate and the fees show up as a deduction at tax time.'
       } },
@@ -672,7 +695,8 @@
       ask: 'When someone books a consult on your website, should Claude add them as a customer in QuickBooks right away, or wait until they pay?',
       ph: 'e.g. wait until they pay...',
       improve: {
-        before: 'Claude didn\'t know when a booking becomes a real client, so it added everyone, no-shows included.',
+        before: 'Whether a booking counts as a customer yet is a policy call, invisible in the booking data. With nothing saved, the agent created a record the moment anyone booked.',
+        cost: 'Your client list fills with no-shows you then have to hunt down and delete.',
         now: 'it waits until they pay to create the record.',
         so: 'your client list stays real and you stop deleting no-shows.'
       } },
@@ -681,7 +705,8 @@
       ask: 'When the same client appears in both your website and QuickBooks under slightly different names, how should Claude decide it is one person?',
       ph: 'e.g. match by email first, then by full name...',
       improve: {
-        before: 'Claude had no rule for matching names across the two apps, so it created a second record for someone you already had.',
+        before: 'Deciding two slightly different names are the same person takes a matching rule. None was in CLAUDE.md or recalled, so the agent opened a second QuickBooks record instead of linking the existing one.',
+        cost: 'Duplicates pile up, and you reconcile the same client twice.',
         now: 'it matches them by your rule.',
         so: 'you stop cleaning up duplicate clients by hand.'
       } },
@@ -690,7 +715,8 @@
       ask: 'When you refund a client on the website, should Claude create a matching credit memo in QuickBooks, or leave it for your bookkeeper?',
       ph: 'e.g. create the credit memo automatically...',
       improve: {
-        before: 'Claude didn\'t know whose job the credit memo was, so it guessed and either duplicated it or skipped the refund.',
+        before: 'Whether Claude or your bookkeeper owns the credit memo is a division-of-labor rule, written nowhere. Without it, the refund agent guessed, sometimes duplicating the memo, sometimes skipping it.',
+        cost: 'Refunds get booked twice or not at all, and you catch it at month end.',
         now: 'it handles refunds exactly the way you told it.',
         so: 'your books and your bookkeeper never end up out of sync.'
       } }
@@ -725,7 +751,9 @@
   function hookHtml(p) {
     var text = p.hook || (p.improve && p.improve.before);
     if (!text) return '';
-    return '<div class="hookbox"><div class="hl">Without this</div><div class="ht">' + text + '</div></div>';
+    var cost = p.improve && p.improve.cost;
+    return '<div class="hookbox"><div class="hl">Without this</div><div class="ht">' + text + '</div>' +
+      (cost ? '<div class="ht-cost">' + cost + '</div>' : '') + '</div>';
   }
 
   function buildQuestion(p) {
@@ -740,7 +768,8 @@
     var improveHtml = p.improve
       ? '<div class="improve"><div class="improve-label">What this changes for you</div>' +
         '<div class="improve-rows">' +
-          '<div class="improve-row"><span class="lbl">Before</span><span class="txt">' + p.improve.before + '</span></div>' +
+          '<div class="improve-row"><span class="lbl">Before</span><span class="txt">' + p.improve.before +
+            (p.improve.cost ? '<span class="cost">' + p.improve.cost + '</span>' : '') + '</span></div>' +
           '<div class="improve-row"><span class="lbl">Now</span><span class="txt">' + p.improve.now + '</span></div>' +
           '<div class="improve-row so"><span class="lbl">So</span><span class="txt">' + p.improve.so + '</span></div>' +
         '</div></div>'
