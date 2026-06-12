@@ -58,6 +58,7 @@
   body.resizing { cursor: col-resize; user-select: none; }
   .p-head {
     flex: 0 0 auto;
+    width: 100%; max-width: 672px; align-self: center;
     padding: 24px 36px 18px;
     border-bottom: 1px solid var(--line);
     display: flex; align-items: center; justify-content: space-between;
@@ -74,7 +75,7 @@
   .saved-state .tick { color: var(--green); font-weight: 700; }
 
   /* tabs */
-  .tabs { flex: 0 0 auto; display: flex; gap: 2px; padding: 0 28px; background: #fff; border-bottom: 1px solid var(--line); }
+  .tabs { flex: 0 0 auto; width: 100%; max-width: 672px; align-self: center; display: flex; gap: 2px; padding: 0 36px; background: #fff; border-bottom: 1px solid var(--line); }
   .tab {
     font: inherit; font-size: 13px; font-weight: 600; color: var(--muted);
     background: none; border: none; cursor: pointer; padding: 13px 14px;
@@ -86,7 +87,7 @@
   .tab .tdot { width: 7px; height: 7px; border-radius: 50%; }
   .tab .tdot.ok { background: #2bbd7e; }
   .tab .tdot.wait { background: #cf9b34; }
-  .panel { display: none; }
+  .panel { display: none; max-width: 600px; margin: 0 auto; }
   .panel.active { display: block; }
 
   /* "Other facts" freeform list */
@@ -140,7 +141,7 @@
 
   /* sticky save bar */
   .save-bar {
-    flex: 0 0 auto; border-top: 1px solid var(--line);
+    flex: 0 0 auto; width: 100%; max-width: 672px; align-self: center; border-top: 1px solid var(--line);
     padding: 14px 36px; background: #fff;
     display: flex; align-items: center; justify-content: space-between;
   }
@@ -858,8 +859,7 @@
     return q;
   }
 
-  // seed the queue (oldest at top): one already answered, then one still open
-  qBody.insertBefore(buildAnswered(SEED_ANSWERED), emptyMsg);
+  // seed the queue with one open question (nothing pre-answered on load)
   var seedOpen = buildQuestion(SEED_OPEN);
   seedOpen.classList.remove('enter'); // show immediately, no fade (it's not a new arrival)
   qBody.insertBefore(seedOpen, emptyMsg);
