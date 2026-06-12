@@ -33,7 +33,7 @@
   /* ============ LEFT: structured profile form ============ */
   .profile {
     flex: 0 0 auto;
-    width: 56%;
+    width: 40%;
     min-width: 0;
     background: #fff;
   }
@@ -244,6 +244,19 @@
   .saved-actions.done .btn-save, .saved-actions.done .btn-skip { display: none; }
   .saved-actions.done .saved-flag { display: inline; }
 
+  /* edit actions live in the fixed-height header, so revealing them never changes
+     the card height. styled as inline text buttons to sit on the header line. */
+  .card-head .saved-actions { margin-top: 0; margin-left: auto; gap: 14px; }
+  .card-head .saved-actions .btn-save {
+    background: none; color: var(--green); border: none; border-radius: 0;
+    padding: 0; font-size: 12px; font-weight: 600;
+  }
+  .card-head .saved-actions .btn-save:hover { background: none; color: var(--green-deep); }
+  .card-head .saved-actions .btn-skip { padding: 0; font-size: 12px; }
+  .card-head .saved-actions .saved-flag { font-size: 12px; }
+  /* while editing, the Save/Cancel pair replaces Delete on the right */
+  .card-head .saved-actions:not([hidden]) + .del { display: none; }
+
   .actions { display: flex; align-items: center; gap: 10px; }
   .btn-skip { background: transparent; color: var(--muted); border: none; padding: 9px 8px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
   .btn-skip:hover { color: var(--ink); }
@@ -282,7 +295,6 @@
   <div class="col profile">
     <div class="p-head">
       <h1><span class="mark">◧</span> Diskint Law</h1>
-      <div class="saved-state" id="savedState"><span class="tick">✓</span> All changes saved</div>
     </div>
 
     <div class="tabs" id="tabs">
@@ -600,9 +612,9 @@
       ask: 'When you refund a client on the website, should Claude create a matching credit memo in QuickBooks, or leave it for your bookkeeper?',
       ph: 'e.g. create the credit memo automatically...',
       improve: {
-        before: 'a refund sat unrecorded until your bookkeeper caught it.',
-        now: 'Claude logs the credit memo right away.',
-        so: 'your books are never behind on refunds.'
+        before: 'Claude would guess, and either create a duplicate credit memo or skip the refund entirely.',
+        now: 'it handles refunds exactly the way you told it.',
+        so: 'your books and your bookkeeper never end up out of sync.'
       } }
   ];
 
@@ -647,15 +659,15 @@
         '</div></div>'
       : '';
     return '<div class="card-head"><span class="cico check">✓</span>Saved to your profile' +
-        '<button class="del" data-delete type="button">Delete</button></div>' +
-      '<div class="card-body">' +
-        '<div class="ask">' + p.ask + '</div>' +
-        '<textarea class="answer saved" rows="2">' + (p.answer || '') + '</textarea>' +
         '<div class="saved-actions" hidden>' +
           '<button class="btn btn-save" data-resave>Save</button>' +
           '<button class="btn-skip" data-revert>Cancel</button>' +
           '<span class="saved-flag">Saved ✓</span>' +
         '</div>' +
+        '<button class="del" data-delete type="button">Delete</button></div>' +
+      '<div class="card-body">' +
+        '<div class="ask">' + p.ask + '</div>' +
+        '<textarea class="answer saved" rows="2">' + (p.answer || '') + '</textarea>' +
         improveHtml +
       '</div>';
   }
@@ -685,7 +697,12 @@
     void q.offsetHeight; // reflow, then animate in
     q.classList.remove('enter');
     q.classList.add('fresh');
-    qBody.scrollTo({ top: qBody.scrollHeight, behavior: 'smooth' }); // bring the new question into view
+    // bring the new question into view (column scrolls on desktop, page scrolls on mobile)
+    if (qBody.scrollHeight > qBody.clientHeight + 1) {
+      qBody.scrollTo({ top: qBody.scrollHeight, behavior: 'smooth' });
+    } else {
+      q.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
     setTimeout(function () { q.classList.remove('fresh'); }, 3600); // bg glow holds, then fades out slowly
     checkEmpty();
   }
