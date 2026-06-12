@@ -370,8 +370,8 @@
         </div>
 
         <div class="fieldset">
-          <div class="legend">Things Claude can't read anywhere</div>
-          <p class="facts-note">The judgment calls and history that live only in your head, not on your website or in your books, so Claude has no way to read them. Saved here, each one loads into every task, so Claude stops guessing at the calls only you can make. Add one at a time.</p>
+          <div class="legend">Add facts and rules about your business</div>
+          <p class="facts-note">The things you'd tell a new hire on day one. Some of this Claude could piece together, some it can't. Either way, writing it down beats hoping it guesses right, and each one loads into every task.</p>
           <div class="factlist" id="factlist">
             <div class="fact"><span class="tick">✓</span> Lena is my paralegal. She opens new matters and does first drafts. I review and sign everything that goes out.<button class="fact-del" type="button">Delete</button></div>
             <div class="fact"><span class="tick">✓</span> We don't take DIY-will clients. Too much back-and-forth for the fee.<button class="fact-del" type="button">Delete</button></div>
@@ -859,8 +859,13 @@
     return q;
   }
 
-  // the queue starts empty; the first question types in at ~2s like any new arrival
+  // the queue starts empty; shuffle the questions so the order differs each visit,
+  // then the first one types in at ~2s like any new arrival
   FEED.unshift(SEED_OPEN);
+  for (var s = FEED.length - 1; s > 0; s--) {
+    var r = Math.floor(Math.random() * (s + 1));
+    var tmp = FEED[s]; FEED[s] = FEED[r]; FEED[r] = tmp;
+  }
 
   // anchor at the bottom, where new questions land (no visible cue)
   var typing = document.createElement('div');
