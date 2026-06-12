@@ -257,7 +257,8 @@
   .answer { width: 100%; font: inherit; font-size: 13.5px; color: var(--ink); line-height: 1.45; border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; resize: none; background: #fff; margin-bottom: 12px; }
   .answer::placeholder { color: var(--faint); }
   .answer:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px var(--green-tint); }
-  .answer.saved { background: var(--line-soft); border-color: transparent; cursor: text; margin-bottom: 0; }
+  .answer.saved { background: transparent; border-color: transparent; cursor: text; margin-bottom: 0; }
+  .answer.saved:hover { border-color: var(--line); }
   .answer.saved:focus { background: #fff; border-color: var(--green); }
   .saved-actions { display: flex; align-items: center; gap: 10px; margin-top: 11px; }
   .saved-actions[hidden] { display: none; }
