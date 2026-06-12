@@ -149,26 +149,26 @@
   .queue { flex: 1 1 0; min-width: 380px; background: var(--bg); }
   .q-head { flex: 0 0 auto; padding: 24px 28px 16px; border-bottom: 1px solid var(--line); }
   .q-head .top, .q-head .note { max-width: 720px; margin-left: auto; margin-right: auto; }
-  .q-head .top { display: flex; align-items: center; justify-content: space-between; }
+  .q-head .top { display: flex; flex-direction: column; align-items: center; gap: 14px; }
   .q-head h2 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
   /* connect / disconnect toggle */
   .conn-toggle {
-    display: inline-flex; align-items: center; gap: 9px; font: inherit; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 11px; font: inherit; cursor: pointer;
     border: 1px solid var(--green-line); background: var(--green-tint);
-    border-radius: 999px; padding: 7px 9px 7px 14px; transition: background .15s, border-color .15s;
+    border-radius: 999px; padding: 10px 13px 10px 20px; transition: background .15s, border-color .15s;
   }
   .conn-toggle .conn-dot {
-    width: 8px; height: 8px; border-radius: 50%; background: #2bbd7e;
+    width: 11px; height: 11px; border-radius: 50%; background: #2bbd7e;
     box-shadow: 0 0 0 0 rgba(43,189,126,0.6); animation: pulse 2s infinite;
   }
-  .conn-toggle .conn-label { font-size: 13.5px; font-weight: 600; color: var(--green-deep); letter-spacing: -0.01em; }
-  .conn-switch { width: 36px; height: 20px; border-radius: 999px; background: var(--green); position: relative; flex: 0 0 auto; transition: background .15s; }
-  .conn-knob { position: absolute; top: 2px; left: 18px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.22); transition: left .16s; }
+  .conn-toggle .conn-label { font-size: 16px; font-weight: 600; color: var(--green-deep); letter-spacing: -0.01em; }
+  .conn-switch { width: 46px; height: 26px; border-radius: 999px; background: var(--green); position: relative; flex: 0 0 auto; transition: background .15s; }
+  .conn-knob { position: absolute; top: 3px; left: 23px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.22); transition: left .16s; }
   .conn-toggle.off { background: #f4f5f4; border-color: var(--line); }
   .conn-toggle.off .conn-dot { background: #c2c7c4; animation: none; box-shadow: none; }
   .conn-toggle.off .conn-label { color: var(--muted); }
   .conn-toggle.off .conn-switch { background: #c5cac7; }
-  .conn-toggle.off .conn-knob { left: 2px; }
+  .conn-toggle.off .conn-knob { left: 3px; }
   @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(43,189,126,0.5);} 70% { box-shadow: 0 0 0 6px rgba(43,189,126,0);} 100% { box-shadow: 0 0 0 0 rgba(43,189,126,0);} }
   .q-head .note { margin-top: 6px; font-size: 12.5px; color: var(--faint); }
 
@@ -286,6 +286,9 @@
   .chip { font: inherit; font-size: 13px; font-weight: 600; padding: 8px 18px; border-radius: 9px; cursor: pointer; border: 1px solid var(--line); background: #fff; color: var(--ink); transition: background .12s, border-color .12s, color .12s; }
   .chip:hover { border-color: var(--green); background: var(--green-tint); color: var(--green-deep); }
   .empty { font-size: 12.5px; color: var(--faint); padding: 18px 0 0; text-align: center; }
+  .paused-note { display: none; align-items: center; justify-content: center; gap: 8px; max-width: 720px; margin: 6px auto 0; padding: 12px; font-size: 12.5px; color: var(--muted); text-align: center; }
+  .paused-note .pdot { width: 7px; height: 7px; border-radius: 50%; background: #c2c7c4; flex: 0 0 auto; }
+  .paused-note.show { display: flex; }
 
   ::-webkit-scrollbar { width: 8px; }
   ::-webkit-scrollbar-thumb { background: rgba(120,130,125,0.28); border-radius: 6px; }
@@ -431,6 +434,7 @@
     </div>
     <div class="q-body" id="qBody">
       <div class="empty" id="emptyMsg" style="display:none;">All caught up. Nice.</div>
+      <div class="paused-note" id="pausedMsg"><span class="pdot"></span> Paused. Reconnect to Claude Code to get new questions.</div>
     </div>
   </div>
 
@@ -561,7 +565,7 @@
     answer: 'Legal Fees for consults. Consulting for ongoing retainers.',
     ph: 'e.g. Legal Fees for consults...',
     improve: {
-      before: 'Claude couldn\'t know which account consult income belongs in, so it guessed or asked you on every payment.',
+      before: 'When a books sub-agent runs your reconciliation, it starts fresh with only CLAUDE.md and whatever memories get recalled, not your earlier chat. The account mapping was in neither, so each run guessed or stopped to ask.',
       now: 'it posts each one to Legal Fees on its own.',
       so: 'your consult income lands in the right place without you touching it.'
     }
@@ -574,7 +578,7 @@
     ask: 'When Claude writes for your site, should it sound formal and lawyerly, or warm and plain so first-timers feel at ease?',
     ph: 'e.g. warm and plain, skip the legal jargon...',
     improve: {
-      before: 'Claude had no read on your voice, so it guessed the tone and you rewrote half of every draft.',
+      before: 'Your tone only ever lived in the active context window. A new session, or a writing agent spun up to draft the page, begins from CLAUDE.md and recalled memories, where it was never written, so the tone reset and you rewrote half the draft.',
       now: 'it writes in your voice the first time.',
       so: 'new pages sound like you and need almost no editing.'
     }
@@ -590,7 +594,7 @@
       ask: 'Are there services you do NOT want promoted on the site, like the DIY wills you turn away?',
       ph: 'e.g. never feature DIY wills or anything hourly...',
       improve: {
-        before: 'Claude has no way to know which work you turn away, so it could feature DIY wills and pull in leads you just have to reject.',
+        before: 'A saved memory only helps if its description matches and it gets recalled at the moment of the edit. Nothing flagged the DIY wills you turn away, so the page agent worked from your live site and kept featuring them, pulling in leads you just have to reject.',
         now: 'it keeps those off the site.',
         so: 'you stop fielding inquiries you only have to turn down.'
       } },
@@ -600,7 +604,7 @@
       ask: 'What do you call the people you work with and the work you do for them? Clients and matters, customers and cases, something else?',
       ph: 'e.g. clients and matters, never customers or cases...',
       improve: {
-        before: 'Claude can\'t guess your house words, so it wrote "customer" and "case," which sound wrong for a law office.',
+        before: 'House words like "clients and matters" only stick if someone writes them into CLAUDE.md by hand. No one had, so each drafting run fell back on "customer" and "case," which sound wrong for a law office.',
         now: 'it uses your terms everywhere, on the site and in your books.',
         so: 'everything Claude writes sounds like it came from your firm.'
       } },
@@ -620,7 +624,7 @@
       ask: 'How do you tell a good-fit client from one you would rather pass on?',
       ph: 'e.g. flat-fee estate work yes, hourly disputes no...',
       improve: {
-        before: 'Claude can\'t tell a good-fit client from a bad one, so it treated every inquiry the same and surfaced ones you would never take.',
+        before: 'Your good-fit rule lived only in your head, never in CLAUDE.md or a recalled memory, so the triage agent scored every new inquiry the same and surfaced ones you would never take.',
         now: 'it flags the good-fit ones first.',
         so: 'you spend your time on the clients worth having.'
       } },
@@ -639,7 +643,7 @@
       ask: 'Should Claude publish page changes live, or always leave them as drafts for you to review first?',
       ph: 'e.g. always drafts, I approve before it goes live...',
       improve: {
-        before: 'Claude had no idea you want to see changes first, so it could push edits straight to your live site.',
+        before: 'A sub-agent editing the services page sees only CLAUDE.md and recalled memories, not your spoken "always draft first." With no such rule saved, it had no reason to hold back and could publish straight to your live site.',
         now: 'it leaves a draft for you to approve first.',
         so: 'nothing reaches clients until you say so.'
       } },
@@ -819,11 +823,13 @@
   // connect / disconnect toggle: while disconnected, no new questions arrive
   var connToggle = document.getElementById('connToggle');
   var connLabel = document.getElementById('connLabel');
+  var pausedMsg = document.getElementById('pausedMsg');
   function setConnected(on) {
     connected = on;
     connToggle.classList.toggle('off', !on);
     connToggle.setAttribute('aria-pressed', on ? 'true' : 'false');
     connLabel.textContent = on ? 'Live with Claude Code' : 'Disconnected';
+    pausedMsg.classList.toggle('show', !on);
     if (on) { scheduleNext(1200); }      // reconnected: resume shortly
     else { clearTimeout(feedTimer); typing.classList.remove('show'); }
   }
