@@ -119,7 +119,7 @@
 
   .q {
     padding: 18px 14px 20px; margin: 0 -14px; border-radius: 12px;
-    transition: opacity 1.8s ease, transform 1.8s ease, max-height 1.8s ease, padding 1.8s ease, background-color 3s ease;
+    transition: opacity 2.6s ease, transform 2.6s ease, max-height 2.6s ease, padding 2.6s ease, background-color 4.2s ease;
     max-height: 420px; overflow: hidden; background-color: transparent;
   }
   .q + .q { border-top: 1px solid var(--line); }
@@ -489,7 +489,7 @@
     void q.offsetHeight; // reflow, then animate in
     q.classList.remove('enter');
     q.classList.add('fresh');
-    setTimeout(function () { q.classList.remove('fresh'); }, 2600); // bg glow fades out slowly
+    setTimeout(function () { q.classList.remove('fresh'); }, 3600); // bg glow holds, then fades out slowly
     checkEmpty();
   }
 
