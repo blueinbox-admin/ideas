@@ -30,12 +30,30 @@
     -webkit-font-smoothing: antialiased;
   }
   .col { display: flex; flex-direction: column; height: 100%; }
-  .topbar { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 11px 16px; background: #fff; border-bottom: 1px solid var(--line); }
+  .topbar { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-start; gap: 7px; padding: 17px 24px; background: #fff; border-bottom: 1px solid var(--line); }
   .topbar-row { display: flex; align-items: center; gap: 12px; }
   .session-chip { font-size: 12.5px; color: var(--muted); }
   .session-chip b { color: var(--ink); font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
-  .topbar-note { font-size: 11.5px; color: var(--faint); text-align: center; max-width: 560px; }
+  .topbar-note { font-size: 11.5px; color: var(--faint); text-align: left; max-width: 560px; }
   .main-row { flex: 1 1 auto; display: flex; min-height: 0; }
+  /* ===== knowledge map widget (top of questions) ===== */
+  .map-dock { flex: 0 0 auto; display: flex; justify-content: center; padding: 16px 16px 6px; }
+  .map-card { position: relative; width: 290px; border-radius: 13px; padding: 13px 15px 11px; overflow: hidden;
+    background: linear-gradient(180deg,#ffffff 0%, #f5faf7 100%); border: 1px solid var(--green-line); box-shadow: 0 1px 3px rgba(20,40,30,0.05); transition: box-shadow .4s ease; }
+  .map-card:hover { box-shadow: 0 2px 14px rgba(31,107,84,0.12); }
+  .map-card.warm1 { background: linear-gradient(180deg,#fbfdfc 0%, #eef6f1 100%); }
+  .map-card.warm2 { background: linear-gradient(180deg,#f8fcfa 0%, #e8f4ee 100%); }
+  .map-card.warm3 { background: linear-gradient(180deg,#f5fbf8 0%, #e2f1ea 100%); box-shadow: 0 1px 3px rgba(20,40,30,.05), 0 0 26px rgba(31,107,84,.09); }
+  .map-card::before { content:""; position:absolute; inset:0; pointer-events:none; z-index:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='mmn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23mmn)'/%3E%3C/svg%3E");
+    opacity:0.06; mix-blend-mode:multiply; }
+  .map-card > * { position:relative; z-index:1; }
+  .map-title { font-size:11.5px; font-weight:600; color:var(--green-deep); letter-spacing:-0.01em; line-height:1.3; }
+  .map-hint { position:absolute; bottom:9px; right:13px; font-size:9px; color:var(--faint); opacity:.7; pointer-events:none; transition:opacity .3s; }
+  .map-card:hover .map-hint { opacity:0; }
+  .map-card canvas { display:block; width:100%; height:auto; cursor:grab; }
+  .map-toast { position:absolute; left:13px; right:13px; bottom:10px; background:rgba(22,81,63,0.95); color:#eafff6; font-size:10.5px; font-weight:500; padding:7px 10px; border-radius:8px; opacity:0; transform:translateY(6px); transition:opacity .3s, transform .3s; pointer-events:none; text-align:center; line-height:1.35; }
+  .map-toast.show { opacity:1; transform:translateY(0); }
 
   /* ============ LEFT: structured profile form ============ */
   .profile {
@@ -435,6 +453,14 @@
 
   <!-- ===================== RIGHT: QUESTION QUEUE ===================== -->
   <div class="col queue">
+    <div class="map-dock">
+      <div class="map-card" id="mmCard">
+        <div class="map-title">How we're mapping your business for Claude</div>
+        <span class="map-hint">hover to explore</span>
+        <canvas id="mmCanvas"></canvas>
+        <div class="map-toast" id="mmToast"></div>
+      </div>
+    </div>
     <div class="q-head">
       <div class="top">
         <h2>Questions</h2>
@@ -534,8 +560,8 @@
     answer: 'Legal Fees for consults. Consulting for ongoing retainers.',
     ph: 'e.g. Legal Fees for consults...',
     improve: {
-      before: 'The right account is not in the payment data. It is an accounting choice you keep in your head, and Claude stores memory as prose to recall, not a rule to run, so a fresh reconciliation pulls a fuzzy note at best and falls back to guessing or asking.',
-      cost: 'Every reconciliation either pings you with the same question or files income in the wrong account.',
+      before: 'Which account each payment belongs in is an accounting choice you keep in your head, not in the payment data. So every time Claude reconciled, it either guessed the account or stopped to ask you.',
+      cost: 'You kept answering the same question, or fixing income that landed in the wrong account.',
       now: 'it posts each one to Legal Fees on its own, and your consult income lands where it should without you touching it.'
     }
   };
@@ -547,8 +573,8 @@
     ask: 'Claude can match your site\'s look on its own. What it can\'t know is what belongs on a service page. What does every one of yours need? Say a plain-English summary, your flat-fee pricing, and an FAQ.',
     ph: 'e.g. plain-English summary, flat-fee pricing, an FAQ section...',
     improve: {
-      before: 'Claude can read your live pages, but it cannot tell your required sections from one-off choices, and that standard was never written as a rule. Memory might recall that you like an FAQ, but a fresh writing pass recalls it loosely and still ships pages missing sections.',
-      cost: 'New pages come back half-finished, and you add the missing pieces by hand every time.',
+      before: 'Claude can match your site\'s look, but it has had no way to know which sections you consider required, because that standard lives only in your head. So it kept shipping new pages missing the parts you always include.',
+      cost: 'New pages came back half-finished, and you added the missing pieces by hand every time.',
       now: 'it builds each page with your standard sections already in place, so new pages are complete on the first try.'
     }
   };
@@ -562,8 +588,8 @@
     ask: 'What counts as a lead? A booked consult, a contact-form fill, or a phone call from your tracked number? Claude needs your definition before it can report anything.',
     ph: 'e.g. a booked consult or a contact form, never raw traffic...',
     improve: {
-      before: 'Your analytics log clicks, form fills, and bookings all the same. Which of those counts as a lead is your definition, not in the data, and Claude holds it in memory as a vague note a reporting run recalls inconsistently, so the count shifts every time.',
-      cost: 'Every report counts the wrong things, so the numbers look busy but tell you nothing.',
+      before: 'What counts as a lead is your definition, not something in the analytics, which log every click and form fill the same. With it written down nowhere, Claude counted something different each run.',
+      cost: 'Every report counted the wrong things, so the numbers looked busy but told you nothing.',
       now: 'it counts leads your way, so the report reflects real prospects instead of noise.'
     }
   },
@@ -573,8 +599,8 @@
     ask: 'Do you count revenue when the client signs, when they pay, or when the work is done? The same payments add up to very different numbers.',
     ph: 'e.g. when they pay, cash basis...',
     improve: {
-      before: 'When a dollar becomes revenue is an accounting rule, invisible in the payment data. Even said once, the agent building your report starts fresh from a loose memory summary, not that conversation, and applies whatever recognition it half-remembers.',
-      cost: 'Your revenue swings depending on what Claude assumed, and it may not match your accountant.',
+      before: 'When a dollar becomes revenue is an accounting rule only you know, invisible in the payment data. With nothing written down, Claude applied whatever it assumed that run.',
+      cost: 'Your revenue swung on Claude\'s guess, and the numbers didn\'t always match your accountant.',
       now: 'it recognizes revenue your way every time, so every report lines up with your books.'
     }
   },
@@ -584,8 +610,8 @@
     ask: 'Your site can see a visit, but not that it started as a referral, a Google search, or your newsletter. How do you tag where a lead came from?',
     ph: 'e.g. referrals are noted in the booking, newsletter links use a code...',
     improve: {
-      before: 'When Claude pulls your analytics it usually runs as a fresh session or a spun-up sub-agent, starting from CLAUDE.md and a loose summary of past chats, not the conversation where you explained your tags. A rule that exact gets paraphrased or dropped, so the report attributes leads differently each run.',
-      cost: 'You keep guessing which marketing works, and spend on whatever feels busy.',
+      before: 'How you tag where a lead came from lives in your head, not in the visit data, which only shows a click. With no rule to follow, Claude attributed leads differently every run.',
+      cost: 'You kept guessing which marketing worked, and spent on whatever felt busy.',
       now: 'it ties each lead to its real source, so you can see what actually brings clients in.'
     }
   },
@@ -595,8 +621,8 @@
     ask: 'Some money you take in is a retainer or trust deposit you are holding, not income yet. How should Claude tell those apart from earned revenue?',
     ph: 'e.g. anything in the trust account is held, not income until I bill against it...',
     improve: {
-      before: 'The line between held funds and earned revenue is a trust-accounting rule, nowhere in the deposit data. Claude can keep a note in memory, but it reads your books fresh each time and cannot reliably apply a rule it only half-remembers, so it counts everything as income.',
-      cost: 'Your income looks inflated, and mixing trust funds with revenue is the kind of thing that draws bar scrutiny.',
+      before: 'The line between held funds and earned revenue is a trust-accounting rule only you know, nowhere in the deposit data. With nothing written down, Claude counted everything as income.',
+      cost: 'Your income looked inflated, and mixing trust money with revenue is the kind of thing that draws bar scrutiny.',
       now: 'it keeps held funds out of income until you earn them, so your numbers and your trust account stay clean.'
     }
   },
@@ -606,8 +632,8 @@
     ask: 'How do you want revenue grouped so it actually means something, by package, by practice area, or flat-fee versus hourly?',
     ph: 'e.g. group by package: wills, trusts, probate...',
     improve: {
-      before: 'How you slice revenue is a preference the raw books do not suggest. Claude stores it in memory as prose to recall, not a grouping to run, so each breakdown comes back in whatever shape the model reconstructs that session.',
-      cost: 'The breakdown comes back in a shape you cannot act on, so you re-sort it by hand.',
+      before: 'How you group revenue is your preference, and the raw books don\'t suggest it. With no grouping saved, Claude returned the breakdown in a different shape each time.',
+      cost: 'The breakdown came back in a shape you couldn\'t act on, so you re-sorted it by hand.',
       now: 'it groups revenue the way you think about your practice, so the breakdown is ready to use.'
     }
   },
@@ -617,8 +643,8 @@
     ask: 'Your current pages read formal and lawyerly. Going forward, should Claude write warmer and plainer than what is on the site now, so first-timers feel at ease?',
     ph: 'e.g. yes, much warmer than the current site...',
     improve: {
-      before: 'Claude reads your site and copies the formal tone already there. That you want to move away from it is the opposite of the evidence, and memory holds it as a soft preference a fresh draft overrides by matching the page in front of it.',
-      cost: 'Every new page reinforces the stiff voice you are trying to leave behind.',
+      before: 'Claude reads your site and copies the formal tone already there. That you want to move away from it is the opposite of what it sees, so with that direction saved nowhere, each new draft matched the stiff voice again.',
+      cost: 'Every new page reinforced the stiff voice you were trying to leave behind.',
       now: 'it writes in the warmer voice you are moving toward, so the site shifts the way you want.'
     }
   },
@@ -629,7 +655,7 @@
       ask: 'Are there services you do NOT want promoted on the site, like the DIY wills you turn away?',
       ph: 'e.g. never feature DIY wills or anything hourly...',
       improve: {
-        before: 'Nothing in your live site says you turn away DIY wills; it features them. That exclusion is a rule only you hold, and recalled loosely from memory a page edit works off the visible site and keeps featuring them.',
+        before: 'That you turn away DIY wills is a rule only you hold; your live site still features them. Working off the visible site with nothing telling it otherwise, Claude kept featuring them too.',
         cost: 'Your site keeps advertising the work you turn down, and your inbox fills with leads you have to reject.',
         now: 'it keeps those off the site, so you stop fielding inquiries you only turn down.'
       } },
@@ -639,8 +665,8 @@
       ask: 'Are there words you never use with clients, like "cheap," "guarantee," or even "death"? Some are brand, some are bar advertising rules.',
       ph: 'e.g. never "guarantee" or "cheap"; say "when the time comes," not "death"...',
       improve: {
-        before: 'Your off-limits words are a brand and compliance rule, invisible in the copy. Claude keeps memory as prose to recall, not a banned-word list to enforce, so a fresh writing pass recalls it vaguely and still reaches for words you would never use.',
-        cost: 'You proofread every page for the same forbidden words, and one wrong term can break a bar advertising rule.',
+        before: 'Your off-limits words are a brand and compliance rule, invisible in the copy. With no list to enforce, Claude kept reaching for words you would never use.',
+        cost: 'You were proofreading every page for the same forbidden words, and one wrong term can break a bar advertising rule.',
         now: 'it avoids your off-limits words everywhere it writes, so nothing needs a compliance proofread.'
       } },
     // How you work -- intake workflow
@@ -649,8 +675,8 @@
       ask: 'Walk Claude through what happens after someone books a consult. What are the steps from first call to signed client?',
       ph: 'e.g. consult, conflict check, engagement letter, intake form...',
       improve: {
-        before: 'Your intake steps were never written as a procedure Claude could run. Memory may recall that an engagement letter exists, but a fresh run rebuilds the order from a loose summary and drops or reorders steps.',
-        cost: 'New clients slip through a different crack each time, and you re-check every file by hand.',
+        before: 'Your intake steps lived only in your head, never written as a procedure Claude could follow. So each time it ran them, it rebuilt the order from scratch and dropped or reordered steps.',
+        cost: 'New clients slipped through a different crack each time, and you re-checked every file by hand.',
         now: 'it follows your steps in order, so every new client gets the same path without you steering.'
       } },
     // How you work -- how the firm thinks (good fit)
@@ -659,8 +685,8 @@
       ask: 'How do you tell a good-fit client from one you would rather pass on?',
       ph: 'e.g. flat-fee estate work yes, hourly disputes no...',
       improve: {
-        before: 'How you tell a good client from a time-sink is a judgment call, nowhere in the inquiry data. Memory holds it as a fuzzy note, so a fresh triage scores every inquiry the same and surfaces ones you would never take.',
-        cost: 'You still triage the inbox yourself, because the agent cannot tell a real client from a time-sink.',
+        before: 'How you tell a good client from a time-sink is a judgment call only you make, nowhere in the inquiry data. With no rule to go on, Claude scored every inquiry the same and surfaced ones you would never take.',
+        cost: 'You kept triaging the inbox yourself, because Claude couldn\'t tell a real client from a time-sink.',
         now: 'it surfaces the good-fit inquiries first, and your time goes to clients worth having.'
       } },
     // ---- existing WordPress ----
@@ -669,8 +695,8 @@
       ask: 'When Claude writes or updates a page, should it always include your "Book a free 15-minute consult" button, or only on service pages?',
       ph: 'e.g. every page, near the top and bottom...',
       improve: {
-        before: 'That every page needs your booking button is a rule, not something the template enforces. Said once in chat, it lives in memory as a soft note a fresh page build recalls inconsistently, so pages still ship without it.',
-        cost: 'Pages go live with no way to reach you, and you only notice after they are public.',
+        before: 'That every page needs your booking button is a rule only you hold, not something the template enforces. With it saved nowhere, Claude kept shipping pages without it.',
+        cost: 'Pages went live with no way to reach you, and you only noticed after they were public.',
         now: 'it adds the button to every page it builds, so none ships without a way to book you.'
       } },
     { meta: 'A rule for your website', source: 'WordPress',
@@ -678,8 +704,8 @@
       ask: 'Should Claude publish page changes live, or always leave them as drafts for you to review first?',
       ph: 'e.g. always drafts, I approve before it goes live...',
       improve: {
-        before: 'Your always-draft-first rule was said out loud, never set as a constraint Claude runs under. A fresh edit session starts from a loose memory of it, has no hard guardrail, and can publish straight to your live site.',
-        cost: 'A wrong edit can reach your clients before you have seen it.',
+        before: 'Your always-draft-first rule was said out loud, never set as a guardrail Claude works under. With nothing holding it back, Claude could publish straight to your live site.',
+        cost: 'A wrong edit could reach your clients before you had seen it.',
         now: 'it leaves a draft for you to approve, and nothing reaches clients until you sign off.'
       } },
     // ---- books / cross-app, now lower in the queue ----
@@ -689,8 +715,8 @@
       ask: 'Your website sells a "Trust Package." In QuickBooks the matching item is "Estate Plan Flat Fee." Should Claude always treat them as the same thing?',
       ph: 'e.g. yes, same item...',
       improve: {
-        before: 'The link between Trust Package on your site and Estate Plan Flat Fee in QuickBooks lives in neither app. Claude can note it in memory, but a fresh logging run recalls the mapping loosely and records them as two unrelated items.',
-        cost: 'Sales stop matching invoices, and your books quietly drift from what actually sold.',
+        before: 'The link between Trust Package on your site and Estate Plan Flat Fee in QuickBooks lives only in your head; neither app stores it. With nothing mapping them, Claude recorded the two as unrelated items.',
+        cost: 'Sales stopped matching invoices, and your books quietly drifted from what actually sold.',
         now: 'it links them on every payment, so no revenue slips and your books match your bank.'
       } },
     { meta: 'A rule for your books', source: 'QuickBooks',
@@ -698,8 +724,8 @@
       ask: 'Stripe takes a 2.9% fee on website payments. How should Claude record that fee in QuickBooks?',
       ph: 'e.g. book the full amount, then the fee as a separate expense...',
       improve: {
-        before: 'How you book the 2.9% fee is an accounting choice, not in the payout data. Recalled as prose rather than a rule, a fresh reconciliation applies whatever it half-remembers and often records only the net that hit your bank.',
-        cost: 'Your revenue looks smaller than it was, and the fees disappear instead of showing up as a deduction.',
+        before: 'How you book the 2.9% fee is your accounting choice, not something in the payout data. With no rule to apply, Claude often recorded only the net that hit your bank.',
+        cost: 'Your revenue looked smaller than it was, and the fees vanished instead of showing up as a deduction.',
         now: 'it books the full sale and the fee separately, so your revenue stays accurate and the fees show up as a deduction.'
       } },
     { meta: 'Connects your website and your books', source: 'WordPress + QuickBooks',
@@ -707,8 +733,8 @@
       ask: 'When someone books a consult on your website, should Claude add them as a customer in QuickBooks right away, or wait until they pay?',
       ph: 'e.g. wait until they pay...',
       improve: {
-        before: 'Whether a booking counts as a customer yet is your call, invisible in the booking data. Memory holds it as a vague preference, so a fresh sync recalls it inconsistently and creates a record the moment anyone books.',
-        cost: 'Your client list fills with no-shows you then have to hunt down and delete.',
+        before: 'Whether a booking counts as a customer yet is your call, invisible in the booking data. With nothing telling it to wait, Claude created a record the moment anyone booked.',
+        cost: 'Your client list filled with no-shows you then had to hunt down and delete.',
         now: 'it waits until they pay to create the record, so your client list stays real.'
       } },
     { meta: 'Maps your data across both apps', source: 'WordPress + QuickBooks',
@@ -716,8 +742,8 @@
       ask: 'When the same client appears in both your website and QuickBooks under slightly different names, how should Claude decide it is one person?',
       ph: 'e.g. match by email first, then by full name...',
       improve: {
-        before: 'Deciding two near-identical names are one person takes a matching rule only you know, nowhere in the data. A fresh reconciliation recalls it loosely from memory and opens a second record instead of linking the existing one.',
-        cost: 'Duplicates pile up, and you reconcile the same client twice.',
+        before: 'You\'ve been the one catching that two near-identical names are the same person, because that rule lives only in your head, not in the data. So Claude kept opening a second record instead of linking the existing one.',
+        cost: 'Duplicates piled up, and you reconciled the same client twice.',
         now: 'it matches them by your rule, and you stop cleaning up duplicates by hand.'
       } },
     { meta: 'A rule for your books', source: 'QuickBooks',
@@ -725,8 +751,8 @@
       ask: 'When you refund a client on the website, should Claude create a matching credit memo in QuickBooks, or leave it for your bookkeeper?',
       ph: 'e.g. create the credit memo automatically...',
       improve: {
-        before: 'Whether Claude or your bookkeeper owns the credit memo was never set as a rule. A fresh refund run pulls a fuzzy memory of your preference and guesses, sometimes duplicating the memo, sometimes skipping it.',
-        cost: 'Refunds get booked twice or not at all, and you catch it at month end.',
+        before: 'Whether Claude or your bookkeeper handles the credit memo was something you never wrote down. So on each refund, Claude guessed, sometimes duplicating the memo, sometimes skipping it.',
+        cost: 'Refunds got booked twice or not at all, and you caught it at month end.',
         now: 'it handles refunds the way you told it, and your books and bookkeeper stay in sync.'
       } }
   ];
@@ -964,6 +990,149 @@
     var dirty = ta.value.trim() !== (q._preset.answer || '').trim();
     if (!dirty) actions.hidden = true;
   });
+</script>
+
+<script>
+(function(){
+  var THRESHOLD=3, MAXN=6, GREEN='31,107,84', SOFT='150,172,160';
+  var CLUSTERS=[
+    { id:'basics',  title:'The basics',  x:0,    y:0,   z:0,   revealAt:0 },
+    { id:'site',    title:'Site rules',  x:86,   y:-52, z:-14, revealAt:0 },
+    { id:'books',   title:'Books',       x:104,  y:44,  z:30,  revealAt:0 },
+    { id:'voice',   title:'Voice',       x:-96,  y:-26, z:18,  revealAt:1 },
+    { id:'clients', title:'Clients',     x:-34,  y:64,  z:-22, revealAt:2 },
+    { id:'process', title:'Process',     x:-104, y:40,  z:26,  revealAt:3 },
+    { id:'sched',   title:'Scheduling',  x:-44,  y:-74, z:-30, revealAt:4, frontier:true },
+    { id:'refer',   title:'Referrals',   x:40,   y:86,  z:14,  revealAt:5, frontier:true }
+  ];
+  var CBY={}; CLUSTERS.forEach(function(c){ CBY[c.id]=c; });
+  var LINKS={ l1:{a:'site',b:'books'}, l2:{a:'clients',b:'books'} };
+  var BEATS=[
+    { c:{basics:5,site:2,books:2},                              links:[],          toast:null },
+    { c:{basics:5,site:2,books:2,voice:1},                      links:[],          toast:null },
+    { c:{basics:5,site:3,books:2,voice:1},                      links:[],          toast:"Your site rules are now their own area." },
+    { c:{basics:5,site:4,books:2,voice:1},                      links:['l1'],      toast:"Claude now links your website sales to your books." },
+    { c:{basics:5,site:4,books:2,voice:3},                      links:['l1'],      toast:"Your voice is now its own area." },
+    { c:{basics:5,site:4,books:2,voice:3,process:1},            links:['l1'],      toast:null },
+    { c:{basics:5,site:4,books:2,voice:3,process:1,clients:2},  links:['l1'],      toast:null },
+    { c:{basics:5,site:4,books:2,voice:3,process:1,clients:3},  links:['l1','l2'], toast:"Claude keeps one record per client across both apps." },
+    { c:{basics:6,site:4,books:4,voice:3,process:3,clients:3},  links:['l1','l2'], toast:"Reyes Law is taking shape. Claude knows your site, books, clients, and how you work." }
+  ];
+  function rng(s){ return function(){ s=(s*1664525+1013904223)>>>0; return s/4294967296; }; }
+  CLUSTERS.forEach(function(c,ci){
+    var r=rng(97+ci*131), n=c.frontier?3:MAXN, R=15; c.nodes=[]; c._rev=0;
+    for (var i=0;i<n;i++){ var u=r()*2-1,t=r()*Math.PI*2,sp=Math.sqrt(1-u*u),rad=R*(0.45+0.55*r());
+      c.nodes.push({ ox:rad*sp*Math.cos(t), oy:rad*sp*Math.sin(t), oz:rad*u, alpha:0 }); }
+  });
+  var card=document.getElementById('mmCard'), cv=document.getElementById('mmCanvas');
+  if(!card||!cv) return;
+  var ctx=cv.getContext('2d');
+  var W=238,H=196,dpr=Math.max(1,Math.min(2,window.devicePixelRatio||1));
+  cv.style.height=H+'px'; cv.width=W*dpr; cv.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+  var step=0, ang=0.5, shimmer=0, transit=0, rings=[], hovered=false, rafId=null;
+  var FOCAL=340, TILT=-0.34;
+  function rot(p){ var c0=Math.cos(TILT),s0=Math.sin(TILT);
+    var y1=p.y*c0-p.z*s0, z1=p.y*s0+p.z*c0, x1=p.x; var ca=Math.cos(ang),sa=Math.sin(ang);
+    return { x:x1*ca - z1*sa, y:y1, z:x1*sa + z1*ca }; }
+  function project(p){ var r=rot(p), sc=FOCAL/(FOCAL+r.z); return { sx:W/2+r.x*sc, sy:H/2+r.y*sc, scale:sc, z:r.z }; }
+  function fog(sc){ var f=(sc-0.76)/0.72; return Math.max(0,Math.min(1,f))*0.62+0.38; }
+  function lerp(a,b,t){ return Math.round(a+(b-a)*t); }
+  function clusterColor(c){ var n=c._active;
+    if(c.frontier||n===0) return SOFT;
+    if(n<THRESHOLD){ var t=n/THRESHOLD; return lerp(150,90,t)+','+lerp(172,150,t)+','+lerp(160,120,t); }
+    var t2=Math.min(1,(n-THRESHOLD)/3); return lerp(31,16,t2)+','+lerp(107,70,t2)+','+lerp(84,52,t2); }
+  function updateWarmth(){ var beat=BEATS[step], total=CLUSTERS.reduce(function(a,n){ return a+(beat.c[n.id]||0); },0);
+    card.classList.toggle('warm1', total>=12 && total<18);
+    card.classList.toggle('warm2', total>=18 && total<22);
+    card.classList.toggle('warm3', total>=22); }
+  function line(a,b,st,w){ ctx.strokeStyle=st; ctx.lineWidth=w; ctx.beginPath(); ctx.moveTo(a.sx,a.sy); ctx.lineTo(b.sx,b.sy); ctx.stroke(); }
+  function transitDot(ca,cb,t){ var x=ca.x+(cb.x-ca.x)*t, y=ca.y+(cb.y-ca.y)*t, z=ca.z+(cb.z-ca.z)*t;
+    var p=project({x:x,y:y,z:z}), f=fog(p.scale), r=1.9*p.scale, gr=r*3.2;
+    var g=ctx.createRadialGradient(p.sx,p.sy,0,p.sx,p.sy,gr);
+    g.addColorStop(0,'rgba('+GREEN+','+(0.55*f)+')'); g.addColorStop(0.4,'rgba('+GREEN+','+(0.22*f)+')'); g.addColorStop(1,'rgba('+GREEN+',0)');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.sx,p.sy,gr,0,7); ctx.fill();
+    ctx.fillStyle='rgba('+GREEN+','+Math.min(1,0.9*f)+')'; ctx.beginPath(); ctx.arc(p.sx,p.sy,r*0.85,0,7); ctx.fill(); }
+  function draw(){
+    ctx.clearRect(0,0,W,H); var beat=BEATS[step];
+    CLUSTERS.forEach(function(c){ var active=(beat.c[c.id]||0), lit=!c.frontier && active>=THRESHOLD;
+      c._shown=step>=c.revealAt; c._rev += ((c._shown?1:0)-c._rev)*0.13;
+      c._p=project(c); c._lit=lit; c._active=active; c._col=clusterColor(c); });
+    CLUSTERS.forEach(function(c){ if(!c._shown||c.frontier||c._active===0) return;
+      var p=c._p,f=fog(p.scale),rad=(26+c._active*9)*p.scale,a=Math.min(0.085,(0.010+0.012*c._active)*f)*c._rev;
+      var g=ctx.createRadialGradient(p.sx,p.sy,0,p.sx,p.sy,rad);
+      g.addColorStop(0,'rgba(31,107,84,'+a+')'); g.addColorStop(1,'rgba(31,107,84,0)');
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.sx,p.sy,rad,0,7); ctx.fill(); });
+    CLUSTERS.forEach(function(c){ if(!c._shown||c.frontier||c._active===0) return;
+      var p=c._p,f=fog(p.scale),rad=(11+c._active*4.6)*p.scale,a=Math.min(0.16,(0.045+0.019*c._active)*f)*c._rev;
+      var g=ctx.createRadialGradient(p.sx,p.sy,0,p.sx,p.sy,rad);
+      g.addColorStop(0,'rgba('+c._col+','+a+')'); g.addColorStop(1,'rgba('+c._col+',0)');
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.sx,p.sy,rad,0,7); ctx.fill(); });
+    ctx.lineCap='round'; var hub=CBY.basics._p;
+    var present=CLUSTERS.filter(function(c){ return c._shown && !c.frontier && c._active>0; });
+    present.forEach(function(c){ if(c.id==='basics') return;
+      var f=Math.min(hub.scale,c._p.scale), seeded=!c._lit;
+      line(hub,c._p,'rgba('+GREEN+','+((seeded?0.16:0.24)*fog(f))+')',0.95*f); });
+    var web=present.filter(function(c){ return c.id!=='basics'; });
+    web.forEach(function(c){ var best=null,bd=1e9;
+      web.forEach(function(o){ if(o===c) return; var d=Math.hypot(c.x-o.x,c.y-o.y); if(d<bd){bd=d;best=o;} });
+      if(best){ var f=Math.min(c._p.scale,best._p.scale); line(c._p,best._p,'rgba('+GREEN+','+(0.17*fog(f))+')',0.8*f); } });
+    CLUSTERS.forEach(function(c){ if(!c._shown||c.frontier||c._active<2) return; var ns=c.nodes,m=c._active,lit=c._lit;
+      for (var i=0;i<m;i++){ var j=(i+1)%m; if(j===i) continue;
+        var a=project({x:c.x+ns[i].ox,y:c.y+ns[i].oy,z:c.z+ns[i].oz});
+        var b=project({x:c.x+ns[j].ox,y:c.y+ns[j].oy,z:c.z+ns[j].oz});
+        line(a,b,'rgba('+GREEN+','+((lit?0.26:0.18)*fog(Math.min(a.scale,b.scale)))+')',0.7*Math.min(a.scale,b.scale)); } });
+    beat.links.forEach(function(k){ var L=LINKS[k]; if(!CBY[L.a]._shown||!CBY[L.b]._shown) return;
+      var a=CBY[L.a]._p,b=CBY[L.b]._p,f=Math.min(a.scale,b.scale); line(a,b,'rgba('+GREEN+','+(0.55*fog(f))+')',1.6*f); });
+    beat.links.forEach(function(k){ var L=LINKS[k]; if(!CBY[L.a]._shown||!CBY[L.b]._shown) return;
+      [0.30,0.63].forEach(function(t0){ transitDot(CBY[L.a],CBY[L.b],(t0+transit)%1); }); });
+    present.forEach(function(c){ if(c.id==='basics'||!c._lit) return; transitDot(CBY.basics,c,(0.46+transit)%1); });
+    var draws=[];
+    CLUSTERS.forEach(function(c){ c.nodes.forEach(function(nd,i){
+      var vis=c._shown && (c.frontier?true:i<c._active); var target=vis?1:0;
+      nd.alpha += (target-nd.alpha)*0.16; if(nd.alpha<0.02) return;
+      var p=project({x:c.x+nd.ox,y:c.y+nd.oy,z:c.z+nd.oz}); draws.push({c:c,nd:nd,p:p}); }); });
+    draws.sort(function(a,b){ return b.p.z-a.p.z; });
+    draws.forEach(function(d){ var p=d.p,f=fog(p.scale),col=d.c._col;
+      var a=(d.c.frontier?0.28:(d.c._lit?1:0.55))*d.nd.alpha*f; var r=(d.c._lit?2.7:2.2)*p.scale, gr=r*3.4;
+      var g=ctx.createRadialGradient(p.sx,p.sy,0,p.sx,p.sy,gr);
+      g.addColorStop(0,'rgba('+col+','+(0.30*a)+')'); g.addColorStop(0.45,'rgba('+col+','+(0.12*a)+')'); g.addColorStop(1,'rgba('+col+',0)');
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.sx,p.sy,gr,0,7); ctx.fill();
+      ctx.fillStyle='rgba('+col+','+Math.min(1,a)+')'; ctx.beginPath(); ctx.arc(p.sx,p.sy,r*0.82,0,7); ctx.fill(); });
+    for (var ri=0;ri<rings.length;ri++){ var rg=rings[ri], pc=project(CBY[rg.id]), rr=5+42*rg.t;
+      ctx.strokeStyle='rgba('+GREEN+','+(0.6*(1-rg.t))+')'; ctx.lineWidth=1.5*(1-rg.t)+0.2;
+      ctx.beginPath(); ctx.arc(pc.sx,pc.sy,rr,0,7); ctx.stroke(); }
+    ctx.textAlign='center'; ctx.font='600 9px -apple-system, system-ui, sans-serif';
+    CLUSTERS.forEach(function(c){ var p=c._p; if(!c._shown || p.z<-150) return;
+      var lx=Math.max(26,Math.min(W-26,p.sx)), ly=p.sy-17*p.scale, rev=c._rev;
+      if(c.frontier||c._active===0){ ctx.fillStyle='rgba(112,120,115,'+(0.55*p.scale*rev)+')'; ctx.fillText(c.title+' ?',lx,ly); }
+      else { ctx.fillStyle=c._lit?'rgba('+c._col+','+(Math.min(1,p.scale)*rev)+')':'rgba(112,120,115,'+(0.85*p.scale*rev)+')'; ctx.fillText(c.title,lx,ly); } });
+  }
+  function settled(){ var beat=BEATS[step], ok=true;
+    CLUSTERS.forEach(function(c){ var shown=step>=c.revealAt;
+      if(Math.abs((shown?1:0)-(c._rev||0))>0.01) ok=false;
+      c.nodes.forEach(function(nd,i){ var vis=shown && (c.frontier?true:i<(beat.c[c.id]||0));
+        if(Math.abs((vis?1:0)-nd.alpha)>0.01) ok=false; }); });
+    return ok && rings.length===0; }
+  function loop(){ if(hovered){ ang+=0.0045; shimmer=(shimmer+0.0075)%1; transit=(transit+0.0042)%1; }
+    for (var i=rings.length-1;i>=0;i--){ rings[i].t+=0.018; if(rings[i].t>=1) rings.splice(i,1); }
+    draw(); if(hovered || !settled()) rafId=requestAnimationFrame(loop); else rafId=null; }
+  function kick(){ if(rafId==null) rafId=requestAnimationFrame(loop); }
+  card.addEventListener('mouseenter', function(){ hovered=true; kick(); });
+  card.addEventListener('mouseleave', function(){ hovered=false; kick(); });
+  var toastT;
+  function toast(m){ var t=document.getElementById('mmToast'); t.textContent=m; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(hideToast,2900); }
+  function hideToast(){ document.getElementById('mmToast').classList.remove('show'); }
+  function applyBeat(prevStep){ var beat=BEATS[step], prev=prevStep==null?null:BEATS[prevStep];
+    if(prev) CLUSTERS.forEach(function(c){ if(!c.frontier && (prev.c[c.id]||0)<THRESHOLD && (beat.c[c.id]||0)>=THRESHOLD) rings.push({id:c.id,t:0}); });
+    updateWarmth(); if(beat.toast) toast(beat.toast); else hideToast(); kick(); }
+  function advance(){ if(step>=BEATS.length-1) return; var p=step; step++; applyBeat(p); }
+  // each answered question grows the map by one beat
+  document.addEventListener('click', function(e){ var t=e.target; if(t&&t.closest&&t.closest('.btn-save[data-q]')) setTimeout(advance,0); }, true);
+  (function init(){ var beat=BEATS[0];
+    CLUSTERS.forEach(function(c){ var shown=0>=c.revealAt; c._rev=shown?1:0;
+      c.nodes.forEach(function(nd,i){ nd.alpha=(shown && (c.frontier?true:i<(beat.c[c.id]||0)))?1:0; }); });
+    updateWarmth(); draw(); })();
+})();
 </script>
 
 </body>
