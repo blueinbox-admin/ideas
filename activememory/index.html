@@ -362,7 +362,7 @@
 
         <div class="fieldset">
           <div class="legend">Add facts and rules about your business</div>
-          <p class="facts-note">The things you'd tell a new hire on day one. Some of this Claude could piece together, some it can't. Either way, writing it down beats hoping it guesses right, and each one loads into every task.</p>
+          <p class="facts-note">The things you'd tell a new hire on day one. Some of this Claude could piece together, some it can't. Either way, writing it down beats hoping Claude guesses right. You note it once, and it's there for every task after.</p>
           <div class="factlist" id="factlist">
             <div class="fact"><span class="tick">✓</span> Lena is my paralegal. She opens new matters and does first drafts. I review and sign everything that goes out.<button class="fact-del" type="button">Delete</button></div>
             <div class="fact"><span class="tick">✓</span> We don't take DIY-will clients. Too much back-and-forth for the fee.<button class="fact-del" type="button">Delete</button></div>
@@ -428,10 +428,6 @@
 
     </div>
 
-    <div class="save-bar">
-      <div class="hint" id="saveHint">Edit any field to update what Claude knows.</div>
-      <button class="btn btn-save" id="saveBtn" disabled>Save changes</button>
-    </div>
   </div>
 
   <!-- draggable divider -->
@@ -516,48 +512,6 @@
       divider.classList.remove('drag');
     });
   })();
-
-  // ---- Left form: dirty tracking + save feedback (no real persistence) ----
-  var body = document.getElementById('formBody');
-  var saveBtn = document.getElementById('saveBtn');
-  var saveHint = document.getElementById('saveHint');
-  var savedState = document.getElementById('savedState');
-  var dirty = false;
-
-  function markDirty(e) {
-    var field = e.target.closest('.field');
-    if (field) field.classList.add('dirty');
-    if (dirty) return;
-    dirty = true;
-    saveBtn.disabled = false;
-    saveBtn.textContent = 'Save changes';
-    saveBtn.classList.remove('done');
-    saveHint.textContent = 'You have unsaved changes.';
-    saveHint.classList.add('show-dirty');
-    savedState.style.visibility = 'hidden';
-  }
-  body.addEventListener('input', markDirty);
-
-  saveBtn.addEventListener('click', function () {
-    if (!dirty) return;
-    saveBtn.disabled = true;
-    saveBtn.textContent = 'Saving...';
-    setTimeout(function () {
-      document.querySelectorAll('.field.dirty').forEach(function (f) { f.classList.remove('dirty'); });
-      saveBtn.textContent = 'Saved ✓';
-      saveBtn.classList.add('done');
-      saveHint.textContent = 'Synced to Claude. It will use this on your next message.';
-      saveHint.classList.remove('show-dirty');
-      savedState.style.visibility = 'visible';
-      dirty = false;
-      setTimeout(function () {
-        saveBtn.textContent = 'Save changes';
-        saveBtn.classList.remove('done');
-        saveBtn.disabled = true;
-        saveHint.textContent = 'Edit any field to update what Claude knows.';
-      }, 1800);
-    }, 550);
-  });
 
   // ---- Right queue: preset questions fade in over time, as if Claude is working next door ----
   // The good questions are the ones Claude can't answer on its own: credentials it has no
