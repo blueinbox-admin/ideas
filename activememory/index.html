@@ -327,13 +327,19 @@
     body { flex-direction: column; height: auto; min-height: 100vh; overflow-y: auto; }
     .col { height: auto; }
 
-    /* profile on top, full width (override the 40% and any drag-set inline width) */
-    .profile { width: 100% !important; min-width: 0; flex: 0 0 auto; }
+    /* stack the two panels instead of placing them side by side */
+    .main-row { flex-direction: column; }
+
+    /* questions on top, profile below; both full width */
+    .profile { width: 100% !important; min-width: 0; flex: 0 0 auto; order: 1; }
     .divider { display: none; }
-    .queue { width: 100%; min-width: 0; flex: 0 0 auto; border-top: 1px solid var(--line); }
+    .queue { width: 100%; min-width: 0; flex: 0 0 auto; order: 0; border-bottom: 1px solid var(--line); }
 
     /* panels grow with their content instead of scrolling independently */
     .p-body, .q-body { flex: 0 0 auto; overflow: visible; }
+
+    /* don't let the map stretch to fill the column on mobile */
+    .map-dock { flex: 0 0 auto; }
 
     /* tighter side padding on small screens */
     .p-head, .save-bar, .p-body { padding-left: 20px; padding-right: 20px; }
@@ -360,7 +366,7 @@
   <!-- ===================== LEFT: STRUCTURED PROFILE FORM ===================== -->
   <div class="col profile">
     <div class="p-head">
-      <h1><span class="mark">◧</span> Reyes Law</h1>
+      <h1><span class="mark">◧</span> Reyes Law Firm</h1>
     </div>
 
     <div class="tabs" id="tabs">
