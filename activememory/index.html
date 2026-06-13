@@ -505,6 +505,7 @@
       input.value = '';
       input.focus();
       setTimeout(function () { row.classList.remove('fresh'); }, 1400);
+      if (window.mmAdvance) window.mmAdvance();
     }
     add.addEventListener('click', addFact);
     input.addEventListener('keydown', function (e) { if (e.key === 'Enter') addFact(); });
@@ -1012,13 +1013,13 @@
   var BEATS=[
     { c:{basics:5,site:2,books:2},                              links:[],          toast:null },
     { c:{basics:5,site:2,books:2,voice:1},                      links:[],          toast:null },
-    { c:{basics:5,site:3,books:2,voice:1},                      links:[],          toast:"Your site rules are now their own area." },
-    { c:{basics:5,site:4,books:2,voice:1},                      links:['l1'],      toast:"Claude now links your website sales to your books." },
-    { c:{basics:5,site:4,books:2,voice:3},                      links:['l1'],      toast:"Your voice is now its own area." },
+    { c:{basics:5,site:3,books:2,voice:1},                      links:[],          toast:null },
+    { c:{basics:5,site:4,books:2,voice:1},                      links:['l1'],      toast:null },
+    { c:{basics:5,site:4,books:2,voice:3},                      links:['l1'],      toast:null },
     { c:{basics:5,site:4,books:2,voice:3,process:1},            links:['l1'],      toast:null },
     { c:{basics:5,site:4,books:2,voice:3,process:1,clients:2},  links:['l1'],      toast:null },
-    { c:{basics:5,site:4,books:2,voice:3,process:1,clients:3},  links:['l1','l2'], toast:"Claude keeps one record per client across both apps." },
-    { c:{basics:6,site:4,books:4,voice:3,process:3,clients:3},  links:['l1','l2'], toast:"Reyes Law is taking shape. Claude knows your site, books, clients, and how you work." }
+    { c:{basics:5,site:4,books:2,voice:3,process:1,clients:3},  links:['l1','l2'], toast:null },
+    { c:{basics:6,site:4,books:4,voice:3,process:3,clients:3},  links:['l1','l2'], toast:null }
   ];
   function rng(s){ return function(){ s=(s*1664525+1013904223)>>>0; return s/4294967296; }; }
   CLUSTERS.forEach(function(c,ci){
@@ -1128,6 +1129,7 @@
     if(prev) CLUSTERS.forEach(function(c){ if(!c.frontier && (prev.c[c.id]||0)<THRESHOLD && (beat.c[c.id]||0)>=THRESHOLD) rings.push({id:c.id,t:0}); });
     updateWarmth(); if(beat.toast) toast(beat.toast); else hideToast(); kick(); }
   function advance(){ if(step>=BEATS.length-1) return; var p=step; step++; applyBeat(p); }
+  window.mmAdvance = advance;
   // each answered question grows the map by one beat
   document.addEventListener('click', function(e){ var t=e.target; if(t&&t.closest&&t.closest('.btn-save[data-q]')) setTimeout(advance,0); }, true);
   (function init(){ var beat=BEATS[0];
