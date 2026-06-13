@@ -191,6 +191,9 @@
   }
   .q.enter { opacity: 0; transform: translateY(-6px); }
   .q.fresh { background-color: #bce3d2; }
+  /* answered cards read as a settled state: whole card goes soft green */
+  .q.answered, .q.answered .card-body { background-color: var(--green-tint); }
+  .q.answered .improve { background-color: #fff; }
   .q.gone {
     opacity: 0; transform: translateX(14px); max-height: 0; margin-bottom: 0;
     transition: opacity .2s ease, transform .2s ease, max-height .28s ease, margin .28s ease;
