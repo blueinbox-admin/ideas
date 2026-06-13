@@ -37,18 +37,14 @@
   .topbar-note { font-size: 11.5px; color: var(--faint); text-align: center; max-width: 560px; }
   .main-row { flex: 1 1 auto; display: flex; min-height: 0; }
   /* ===== knowledge map widget (top of questions) ===== */
-  .map-dock { display: flex; justify-content: center; padding: 16px 0 4px; margin-top: 12px; border-top: 1px solid var(--line); }
+  .map-dock { flex: 0 0 auto; display: flex; justify-content: center; padding: 14px 16px; border-top: 1px solid var(--line); background: #fff; }
   #factlist { max-height: 252px; overflow-y: auto; padding-right: 4px; }
-  .map-card { position: relative; width: 290px; border-radius: 13px; padding: 13px 15px 11px; overflow: hidden;
-    background: linear-gradient(180deg,#ffffff 0%, #f5faf7 100%); transition: box-shadow .4s ease; }
-  .map-card.warm1 { background: linear-gradient(180deg,#fbfdfc 0%, #eef6f1 100%); }
-  .map-card.warm2 { background: linear-gradient(180deg,#f8fcfa 0%, #e8f4ee 100%); }
-  .map-card.warm3 { background: linear-gradient(180deg,#f5fbf8 0%, #e2f1ea 100%); box-shadow: 0 0 28px rgba(31,107,84,.10); }
-  .map-card::before { content:""; position:absolute; inset:0; pointer-events:none; z-index:0;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='mmn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23mmn)'/%3E%3C/svg%3E");
-    opacity:0.06; mix-blend-mode:multiply; }
-  .map-card > * { position:relative; z-index:1; }
+  .map-card { position: relative; display: flex; align-items: center; gap: 16px; width: 100%; max-width: 380px; padding: 12px 14px; background: transparent; transition: box-shadow .4s ease; border-radius: 14px; }
+  .map-text { flex: 0 0 120px; }
+  .map-viz { flex: 1 1 auto; min-width: 0; position: relative; }
+  .map-card.warm3 { box-shadow: 0 0 30px rgba(31,107,84,.10); }
   .map-title { font-size:11.5px; font-weight:600; color:var(--green-deep); letter-spacing:-0.01em; line-height:1.3; }
+  .map-subtitle { font-size:10px; color:var(--faint); line-height:1.35; margin-top:2px; }
   .map-hint { position:absolute; bottom:9px; right:13px; font-size:9px; color:var(--faint); opacity:.7; pointer-events:none; transition:opacity .3s; }
   .map-card:hover .map-hint { opacity:0; }
   .map-card canvas { display:block; width:100%; height:auto; cursor:grab; }
@@ -390,17 +386,8 @@
             <div class="fact"><span class="tick">✓</span> Referrals from Dr. Lin's office get a same-week appointment.<button class="fact-del" type="button">Delete</button></div>
           </div>
           <div class="addfact">
-            <input class="input" id="factInput" placeholder="Add something only you would know...">
+            <input class="input" id="factInput" placeholder="">
             <button class="btn btn-save" id="factAdd" type="button">Add</button>
-          </div>
-        </div>
-
-        <div class="map-dock">
-          <div class="map-card" id="mmCard">
-            <div class="map-title">Mapping your business for Claude, updated with every question you answer or fact you add</div>
-            <span class="map-hint">hover to explore</span>
-            <canvas id="mmCanvas"></canvas>
-            <div class="map-toast" id="mmToast"></div>
           </div>
         </div>
 
@@ -453,6 +440,20 @@
 
       </div>
 
+    </div>
+
+    <div class="map-dock">
+      <div class="map-card" id="mmCard">
+        <div class="map-text">
+          <div class="map-title">Claude's map of your business</div>
+          <div class="map-subtitle">Every answer draws a little more.</div>
+        </div>
+        <div class="map-viz">
+          <canvas id="mmCanvas"></canvas>
+          <span class="map-hint">hover to explore</span>
+        </div>
+        <div class="map-toast" id="mmToast"></div>
+      </div>
     </div>
 
   </div>
@@ -1029,7 +1030,7 @@
   if(!card||!cv) return;
   var ctx=cv.getContext('2d');
   var W=238,H=196,dpr=Math.max(1,Math.min(2,window.devicePixelRatio||1));
-  cv.style.height=H+'px'; cv.width=W*dpr; cv.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+  cv.width=W*dpr; cv.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
   var step=0, ang=0.5, shimmer=0, transit=0, rings=[], hovered=false, rafId=null;
   var FOCAL=340, TILT=-0.34;
   function rot(p){ var c0=Math.cos(TILT),s0=Math.sin(TILT);
