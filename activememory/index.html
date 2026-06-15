@@ -33,6 +33,8 @@
   .topbar { flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-start; gap: 18px; padding: 12px 30px; background: #fff; border-bottom: 1px solid var(--line); }
   .tb-left { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
   /* You <-> map <-> Claude Code paradigm across the header */
+  .conn-col { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-start; gap: 9px; }
+  .conn-cap { display: none; max-width: 240px; font-size: 12px; line-height: 1.4; color: var(--muted); padding-left: 4px; }
   .flow { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; gap: 6px; min-width: 0; }
   .flow-cap { flex: 0 0 auto; width: 178px; margin-right: 88px; text-align: center; font-size: 12.5px; line-height: 1.4; color: var(--ink); }
   .flow-end { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 0 0 auto; width: 96px; background: none; border: none; padding: 0; font: inherit; text-align: center; }
@@ -399,15 +401,19 @@
   ::-webkit-scrollbar-thumb { background: rgba(120,130,125,0.28); border-radius: 6px; }
 
   /* medium screens: tighten the flow so it doesn't crowd the connection pill */
+  /* narrow desktop: move the caption from between toggle and You to under the pill */
+  @media (max-width: 1180px) {
+    .flow-cap { display: none; }
+    .conn-cap { display: block; }
+  }
   @media (max-width: 1080px) {
     .flow-arrow { width: 42px; }
     .flow { gap: 3px; }
     .map-viz { flex: 0 0 188px; }
   }
+  /* tablet: the flow gets cramped, so hide it and keep the pill + caption */
   @media (max-width: 900px) {
-    .flow-arrow { width: 32px; }
-    .map-viz { flex: 0 0 164px; }
-    .flow-label { font-size: 11.5px; }
+    .flow { display: none; }
   }
 
   /* ============ MOBILE: stack the two columns, let the page scroll ============ */
@@ -415,9 +421,11 @@
     html, body { height: auto; }
     body { flex-direction: column; height: auto; min-height: 100vh; overflow-y: auto; }
 
-    /* mobile: hide the whole You/map/Claude Code flow, keep just the connection switch */
+    /* mobile: hide the whole You/map/Claude Code flow, keep the switch + caption */
     .topbar { flex-direction: column; align-items: center; gap: 12px; padding: 14px 18px; }
     .flow { display: none; }
+    .conn-col { align-items: center; }
+    .conn-cap { text-align: center; padding-left: 0; max-width: 280px; }
 
     /* the single panel grows with its content instead of scrolling on its own */
     .shell { flex: 0 0 auto; }
@@ -433,12 +441,15 @@
 
     <header class="topbar">
 
-    <!-- connection on/off switch, left side -->
-    <button class="conn-toggle" id="connToggle" type="button" aria-pressed="true" title="Connection to Claude Code">
-      <span class="conn-dot"></span>
-      <span class="conn-label" id="connLabel">Connected to Claude Code</span>
-      <span class="conn-switch"><span class="conn-knob"></span></span>
-    </button>
+    <!-- connection on/off switch, left side (caption tucks under it on smaller screens) -->
+    <div class="conn-col">
+      <button class="conn-toggle" id="connToggle" type="button" aria-pressed="true" title="Connection to Claude Code">
+        <span class="conn-dot"></span>
+        <span class="conn-label" id="connLabel">Connected to Claude Code</span>
+        <span class="conn-switch"><span class="conn-knob"></span></span>
+      </button>
+      <span class="conn-cap">Zoutcomes is the memory layer that helps Claude Code understand you and your business.</span>
+    </div>
 
     <div class="flow">
 
@@ -493,8 +504,6 @@
     <div class="tabs" id="tabs">
       <button class="tab active" data-tab="questions">Build Memory<span class="badge" id="badge-questions"></span></button>
       <button class="tab" data-tab="facts">Facts<span class="badge" id="badge-facts"></span></button>
-      <button class="tab" data-tab="wordpress">WordPress</button>
-      <button class="tab" data-tab="quickbooks">QuickBooks</button>
       <button class="tab" data-tab="site">Site improvement<span class="badge" id="badge-site"></span></button>
       <button class="tab" data-tab="ask"><svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>Ask David</button>
     </div>
@@ -536,51 +545,6 @@
           <div class="legend">Build Memory</div>
           <p class="facts-note">Zoutcomes is the memory Claude Code reads from. These questions fill it. Answer when you like, nothing to run here. The more it knows, the smarter Claude Code is every time you use it.</p>
           <div class="qfeed" id="factsQ"></div>
-        </div>
-
-      </div>
-
-      <!-- ====== TAB: CREDENTIALS (WordPress + QuickBooks connections) ====== -->
-      <div class="panel" data-panel="wordpress">
-
-        <div class="fieldset">
-          <div class="legend">WordPress connection</div>
-          <div class="row2">
-            <div class="field">
-              <label>Site URL</label>
-              <input class="input" value="reyeslaw.com">
-            </div>
-            <div class="field">
-              <label>Admin username</label>
-              <input class="input" value="dreyes">
-            </div>
-          </div>
-          <div class="field">
-            <label>Application password</label>
-            <input class="input pw" type="password" value="x8Kd92mfQ1aZpL0w">
-          </div>
-        </div>
-
-      </div>
-
-      <div class="panel" data-panel="quickbooks">
-
-        <div class="fieldset">
-          <div class="legend">QuickBooks connection</div>
-          <div class="row2">
-            <div class="field">
-              <label>Company file</label>
-              <input class="input" value="Reyes Law, PC">
-            </div>
-            <div class="field">
-              <label>Realm ID</label>
-              <input class="input" value="9341 4520 6677 1042">
-            </div>
-          </div>
-          <div class="field">
-            <label>API token</label>
-            <input class="input pw" type="password" value="qbo_live_7Yc2Lm9Qx4Vd">
-          </div>
         </div>
 
       </div>
@@ -661,8 +625,8 @@
   // ---- Suggested facts drop in on their own, lighting up the Facts tab badge ----
   var SUGGESTIONS = [
     { src: 'From WordPress', text: 'Every service page ends with a "Book a free 15-minute consult" button.' },
-    { src: 'From QuickBooks', text: 'You bill almost everything as a flat fee, rarely hourly.' },
-    { src: 'From QuickBooks', text: 'Probate brings in more revenue than any other service.' }
+    { src: 'From WordPress', text: 'Your homepage describes the firm as estate planning and probate.' },
+    { src: 'From WordPress', text: 'Your pages read formal and lawyerly in tone.' }
   ];
   function setFactsBadge() {
     var b = document.getElementById('badge-facts');
@@ -780,8 +744,8 @@
   })();
 
   // ---- Question feeds: preset questions fade in over time, as if Claude is working next door ----
-  // The good questions are the ones Claude can't answer on its own: credentials it has no
-  // way to see, and how a concept in one app maps to a different concept in another.
+  // The good questions are the ones Claude can't answer on its own: definitions, rules, and
+  // preferences that live only in your head, never on the site itself.
   var factsQ = document.getElementById('factsQ');
   var siteQ = document.getElementById('siteQ');
   var formBody = document.getElementById('formBody');
@@ -790,20 +754,20 @@
   // questions. The user answers whenever. Each one teaches Claude something it can't infer
   // on its own, and improves every future task.
 
-  // Every question is something Claude CANNOT see or glean: credentials, how the apps map
-  // to each other, and private rules. Nothing derivable from the website or the books.
+  // Every question is something Claude CANNOT see or glean: definitions, private rules,
+  // and preferences. Nothing derivable from the website itself.
 
   // already-answered seed (shows the queue -> profile loop, and how it improves Claude)
   var SEED_ANSWERED = {
-    meta: 'A rule for your books', source: 'QuickBooks',
-    context: 'You just asked Claude to "record yesterday\'s website payments in QuickBooks."',
-    ask: 'When a payment comes in through your website, which QuickBooks account should it go to?',
-    answer: 'Legal Fees for consults. Consulting for ongoing retainers.',
-    ph: 'e.g. Legal Fees for consults...',
+    meta: 'A rule for your website', source: 'WordPress',
+    context: 'You just asked Claude to "fix the typo on the homepage."',
+    ask: 'Should Claude publish changes live, or always leave them as drafts for you to review first?',
+    answer: 'Always a draft. I approve before anything goes live.',
+    ph: 'e.g. always drafts, I approve first...',
     improve: {
-      before: 'Which account each payment belongs in is an accounting choice you keep in your head, not in the payment data. So every time Claude reconciled, it either guessed the account or stopped to ask you.',
-      cost: 'You kept answering the same question, or fixing income that landed in the wrong account.',
-      now: 'it posts each one to Legal Fees on its own, and your consult income lands where it should without you touching it.'
+      before: 'Your always-draft-first rule was said out loud, never set as a guardrail Claude works under. With nothing holding it back, Claude could publish straight to your live site.',
+      cost: 'A wrong edit could reach your clients before you had seen it.',
+      now: 'it leaves a draft for you to approve, and nothing reaches clients until you sign off.'
     }
   };
 
@@ -820,7 +784,7 @@
     }
   };
 
-  // these fade in over time. Mix of WordPress, QuickBooks, and both apps.
+  // these fade in over time. All WordPress and how-the-firm-works questions.
   // Each carries a "context" line: what you said in Claude Code that prompted the question.
   var FEED = [
     {
@@ -835,17 +799,6 @@
     }
   },
     {
-    meta: 'A rule for your books', source: 'QuickBooks',
-    context: 'You just asked Claude to "show this quarter\'s revenue."',
-    ask: 'Do you count revenue when the client signs, when they pay, or when the work is done? The same payments add up to very different numbers.',
-    ph: 'e.g. when they pay, cash basis...',
-    improve: {
-      before: 'When a dollar becomes revenue is an accounting rule only you know, invisible in the payment data. With nothing written down, Claude applied whatever it assumed that run.',
-      cost: 'Your revenue swung on Claude\'s guess, and the numbers didn\'t always match your accountant.',
-      now: 'it recognizes revenue your way every time, so every report lines up with your books.'
-    }
-  },
-    {
     meta: 'How you measure the site', source: 'WordPress',
     context: 'You just asked Claude to "tell me where my clients come from."',
     ask: 'Your site can see a visit, but not that it started as a referral, a Google search, or your newsletter. How do you tag where a lead came from?',
@@ -854,28 +807,6 @@
       before: 'How you tag where a lead came from lives in your head, not in the visit data, which only shows a click. With no rule to follow, Claude attributed leads differently every run.',
       cost: 'You kept guessing which marketing worked, and spent on whatever felt busy.',
       now: 'it ties each lead to its real source, so you can see what actually brings clients in.'
-    }
-  },
-    {
-    meta: 'A rule for your books', source: 'QuickBooks',
-    context: 'You just asked Claude to "total this month\'s income."',
-    ask: 'Some money you take in is a retainer or trust deposit you are holding, not income yet. How should Claude tell those apart from earned revenue?',
-    ph: 'e.g. anything in the trust account is held, not income until I bill against it...',
-    improve: {
-      before: 'The line between held funds and earned revenue is a trust-accounting rule only you know, nowhere in the deposit data. With nothing written down, Claude counted everything as income.',
-      cost: 'Your income looked inflated, and mixing trust money with revenue is the kind of thing that draws bar scrutiny.',
-      now: 'it keeps held funds out of income until you earn them, so your numbers and your trust account stay clean.'
-    }
-  },
-    {
-    meta: 'A rule for your books', source: 'QuickBooks',
-    context: 'You just asked Claude to "break down revenue by service."',
-    ask: 'How do you want revenue grouped so it actually means something, by package, by practice area, or flat-fee versus hourly?',
-    ph: 'e.g. group by package: wills, trusts, probate...',
-    improve: {
-      before: 'How you group revenue is your preference, and the raw books don\'t suggest it. With no grouping saved, Claude returned the breakdown in a different shape each time.',
-      cost: 'The breakdown came back in a shape you couldn\'t act on, so you re-sorted it by hand.',
-      now: 'it groups revenue the way you think about your practice, so the breakdown is ready to use.'
     }
   },
     {
@@ -940,62 +871,6 @@
         cost: 'Pages went live with no way to reach you, and you only noticed after they were public.',
         now: 'it adds the button to every page it builds, so none ships without a way to book you.'
       } },
-    { meta: 'A rule for your website', source: 'WordPress',
-      context: 'You just asked Claude to "update the wording on the services page."',
-      ask: 'Should Claude publish page changes live, or always leave them as drafts for you to review first?',
-      ph: 'e.g. always drafts, I approve before it goes live...',
-      improve: {
-        before: 'Your always-draft-first rule was said out loud, never set as a guardrail Claude works under. With nothing holding it back, Claude could publish straight to your live site.',
-        cost: 'A wrong edit could reach your clients before you had seen it.',
-        now: 'it leaves a draft for you to approve, and nothing reaches clients until you sign off.'
-      } },
-    // ---- books / cross-app, now lower in the queue ----
-    // relocated from the open seed
-    { meta: 'Maps your data across both apps', source: 'WordPress + QuickBooks',
-      context: 'You just asked Claude to "log the website Trust Package sale in QuickBooks."',
-      ask: 'Your website sells a "Trust Package." In QuickBooks the matching item is "Estate Plan Flat Fee." Should Claude always treat them as the same thing?',
-      ph: 'e.g. yes, same item...',
-      improve: {
-        before: 'The link between Trust Package on your site and Estate Plan Flat Fee in QuickBooks lives only in your head; neither app stores it. With nothing mapping them, Claude recorded the two as unrelated items.',
-        cost: 'Sales stopped matching invoices, and your books quietly drifted from what actually sold.',
-        now: 'it links them on every payment, so no revenue slips and your books match your bank.'
-      } },
-    { meta: 'A rule for your books', source: 'QuickBooks',
-      context: 'You just asked Claude to "reconcile this week\'s Stripe payouts."',
-      ask: 'Stripe takes a 2.9% fee on website payments. How should Claude record that fee in QuickBooks?',
-      ph: 'e.g. book the full amount, then the fee as a separate expense...',
-      improve: {
-        before: 'How you book the 2.9% fee is your accounting choice, not something in the payout data. With no rule to apply, Claude often recorded only the net that hit your bank.',
-        cost: 'Your revenue looked smaller than it was, and the fees vanished instead of showing up as a deduction.',
-        now: 'it books the full sale and the fee separately, so your revenue stays accurate and the fees show up as a deduction.'
-      } },
-    { meta: 'Connects your website and your books', source: 'WordPress + QuickBooks',
-      context: 'You just asked Claude to "add the people who booked consults to QuickBooks."',
-      ask: 'When someone books a consult on your website, should Claude add them as a customer in QuickBooks right away, or wait until they pay?',
-      ph: 'e.g. wait until they pay...',
-      improve: {
-        before: 'Whether a booking counts as a customer yet is your call, invisible in the booking data. With nothing telling it to wait, Claude created a record the moment anyone booked.',
-        cost: 'Your client list filled with no-shows you then had to hunt down and delete.',
-        now: 'it waits until they pay to create the record, so your client list stays real.'
-      } },
-    { meta: 'Maps your data across both apps', source: 'WordPress + QuickBooks',
-      context: 'You just asked Claude to "match this week\'s website payments to client records."',
-      ask: 'When the same client appears in both your website and QuickBooks under slightly different names, how should Claude decide it is one person?',
-      ph: 'e.g. match by email first, then by full name...',
-      improve: {
-        before: 'You\'ve been the one catching that two near-identical names are the same person, because that rule lives only in your head, not in the data. So Claude kept opening a second record instead of linking the existing one.',
-        cost: 'Duplicates piled up, and you reconciled the same client twice.',
-        now: 'it matches them by your rule, and you stop cleaning up duplicates by hand.'
-      } },
-    { meta: 'A rule for your books', source: 'QuickBooks',
-      context: 'You just asked Claude to "refund the Henderson consult."',
-      ask: 'When you refund a client on the website, should Claude create a matching credit memo in QuickBooks, or leave it for your bookkeeper?',
-      ph: 'e.g. create the credit memo automatically...',
-      improve: {
-        before: 'Whether Claude or your bookkeeper handles the credit memo was something you never wrote down. So on each refund, Claude guessed, sometimes duplicating the memo, sometimes skipping it.',
-        cost: 'Refunds got booked twice or not at all, and you caught it at month end.',
-        now: 'it handles refunds the way you told it, and your books and bookkeeper stay in sync.'
-      } }
   ];
 
   // ---- Site improvement: proactive "Claude noticed X, want me to act?" questions.
@@ -1441,7 +1316,11 @@
       ctx.beginPath(); ctx.arc(pc.sx,pc.sy,rr,0,7); ctx.stroke(); }
     // labels track their cluster (so they rotate with the map) but float off the corner.
     // no "?": phrases just start faint and darken as that area gets answered.
-    ctx.textAlign='center'; ctx.font='600 12px -apple-system, system-ui, sans-serif';
+    // labels are drawn in the canvas's internal coords, so CSS shrinking the canvas shrinks them too.
+    // bump the font as the canvas displays smaller, so phrases keep roughly their full-size reading size.
+    var dispW = cv.clientWidth || W;
+    var labelPx = Math.max(12, Math.min(16, 12 * 218 / dispW));
+    ctx.textAlign='center'; ctx.font='600 ' + labelPx.toFixed(1) + 'px -apple-system, system-ui, sans-serif';
     var ccx=W/2, ccy=H/2;
     CLUSTERS.forEach(function(c){ var p=c._p; if(!c._shown || p.z<-150) return; var rev=c._rev;
       var dx=p.sx-ccx, dy=p.sy-ccy, dd=Math.hypot(dx,dy), ox, oy;
