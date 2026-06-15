@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Active Memory — Mockup</title>
+<title>Active Memory Mockup</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -56,7 +56,7 @@
   /* ===== knowledge map widget (lives in the header, top-right) ===== */
   .map-dock { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 0; background: transparent; }
   .map-name { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: var(--green-deep); }
-  #factlist { max-height: 252px; overflow-y: auto; padding-right: 4px; }
+  #factlist, #guardlist { max-height: 252px; overflow-y: auto; padding-right: 4px; }
   .map-card { position: relative; display: flex; align-items: center; gap: 16px; width: 100%; max-width: 392px; padding: 6px 10px; background: transparent; transition: box-shadow .4s ease; border-radius: 14px; }
   .map-text { flex: 0 0 130px; }
   .map-viz { flex: 0 0 218px; min-width: 0; position: relative; }
@@ -448,13 +448,13 @@
         <span class="conn-label" id="connLabel">Connected to Claude Code</span>
         <span class="conn-switch"><span class="conn-knob"></span></span>
       </button>
-      <span class="conn-cap">Zoutcomes is the memory layer that helps Claude Code understand you and your business.</span>
+      <span class="conn-cap">You keep using Claude Code as always. Zoutcomes works alongside it, remembering how your site and business run, so Claude gets your setup right instead of guessing.</span>
     </div>
 
     <div class="flow">
 
       <!-- value caption, between the connection switch and You -->
-      <span class="flow-cap">Zoutcomes is the memory layer that helps Claude Code understand you and your business.</span>
+      <span class="flow-cap">You keep using Claude Code as always. Zoutcomes works alongside it, remembering how your site and business run, so Claude gets your setup right instead of guessing.</span>
 
       <!-- YOU: you teach the brain (answer questions, add facts, chat) -->
       <div class="flow-end">
@@ -504,6 +504,7 @@
     <div class="tabs" id="tabs">
       <button class="tab active" data-tab="questions">Build Memory<span class="badge" id="badge-questions"></span></button>
       <button class="tab" data-tab="facts">Facts<span class="badge" id="badge-facts"></span></button>
+      <button class="tab" data-tab="guardrails">Guardrails<span class="badge" id="badge-guard"></span></button>
       <button class="tab" data-tab="site">Site improvement<span class="badge" id="badge-site"></span></button>
       <button class="tab" data-tab="ask"><svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>Ask David</button>
     </div>
@@ -520,7 +521,7 @@
         </div>
 
         <div class="fieldset">
-          <div class="legend">Add facts and rules</div>
+          <div class="legend">Add a fact</div>
           <p class="facts-note">Tell Zoutcomes anything worth knowing. Your site, your business, how you like things done. Some it could guess, some it can't. Write it once, and Claude Code has it for every task after.</p>
           <div class="factlist" id="factlist">
             <div class="fact"><span class="tick">✓</span> Lena is my paralegal. She opens new matters and does first drafts. I review and sign everything that goes out.<button class="fact-del" type="button">Delete</button></div>
@@ -533,6 +534,33 @@
           <div class="addfact">
             <input class="input" id="factInput" placeholder="">
             <button class="btn btn-save" id="factAdd" type="button">Add</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ====== TAB: GUARDRAILS (never/always rules Claude obeys) ====== -->
+      <div class="panel" data-panel="guardrails">
+
+        <div class="fieldset">
+          <div class="legend">Suggested by Claude</div>
+          <p class="facts-note">Zoutcomes spotted things worth locking down and suggests a rule for each. Nothing is enforced until you say so. Keep the ones that are right.</p>
+          <div class="suggestlist" id="suggestListG"></div>
+        </div>
+
+        <div class="fieldset">
+          <div class="legend">Add a guardrail</div>
+          <p class="facts-note">The things Claude must never do, and the ones it must always do. Save them once and Claude Code follows them on every task, so a wrong move can't reach your live site.</p>
+          <div class="factlist" id="guardlist">
+            <div class="fact"><span class="tick">✓</span> Never publish changes live. Always leave them as a draft for me to approve first.<button class="fact-del" type="button">Delete</button></div>
+            <div class="fact"><span class="tick">✓</span> Always put the "Book a free 15-minute consult" button on every page you build.<button class="fact-del" type="button">Delete</button></div>
+            <div class="fact"><span class="tick">✓</span> Never feature DIY wills or hourly work on the site. We turn those away.<button class="fact-del" type="button">Delete</button></div>
+            <div class="fact"><span class="tick">✓</span> Never use the words "guarantee" or "cheap" in any copy. Some are brand, some are bar advertising rules.<button class="fact-del" type="button">Delete</button></div>
+            <div class="fact"><span class="tick">✓</span> Never change the homepage without showing me the draft first.<button class="fact-del" type="button">Delete</button></div>
+          </div>
+          <div class="addfact">
+            <input class="input" id="guardInput" placeholder="">
+            <button class="btn btn-save" id="guardAdd" type="button">Add</button>
           </div>
         </div>
 
@@ -576,15 +604,15 @@
           <div class="chat" id="chat">
             <div class="msg them"><span class="bubble">hey Diana! i'm around whenever something comes up. setup, a rule you're not sure how to answer, whether to even let Claude do a thing. just ask.</span></div>
 
-            <div class="msg me"><span class="bubble">Claude keeps asking how I want revenue counted and honestly I'm not sure what to tell it.</span></div>
-            <div class="msg them"><span class="bubble">quick one. do you count the money when they pay you, or when the work's actually done? most solo folks just go with when they pay.</span></div>
-            <div class="msg me"><span class="bubble">Yeah, when they pay.</span></div>
-            <div class="msg them"><span class="bubble">nice. saved that as a rule, so every report counts revenue when the cash hits and Claude won't keep asking.</span></div>
+            <div class="msg me"><span class="bubble">Claude keeps asking what counts as a lead and honestly I'm not sure what to tell it.</span></div>
+            <div class="msg them"><span class="bubble">quick one. just booked consults, or every contact form fill too? most firms count booked consults only, so the number actually means something.</span></div>
+            <div class="msg me"><span class="bubble">Just booked consults.</span></div>
+            <div class="msg them"><span class="bubble">nice. saved that as a rule, so every lead report counts booked consults only and Claude won't keep asking.</span></div>
 
-            <div class="msg me"><span class="bubble">Can you map my QuickBooks to my WordPress better, so it knows a website sale and an invoice are the same thing?</span></div>
-            <div class="msg them"><span class="bubble">yep, that's the whole point of this. your site sells a "Trust Package" and QuickBooks calls it "Estate Plan Flat Fee." i'll link them so Claude treats them as one. anything else going by two different names?</span></div>
-            <div class="msg me"><span class="bubble">Consults on the site just show as "Legal Fees" in QuickBooks.</span></div>
-            <div class="msg them"><span class="bubble">linked both. now when a consult gets paid on the site, Claude books it to Legal Fees on its own, and your sales finally match your books.</span></div>
+            <div class="msg me"><span class="bubble">Can you make sure Claude never puts DIY wills on the site? I keep turning those away but they're still listed.</span></div>
+            <div class="msg them"><span class="bubble">yep, that's the kind of thing this is for. i'll save it as a rule so Claude keeps DIY wills off every page it touches. anything else you don't want featured?</span></div>
+            <div class="msg me"><span class="bubble">Yeah, nothing hourly. I only do flat fee.</span></div>
+            <div class="msg them"><span class="bubble">got it, flat-fee only on the site. saved both, so Claude won't advertise work you don't take.</span></div>
 
             <div class="msg me"><span class="bubble">Is it actually safe to let Claude change the website by itself?</span></div>
             <div class="msg them"><span class="bubble">honestly i'd keep it on a short leash at first. i set it so Claude saves every change as a draft and never goes live till you ok it. you stay in control, it just does the grunt work.</span></div>
@@ -705,6 +733,93 @@
         }
         card.classList.add('gone');
         setFactsBadge(); // clear the notification count as suggestions are handled
+        setTimeout(function () { card.remove(); }, 280);
+      });
+    }
+  })();
+
+  // ---- Guardrails: suggested guardrails (confirm/skip) + add your own ----
+  var GUARD_SUGGESTIONS = [
+    { src: 'Claude noticed', text: 'Always save changes as a draft. Never publish to the live site until you approve.' },
+    { src: 'Claude noticed', text: 'Never use the word "guarantee" in site copy. It can break bar advertising rules.' },
+    { src: 'Claude noticed', text: 'Never feature DIY wills on the site. You turn those clients away.' }
+  ];
+  function setGuardBadge() {
+    var b = document.getElementById('badge-guard');
+    var box = document.getElementById('suggestListG');
+    if (!b || !box) return;
+    var n = box.querySelectorAll('.suggest:not(.gone)').length;
+    b.textContent = n ? String(n) : '';
+  }
+  (function dripGuardrails() {
+    var box = document.getElementById('suggestListG');
+    if (!box) return;
+    GUARD_SUGGESTIONS.forEach(function (s, i) {
+      setTimeout(function () {
+        var card = document.createElement('div');
+        card.className = 'suggest enter';
+        card.innerHTML =
+          '<div class="suggest-main">' +
+            '<span class="suggest-src">' + s.src + '</span>' +
+            '<span class="suggest-text">' + s.text + '</span>' +
+          '</div>' +
+          '<div class="suggest-actions">' +
+            '<button class="btn btn-save suggest-add" type="button">Add</button>' +
+            '<button class="btn-skip suggest-dismiss" type="button">Dismiss</button>' +
+          '</div>';
+        box.insertBefore(card, box.firstChild);
+        void card.offsetHeight;
+        card.classList.remove('enter');
+        card.classList.add('fresh');
+        setGuardBadge();
+        setTimeout(function () { card.classList.remove('fresh'); }, 3600);
+      }, 3000 + i * 25000);
+    });
+  })();
+
+  // ---- Guardrails: add one at a time + accept/dismiss suggestions ----
+  (function () {
+    var add = document.getElementById('guardAdd');
+    var input = document.getElementById('guardInput');
+    var list = document.getElementById('guardlist');
+    if (!add || !input || !list) return;
+    function addRow(text) {
+      var row = document.createElement('div');
+      row.className = 'fact fresh';
+      row.innerHTML = '<span class="tick">✓</span> ' + text.replace(/</g, '&lt;') +
+        '<button class="fact-del" type="button">Delete</button>';
+      list.appendChild(row);
+      setTimeout(function () { row.classList.remove('fresh'); }, 1400);
+      if (window.mmAdvance) window.mmAdvance();
+    }
+    function addGuard() {
+      var v = input.value.trim();
+      if (!v) return;
+      addRow(v);
+      input.value = '';
+      input.focus();
+    }
+    add.addEventListener('click', addGuard);
+    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') addGuard(); });
+    list.addEventListener('click', function (e) {
+      if (!e.target.closest('.fact-del')) return;
+      var row = e.target.closest('.fact');
+      row.classList.add('gone');
+      setTimeout(function () { row.remove(); }, 280);
+    });
+    var sg = document.getElementById('suggestListG');
+    if (sg) {
+      sg.addEventListener('click', function (e) {
+        var card = e.target.closest('.suggest');
+        if (!card) return;
+        if (e.target.closest('.suggest-add')) {
+          var t = card.querySelector('.suggest-text');
+          if (t) addRow(t.textContent.trim());
+        } else if (!e.target.closest('.suggest-dismiss')) {
+          return;
+        }
+        card.classList.add('gone');
+        setGuardBadge();
         setTimeout(function () { card.remove(); }, 280);
       });
     }
