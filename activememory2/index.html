@@ -172,6 +172,28 @@
   .addfact .input { flex: 1; }
   .addfact .btn { flex: 0 0 auto; }
 
+  /* facts Claude suggests (read from the owner's systems) -> approve to add */
+  .suggestlist { margin-bottom: 4px; }
+  .suggest {
+    display: flex; align-items: center; gap: 12px; padding: 11px 13px;
+    background: #fbfaf4; border: 1px dashed #ddd5be; border-radius: 9px; margin-bottom: 8px;
+    transition: opacity 2.4s ease, transform 2.4s ease, background-color 4.2s ease;
+  }
+  .suggest-main { flex: 1; min-width: 0; }
+  .suggest-src { display: block; font-size: 9.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); margin-bottom: 3px; }
+  .suggest-text { font-size: 13.5px; color: #36433d; line-height: 1.45; }
+  .suggest-actions { flex: 0 0 auto; display: flex; align-items: center; gap: 4px; }
+  .suggest-add { padding: 6px 15px; font-size: 12.5px; }
+  .suggest-dismiss { padding: 6px 9px; font-size: 12.5px; }
+  .suggest.gone {
+    transition: opacity .22s ease, transform .22s ease, max-height .26s ease, padding .26s ease, margin .26s ease;
+    opacity: 0; transform: translateX(14px); max-height: 0;
+    padding-top: 0; padding-bottom: 0; margin-bottom: 0; overflow: hidden;
+  }
+  /* fade in one at a time when the Facts tab opens, exactly like the Build Memory questions */
+  .suggest.enter { opacity: 0; transform: translateY(-6px); }
+  .suggest.fresh { background-color: #bce3d2; }
+
   .p-body { flex: 1 1 auto; overflow-y: auto; padding: 14px 36px 40px; }
 
   .fieldset { padding: 22px 0 6px; }
@@ -470,7 +492,7 @@
 
     <div class="tabs" id="tabs">
       <button class="tab active" data-tab="questions">Build Memory<span class="badge" id="badge-questions"></span></button>
-      <button class="tab" data-tab="facts">Facts</button>
+      <button class="tab" data-tab="facts">Facts<span class="badge" id="badge-facts"></span></button>
       <button class="tab" data-tab="wordpress">WordPress</button>
       <button class="tab" data-tab="quickbooks">QuickBooks</button>
       <button class="tab" data-tab="site">Site improvement<span class="badge" id="badge-site"></span></button>
@@ -481,6 +503,12 @@
 
       <!-- ====== TAB: FACTS (what you've told Claude) ====== -->
       <div class="panel" data-panel="facts">
+
+        <div class="fieldset">
+          <div class="legend">Suggested by Claude</div>
+          <p class="facts-note">Claude read your site and books and spotted these. Nothing is saved until you say so. Add the ones that are right.</p>
+          <div class="suggestlist" id="suggestList"></div>
+        </div>
 
         <div class="fieldset">
           <div class="legend">Add facts and rules</div>
@@ -630,23 +658,65 @@
     });
   });
 
+  // ---- Suggested facts drop in on their own, lighting up the Facts tab badge ----
+  var SUGGESTIONS = [
+    { src: 'From WordPress', text: 'Every service page ends with a "Book a free 15-minute consult" button.' },
+    { src: 'From QuickBooks', text: 'You bill almost everything as a flat fee, rarely hourly.' },
+    { src: 'From QuickBooks', text: 'Probate brings in more revenue than any other service.' }
+  ];
+  function setFactsBadge() {
+    var b = document.getElementById('badge-facts');
+    var box = document.getElementById('suggestList');
+    if (!b || !box) return;
+    var n = box.querySelectorAll('.suggest:not(.gone)').length;
+    b.textContent = n ? String(n) : '';
+  }
+  (function dripSuggestions() {
+    var box = document.getElementById('suggestList');
+    if (!box) return;
+    SUGGESTIONS.forEach(function (s, i) {
+      setTimeout(function () {
+        var card = document.createElement('div');
+        card.className = 'suggest enter';
+        card.innerHTML =
+          '<div class="suggest-main">' +
+            '<span class="suggest-src">' + s.src + '</span>' +
+            '<span class="suggest-text">' + s.text + '</span>' +
+          '</div>' +
+          '<div class="suggest-actions">' +
+            '<button class="btn btn-save suggest-add" type="button">Add</button>' +
+            '<button class="btn-skip suggest-dismiss" type="button">Dismiss</button>' +
+          '</div>';
+        box.insertBefore(card, box.firstChild); // newest drops in at the top
+        void card.offsetHeight; // reflow, then animate in
+        card.classList.remove('enter');
+        card.classList.add('fresh');
+        setFactsBadge(); // light up the Facts tab notification
+        setTimeout(function () { card.classList.remove('fresh'); }, 3600); // green glow holds, then fades out slowly
+      }, 2000 + i * 25000); // same cadence as the Build Memory feed (INTERVAL_MS)
+    });
+  })();
+
   // ---- Other facts: add one fact at a time ----
   (function () {
     var add = document.getElementById('factAdd');
     var input = document.getElementById('factInput');
     var list = document.getElementById('factlist');
+    function addFactRow(text) {
+      var row = document.createElement('div');
+      row.className = 'fact fresh';
+      row.innerHTML = '<span class="tick">✓</span> ' + text.replace(/</g, '&lt;') +
+        '<button class="fact-del" type="button">Delete</button>';
+      list.appendChild(row);
+      setTimeout(function () { row.classList.remove('fresh'); }, 1400);
+      if (window.mmAdvance) window.mmAdvance();
+    }
     function addFact() {
       var v = input.value.trim();
       if (!v) return;
-      var row = document.createElement('div');
-      row.className = 'fact fresh';
-      row.innerHTML = '<span class="tick">✓</span> ' + v.replace(/</g, '&lt;') +
-        '<button class="fact-del" type="button">Delete</button>';
-      list.appendChild(row);
+      addFactRow(v);
       input.value = '';
       input.focus();
-      setTimeout(function () { row.classList.remove('fresh'); }, 1400);
-      if (window.mmAdvance) window.mmAdvance();
     }
     add.addEventListener('click', addFact);
     input.addEventListener('keydown', function (e) { if (e.key === 'Enter') addFact(); });
@@ -656,6 +726,24 @@
       row.classList.add('gone');
       setTimeout(function () { row.remove(); }, 280);
     });
+
+    // suggested facts: approve one to move it into your facts, or dismiss it
+    var suggestList = document.getElementById('suggestList');
+    if (suggestList) {
+      suggestList.addEventListener('click', function (e) {
+        var card = e.target.closest('.suggest');
+        if (!card) return;
+        if (e.target.closest('.suggest-add')) {
+          var t = card.querySelector('.suggest-text');
+          if (t) addFactRow(t.textContent.trim());
+        } else if (!e.target.closest('.suggest-dismiss')) {
+          return;
+        }
+        card.classList.add('gone');
+        setFactsBadge(); // clear the notification count as suggestions are handled
+        setTimeout(function () { card.remove(); }, 280);
+      });
+    }
   })();
 
   // ---- Ask David: simple back-and-forth chat (mock) ----
