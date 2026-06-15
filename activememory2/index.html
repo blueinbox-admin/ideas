@@ -34,7 +34,7 @@
   .tb-left { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
   /* You <-> map <-> Claude Code paradigm across the header */
   .flow { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; gap: 6px; min-width: 0; }
-  .flow-cap { flex: 0 0 auto; width: 150px; margin-right: 4px; text-align: center; font-size: 10px; line-height: 1.35; color: var(--faint); }
+  .flow-cap { flex: 0 0 auto; width: 178px; margin-right: 88px; text-align: center; font-size: 12.5px; line-height: 1.4; color: var(--ink); }
   .flow-end { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 0 0 auto; width: 96px; background: none; border: none; padding: 0; font: inherit; text-align: center; }
   button.flow-end { cursor: pointer; }
   .flow-node { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; position: relative; background: var(--green-tint); border: 1px solid var(--green-line); color: var(--green); }
@@ -52,7 +52,8 @@
   .topbar-note { font-size: 11.5px; color: var(--faint); text-align: left; max-width: 420px; }
   .shell { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; background: #fff; }
   /* ===== knowledge map widget (lives in the header, top-right) ===== */
-  .map-dock { flex: 0 0 auto; display: flex; align-items: center; padding: 0; background: transparent; }
+  .map-dock { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 0; background: transparent; }
+  .map-name { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: var(--green-deep); }
   #factlist { max-height: 252px; overflow-y: auto; padding-right: 4px; }
   .map-card { position: relative; display: flex; align-items: center; gap: 16px; width: 100%; max-width: 392px; padding: 6px 10px; background: transparent; transition: box-shadow .4s ease; border-radius: 14px; }
   .map-text { flex: 0 0 130px; }
@@ -246,7 +247,7 @@
     width: 11px; height: 11px; border-radius: 50%; background: #2bbd7e;
     box-shadow: 0 0 0 0 rgba(43,189,126,0.6); animation: pulse 2s infinite;
   }
-  .conn-toggle .conn-label { font-size: 16px; font-weight: 600; color: var(--green-deep); letter-spacing: -0.01em; display: inline-block; width: 178px; text-align: left; }
+  .conn-toggle .conn-label { font-size: 16px; font-weight: 600; color: var(--green-deep); letter-spacing: -0.01em; display: inline-block; width: 212px; text-align: left; white-space: nowrap; }
   .conn-switch { width: 46px; height: 26px; border-radius: 999px; background: var(--green); position: relative; flex: 0 0 auto; transition: background .15s; }
   .conn-knob { position: absolute; top: 3px; left: 23px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.22); transition: left .16s; }
   .conn-toggle.off { background: #f4f5f4; border-color: var(--line); }
@@ -435,18 +436,17 @@
     <!-- connection on/off switch, left side -->
     <button class="conn-toggle" id="connToggle" type="button" aria-pressed="true" title="Connection to Claude Code">
       <span class="conn-dot"></span>
-      <span class="conn-label" id="connLabel">Live with Claude Code</span>
+      <span class="conn-label" id="connLabel">Connected to Claude Code</span>
       <span class="conn-switch"><span class="conn-knob"></span></span>
     </button>
 
     <div class="flow">
 
       <!-- value caption, between the connection switch and You -->
-      <span class="flow-cap">Zoutcomes makes Claude Code more personalized for you</span>
+      <span class="flow-cap">Zoutcomes is the memory layer that helps Claude Code understand you and your business.</span>
 
       <!-- YOU: you teach the brain (answer questions, add facts, chat) -->
       <div class="flow-end">
-        <span class="flow-node"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span>
         <span class="flow-label">You</span>
         <span class="flow-sub">answer &amp; add facts</span>
       </div>
@@ -459,6 +459,7 @@
 
       <!-- THE MAP: just the brain canvas now -->
       <div class="map-dock">
+        <span class="map-name">Zoutcomes</span>
         <div class="map-card" id="mmCard">
           <div class="map-viz">
             <canvas id="mmCanvas"></canvas>
@@ -476,7 +477,6 @@
 
       <!-- CLAUDE CODE: reads the brain to do the work (status reflects the switch) -->
       <div class="flow-end">
-        <span class="flow-node cc" id="ccNode"><span class="cc-dot" id="ccDot"></span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4-4 4"/><line x1="12" y1="16" x2="17.5" y2="16"/></svg></span>
         <span class="flow-label">Claude Code</span>
         <span class="flow-sub" id="ccStatus">Live</span>
       </div>
@@ -1211,7 +1211,7 @@
     connected = on;
     connToggle.classList.toggle('off', !on);
     connToggle.setAttribute('aria-pressed', on ? 'true' : 'false');
-    connLabel.textContent = on ? 'Live with Claude Code' : 'Disconnected';
+    connLabel.textContent = on ? 'Connected to Claude Code' : 'Disconnected';
     if (ccNode) ccNode.classList.toggle('off', !on);
     if (ccStatus) ccStatus.textContent = on ? 'Live' : 'Paused';
     var _chip = document.getElementById('sessionChip');
