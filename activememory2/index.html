@@ -392,14 +392,9 @@
     html, body { height: auto; }
     body { flex-direction: column; height: auto; min-height: 100vh; overflow-y: auto; }
 
-    /* header: stack the You -> Claude Code flow vertically; hide the map on mobile */
-    .topbar { flex-direction: column; align-items: stretch; gap: 12px; padding: 14px 18px; }
-    .flow { flex-direction: column; max-width: none; gap: 6px; }
-    .flow-arrow { transform: rotate(90deg); width: 40px; height: 16px; }
-    .flow-end { width: auto; }
-    .flow-cap { width: auto; max-width: 300px; margin: 0 auto; }
-    .map-dock { display: none; }
-    .map-dock + .flow-arrow { display: none; }
+    /* mobile: hide the whole You/map/Claude Code flow, keep just the connection switch */
+    .topbar { flex-direction: column; align-items: center; gap: 12px; padding: 14px 18px; }
+    .flow { display: none; }
 
     /* the single panel grows with its content instead of scrolling on its own */
     .shell { flex: 0 0 auto; }
