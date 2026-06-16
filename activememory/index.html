@@ -4,23 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Active Memory Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --green: #1f6b54;
-    --green-deep: #16513f;
-    --green-tint: #f1f6f3;
-    --green-line: #d9e7e0;
-    --ink: #1b211e;
-    --muted: #707873;
-    --faint: #a3aaa5;
-    --line: #ebedeb;
-    --line-soft: #f2f3f2;
-    --bg: #fbfcfb;
+    /* palette15 — café-quirky warm brown identity, teal accent */
+    --green: #00a88e;        /* teal accent (wordmark mark, active states, flow icons) */
+    --green-deep: #5c2c06;   /* chocolate brown (headings, wordmark text) */
+    --green-tint: #e8f4ef;   /* soft teal tint surface */
+    --green-line: #cfe6dc;   /* soft teal line */
+    --ink: #4a2305;          /* dark chocolate text */
+    --muted: #8c6446;
+    --faint: #b9a08a;
+    --line: #e7dccc;         /* sand line */
+    --line-soft: #f1e9dc;
+    --bg: #f0e6d8;           /* warm cream page */
   }
   html, body { height: 100%; }
+  h1, h2, h3, .p-head h1, .map-name, .map-title, .map-subtitle, .flow-label {
+    font-family: 'Bricolage Grotesque', 'Source Sans 3', sans-serif; letter-spacing: -0.01em;
+  }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui, sans-serif;
+    font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     color: var(--ink);
     background: var(--bg);
     display: flex;
@@ -45,7 +52,7 @@
   .flow-label { font-size: 12.5px; font-weight: 600; color: var(--ink); letter-spacing: -0.01em; }
   .flow-sub { font-size: 10px; color: var(--faint); line-height: 1.2; }
   .flow-arrow { width: 58px; height: 18px; color: var(--muted); flex: 0 0 auto; }
-  .flow-node .cc-dot { position: absolute; top: -1px; right: -1px; width: 11px; height: 11px; border-radius: 50%; background: #2bbd7e; box-shadow: 0 0 0 2px #fff; animation: pulse 2s infinite; }
+  .flow-node .cc-dot { position: absolute; top: -1px; right: -1px; width: 11px; height: 11px; border-radius: 50%; background: #18c39a; box-shadow: 0 0 0 2px #fff; animation: pulse 2s infinite; }
   .flow-node.cc.off { background: #9aa39d; border-color: #9aa39d; }
   .flow-node.cc.off .cc-dot { background: #c2c7c4; animation: none; }
   .topbar-row { display: flex; align-items: center; gap: 12px; }
@@ -117,7 +124,7 @@
   .tab:hover { color: var(--ink); }
   .tab.active { color: var(--green-deep); border-bottom-color: var(--green); }
   .tab .tdot { width: 7px; height: 7px; border-radius: 50%; }
-  .tab .tdot.ok { background: #2bbd7e; }
+  .tab .tdot.ok { background: #18c39a; }
   .tab .tdot.wait { background: #cf9b34; }
   .panel { display: none; max-width: 800px; margin: 0 auto; }
   .panel.active { display: block; }
@@ -133,7 +140,7 @@
   .tab-ico { width: 15px; height: 15px; flex: 0 0 auto; }
   .ask-name { font-size: 13.5px; font-weight: 600; color: var(--ink); }
   .ask-status { font-size: 11.5px; color: var(--faint); display: flex; align-items: center; gap: 6px; }
-  .ask-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #2bbd7e; display: inline-block; }
+  .ask-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #18c39a; display: inline-block; }
   .chat { display: flex; flex-direction: column; gap: 9px; padding: 4px 0; max-height: 440px; overflow-y: auto; }
   .msg { display: flex; }
   .msg.them { justify-content: flex-start; }
@@ -246,7 +253,7 @@
     border-radius: 999px; padding: 10px 13px 10px 20px; transition: background .15s, border-color .15s;
   }
   .conn-toggle .conn-dot {
-    width: 11px; height: 11px; border-radius: 50%; background: #2bbd7e;
+    width: 11px; height: 11px; border-radius: 50%; background: #18c39a;
     box-shadow: 0 0 0 0 rgba(43,189,126,0.6); animation: pulse 2s infinite;
   }
   .conn-toggle .conn-label { font-size: 16px; font-weight: 600; color: var(--green-deep); letter-spacing: -0.01em; display: inline-block; width: 212px; text-align: left; white-space: nowrap; }
@@ -315,13 +322,13 @@
   .improve { margin-top: 12px; padding: 10px 13px; background: var(--green-tint); border: 1px solid var(--green-line); border-radius: 9px; }
   .improve-label { font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--green); font-weight: 600; margin-bottom: 7px; }
   .improve-rows { display: flex; flex-direction: column; gap: 5px; }
-  .improve-row { font-size: 12.5px; line-height: 1.45; color: #2c4a40; display: grid; grid-template-columns: 42px 1fr; gap: 9px; align-items: baseline; }
+  .improve-row { font-size: 12.5px; line-height: 1.45; color: #5c4636; display: grid; grid-template-columns: 42px 1fr; gap: 9px; align-items: baseline; }
   .improve-row .lbl { font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; color: #8aa89b; padding-top: 1px; }
   .improve-row.now { margin-top: 2px; padding-top: 6px; border-top: 1px solid var(--green-line); }
   .improve-row.now .lbl { color: var(--green); }
   .improve-row.now .txt { color: #1c3b32; }
   /* plain-English gloss: reads as a continuation of the "Before" line above it */
-  .improve-row .cost { display: block; margin-top: 4px; color: #2c4a40; }
+  .improve-row .cost { display: block; margin-top: 4px; color: #5c4636; }
 
   /* open-card hook: the present-tense cost of leaving this unanswered. Hugs its text. */
   .hookbox { margin: 12px 0; padding: 0; }
@@ -333,7 +340,7 @@
   .cc-block { margin: 12px 0 2px; padding: 10px 12px; background: #f4f6f5; border: 1px solid var(--line); border-radius: 9px; }
   .cc-label { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 7px; }
   .cc-row { display: flex; align-items: center; gap: 10px; }
-  .cc-code { flex: 1; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: #2c4a40; line-height: 1.4; }
+  .cc-code { flex: 1; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: #5c4636; line-height: 1.4; }
   .cc-copy { flex: 0 0 auto; font: inherit; font-size: 12px; font-weight: 600; color: var(--green); background: #fff; border: 1px solid var(--green-line); border-radius: 7px; padding: 5px 11px; cursor: pointer; transition: background .12s, color .12s; }
   .cc-copy:hover { background: var(--green-tint); }
   .cc-copy.copied { color: #fff; background: var(--green); border-color: var(--green); }
