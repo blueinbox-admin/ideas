@@ -12,8 +12,13 @@
   :root {
     /* palette15 — café-quirky warm brown identity. Values mirror Roxbury's
        :root tokens exactly. Brown is the PRIMARY identity color (buttons,
-       logo, active states, sent bubbles). Teal is the #2 ACCENT only:
-       links, focus rings, live dots, tinted avatars/chips. */
+       logo, badges, card headers, active states, sent bubbles). Teal/green
+       is a SPARING accent -- not banned, just deliberate. Roxbury uses it
+       now and then for: links, focus rings, small live/status dots, outline
+       secondary buttons, tiny contextual recommendation labels, and the
+       green fade-in highlight when a NEW fact/question appears (keep that
+       one). Never green as a fill on primary chrome. Page = sandy --bg,
+       cards = cream --surface. */
     --green: #00a88e;        /* --link/--secondary (teal ACCENT, used sparingly) */
     --green-deep: #5c2c06;   /* --primary/--ink/--heading (chocolate brown — MAIN) */
     --primary-hover: #3e1c00;/* --primary-hover (darker brown) */
@@ -44,7 +49,7 @@
     -webkit-font-smoothing: antialiased;
   }
   .col { display: flex; flex-direction: column; height: 100%; }
-  .topbar { flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-start; gap: 18px; padding: 12px 30px; background: var(--surface); border-bottom: 1px solid var(--line); }
+  .topbar { flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-start; gap: 18px; padding: 12px 30px; background: var(--bg); border-bottom: 1px solid var(--line); }
   .tb-left { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
   /* You <-> map <-> Claude Code paradigm across the header */
   .conn-col { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-start; gap: 9px; }
@@ -53,7 +58,7 @@
   .flow-cap { flex: 0 0 auto; width: 178px; margin-right: 88px; text-align: center; font-size: 12.5px; line-height: 1.4; color: var(--ink); }
   .flow-end { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 0 0 auto; width: 96px; background: none; border: none; padding: 0; font: inherit; text-align: center; }
   button.flow-end { cursor: pointer; }
-  .flow-node { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; position: relative; background: var(--green-tint); border: 1px solid var(--green-line); color: var(--green); }
+  .flow-node { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; position: relative; background: var(--surface); border: 1px solid var(--line); color: var(--green-deep); }
   .flow-node svg { width: 25px; height: 25px; }
   .flow-node.cc { background: var(--green-deep); border-color: var(--green-deep); }
   .flow-label { font-size: 12.5px; font-weight: 600; color: var(--ink); letter-spacing: -0.01em; }
@@ -66,7 +71,7 @@
   .session-chip { font-size: 12.5px; color: var(--muted); }
   .session-chip b { color: var(--ink); font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
   .topbar-note { font-size: 11.5px; color: var(--faint); text-align: left; max-width: 420px; }
-  .shell { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; background: var(--surface); }
+  .shell { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; background: var(--bg); }
   /* ===== knowledge map widget (lives in the header, top-right) ===== */
   .map-dock { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 0; background: transparent; }
   .map-name { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: var(--green-deep); }
@@ -74,7 +79,7 @@
   .map-card { position: relative; display: flex; align-items: center; gap: 16px; width: 100%; max-width: 392px; padding: 6px 10px; background: transparent; transition: box-shadow .4s ease; border-radius: 14px; }
   .map-text { flex: 0 0 130px; }
   .map-viz { flex: 0 0 218px; min-width: 0; position: relative; }
-  .map-card.warm3 { box-shadow: 0 0 30px rgba(31,107,84,.10); }
+  .map-card.warm3 { box-shadow: 0 0 30px rgba(92,44,6,.10); }
   .map-title { font-size:13px; font-weight:600; color:var(--green-deep); letter-spacing:-0.01em; line-height:1.3; }
   .map-subtitle { font-size:11px; color:var(--faint); line-height:1.35; margin-top:3px; }
   .map-hint { position:absolute; bottom:9px; right:13px; font-size:9px; color:var(--faint); opacity:.7; pointer-events:none; transition:opacity .3s; }
@@ -88,7 +93,7 @@
     flex: 0 0 auto;
     width: 40%;
     min-width: 330px;
-    background: var(--surface);
+    background: var(--bg);
   }
 
   /* draggable divider */
@@ -118,10 +123,10 @@
     display: grid; place-items: center; color: var(--on-primary); font-size: 13px;
   }
   .saved-state { font-size: 12px; color: var(--faint); display: flex; align-items: center; gap: 6px; }
-  .saved-state .tick { color: var(--green); font-weight: 700; }
+  .saved-state .tick { color: var(--green-deep); font-weight: 700; }
 
   /* tabs */
-  .tabs { flex: 0 0 auto; width: 100%; max-width: 880px; align-self: center; display: flex; gap: 2px; padding: 0 36px; background: var(--surface); border-bottom: 1px solid var(--line); }
+  .tabs { flex: 0 0 auto; width: 100%; max-width: 880px; align-self: center; display: flex; gap: 2px; padding: 0 36px; background: var(--bg); border-bottom: 1px solid var(--line); }
   .tab {
     font: inherit; font-size: 13px; font-weight: 600; color: var(--muted);
     background: none; border: none; cursor: pointer; padding: 13px 14px;
@@ -139,6 +144,19 @@
   .badge:empty { visibility: hidden; }
   .qfeed { margin-top: 4px; }
   .feed-empty { font-size: 12.5px; color: var(--faint); padding: 6px 0 2px; }
+  /* paced-drip "more queued" hint under the question feed */
+  .qhint { display: none; font-size: 12.5px; color: var(--faint); font-style: italic; margin: 8px 2px 2px; }
+  .qhint.show { display: block; }
+  /* click-to-edit a saved fact */
+  .fact .fact-text { cursor: text; }
+  .fact:hover .fact-text { text-decoration: underline dotted var(--green-line); text-underline-offset: 3px; }
+  .fact.editing { background: #fffdf6; border-color: #e7d7a8; }
+  .fact .fact-edit-input {
+    flex: 1 1 auto; min-width: 0; font: inherit; font-size: 13.5px;
+    border: 1px solid var(--green-line); border-radius: 7px; padding: 6px 9px; background: #fff; color: var(--ink);
+  }
+  .fact .fact-edit-input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px var(--green-tint); }
+  .fact .fact-save, .fact .fact-cancel { flex: 0 0 auto; align-self: center; }
 
   /* ===== Ask David: human-in-the-loop chat ===== */
   .ask-who { display: flex; align-items: center; gap: 10px; margin: -4px 0 16px; }
@@ -169,7 +187,7 @@
     background: var(--surface); border: 1px solid var(--line); border-radius: 9px; margin-bottom: 8px;
     font-size: 13.5px; color: var(--ink); line-height: 1.45; transition: background-color 1.3s ease;
   }
-  .fact .tick { color: var(--green); flex: 0 0 auto; font-weight: 700; }
+  .fact .tick { color: var(--green-deep); flex: 0 0 auto; font-weight: 700; }
   .fact .fact-del {
     margin-left: auto; flex: 0 0 auto; align-self: center;
     background: none; border: none; cursor: pointer; font: inherit; font-size: 12px;
@@ -236,7 +254,7 @@
   /* sticky save bar */
   .save-bar {
     flex: 0 0 auto; width: 100%; max-width: 672px; align-self: center; border-top: 1px solid var(--line);
-    padding: 14px 36px; background: var(--surface);
+    padding: 14px 36px; background: var(--bg);
     display: flex; align-items: center; justify-content: space-between;
   }
   .save-bar .hint { font-size: 12.5px; color: var(--faint); }
@@ -256,7 +274,7 @@
   /* connect / disconnect toggle */
   .conn-toggle {
     display: inline-flex; align-items: center; gap: 11px; font: inherit; cursor: pointer;
-    border: 1px solid var(--green-line); background: var(--green-tint);
+    border: 1px solid var(--line); background: var(--surface);
     border-radius: 999px; padding: 10px 13px 10px 20px; transition: background .15s, border-color .15s;
   }
   .conn-toggle .conn-dot {
@@ -264,7 +282,7 @@
     box-shadow: 0 0 0 0 rgba(43,189,126,0.6); animation: pulse 2s infinite;
   }
   .conn-toggle .conn-label { font-size: 16px; font-weight: 600; color: var(--green-deep); letter-spacing: -0.01em; display: inline-block; width: 212px; text-align: left; white-space: nowrap; }
-  .conn-switch { width: 46px; height: 26px; border-radius: 999px; background: var(--green); position: relative; flex: 0 0 auto; transition: background .15s; }
+  .conn-switch { width: 46px; height: 26px; border-radius: 999px; background: var(--green-deep); position: relative; flex: 0 0 auto; transition: background .15s; }
   .conn-knob { position: absolute; top: 3px; left: 23px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.22); transition: left .16s; }
   .conn-toggle.off { background: #f4f5f4; border-color: var(--line); }
   .conn-toggle.off .conn-dot { background: #c2c7c4; animation: none; box-shadow: none; }
@@ -300,7 +318,7 @@
   /* card header bar with round icon + source tag */
   .card-head {
     display: flex; align-items: center; gap: 9px; padding: 11px 14px;
-    background: var(--green-tint); border-bottom: 1px solid var(--green-line);
+    background: var(--line-soft); border-bottom: 1px solid var(--line);
     font-size: 13px; font-weight: 600; color: var(--green-deep);
   }
   .card-head .cico { width: 9px; height: 9px; border-radius: 50%; background: var(--green); flex: 0 0 auto; }
@@ -528,24 +546,27 @@
       <div class="panel" data-panel="facts">
 
         <div class="fieldset">
+          <div class="legend">Add facts</div>
+          <p class="facts-note">Goals, strategy, and business logic about your org, so Claude works better for you.</p>
+          <div class="addfact">
+            <input class="input" id="factInput" placeholder="">
+            <button class="btn btn-save" id="factAdd" type="button">Add</button>
+          </div>
+        </div>
+
+        <div class="fieldset">
           <div class="legend">Suggested by Claude</div>
           <p class="facts-note">Claude read your SFMC org and spotted these. Nothing is saved until you say so. Add the ones that are right.</p>
           <div class="suggestlist" id="suggestList"></div>
         </div>
 
         <div class="fieldset">
-          <div class="legend">Add a fact</div>
-          <p class="facts-note">Tell Zoutcomes anything worth knowing about your org. Your data, your team, how things are set up. Some it could guess, some it can't. Write it once, and Claude Code has it for every task after.</p>
           <div class="factlist" id="factlist">
             <div class="fact"><span class="tick">✓</span> Priya owns our SFMC builds. She drafts the queries and journeys, I review and activate anything that touches a real send.<button class="fact-del" type="button">Delete</button></div>
             <div class="fact"><span class="tick">✓</span> ENT.All_Contacts_Subscribed is the source of truth for who we can email. Opt-in only.<button class="fact-del" type="button">Delete</button></div>
             <div class="fact"><span class="tick">✓</span> Synced _Salesforce DEs physically live in the Parent BU (schema C500000000), not the Marketing BU.<button class="fact-del" type="button">Delete</button></div>
             <div class="fact"><span class="tick">✓</span> Anything with a scheduled send the next morning is urgent. The refresh has to land before the send or it goes out stale.<button class="fact-del" type="button">Delete</button></div>
             <div class="fact"><span class="tick">✓</span> Our DEs and automations follow a naming convention: purpose first, then test_ for sandbox builds or nothing for prod.<button class="fact-del" type="button">Delete</button></div>
-          </div>
-          <div class="addfact">
-            <input class="input" id="factInput" placeholder="">
-            <button class="btn btn-save" id="factAdd" type="button">Add</button>
           </div>
         </div>
 
@@ -585,6 +606,7 @@
           <div class="legend">Proactive Questions</div>
           <p class="facts-note">Zoutcomes is the memory Claude Code reads from. These questions fill it. Answer when you like, nothing to run here. The more it knows, the smarter Claude Code is every time you use it.</p>
           <div class="qfeed" id="factsQ"></div>
+          <div class="qhint" id="qHint"></div>
         </div>
 
       </div>
@@ -659,15 +681,29 @@
     var add = document.getElementById('factAdd');
     var input = document.getElementById('factInput');
     var list = document.getElementById('factlist');
-    function addFactRow(text) {
-      var row = document.createElement('div');
-      row.className = 'fact fresh';
-      row.innerHTML = '<span class="tick">✓</span> ' + text.replace(/</g, '&lt;') +
+    function esc(s) { return s.replace(/</g, '&lt;'); }
+    function rowHtml(text) {
+      return '<span class="tick">✓</span> <span class="fact-text" title="Click to edit">' + esc(text) + '</span>' +
         '<button class="fact-del" type="button">Delete</button>';
-      list.appendChild(row);
-      setTimeout(function () { row.classList.remove('fresh'); }, 1400);
-      if (window.mmAdvance) window.mmAdvance();
     }
+    function addFactRow(text, fresh) {
+      var row = document.createElement('div');
+      row.className = 'fact' + (fresh === false ? '' : ' fresh');
+      row.innerHTML = rowHtml(text);
+      list.appendChild(row);
+      if (fresh !== false) setTimeout(function () { row.classList.remove('fresh'); }, 1400);
+      if (window.mmAdvance) window.mmAdvance();
+      return row;
+    }
+    // Expose so an answered Proactive Question can distill into a saved fact here.
+    window.mmAddFact = function (text) { return addFactRow(text, true); };
+    // Wrap the text of the pre-seeded fact rows so they're click-to-editable too.
+    Array.prototype.forEach.call(list.querySelectorAll('.fact'), function (row) {
+      if (row.querySelector('.fact-text')) return;
+      var del = row.querySelector('.fact-del');
+      var text = row.textContent.replace('✓', '').replace('Delete', '').trim();
+      row.innerHTML = rowHtml(text);
+    });
     function addFact() {
       var v = input.value.trim();
       if (!v) return;
@@ -677,11 +713,47 @@
     }
     add.addEventListener('click', addFact);
     input.addEventListener('keydown', function (e) { if (e.key === 'Enter') addFact(); });
+
+    // ---- click-to-edit a saved fact ----
+    function enterEdit(row) {
+      if (row.classList.contains('editing')) return;
+      var cur = row.querySelector('.fact-text');
+      var text = cur ? cur.textContent : '';
+      row.classList.add('editing');
+      row.innerHTML = '<span class="tick">✓</span>' +
+        '<input class="fact-edit-input" type="text">' +
+        '<button class="btn btn-save fact-save" type="button">Save</button>' +
+        '<button class="btn-skip fact-cancel" type="button">Cancel</button>';
+      var inp = row.querySelector('.fact-edit-input');
+      inp.value = text; inp.focus(); inp.setSelectionRange(text.length, text.length);
+    }
+    function commitEdit(row) {
+      var inp = row.querySelector('.fact-edit-input');
+      var v = inp && inp.value.trim();
+      row.classList.remove('editing');
+      row.innerHTML = rowHtml(v || (row._prev || ''));
+    }
     list.addEventListener('click', function (e) {
-      if (!e.target.closest('.fact-del')) return;
       var row = e.target.closest('.fact');
-      row.classList.add('gone');
-      setTimeout(function () { row.remove(); }, 280);
+      if (!row) return;
+      if (e.target.closest('.fact-del')) {
+        row.classList.add('gone');
+        setTimeout(function () { row.remove(); }, 280);
+        return;
+      }
+      if (e.target.closest('.fact-cancel')) { row.classList.remove('editing'); row.innerHTML = rowHtml(row._prev || ''); return; }
+      if (e.target.closest('.fact-save')) { commitEdit(row); return; }
+      if (e.target.closest('.fact-text')) {
+        var cur = row.querySelector('.fact-text');
+        row._prev = cur ? cur.textContent : '';
+        enterEdit(row);
+      }
+    });
+    list.addEventListener('keydown', function (e) {
+      var row = e.target.closest('.fact.editing');
+      if (!row) return;
+      if (e.key === 'Enter') { e.preventDefault(); commitEdit(row); }
+      else if (e.key === 'Escape') { row.classList.remove('editing'); row.innerHTML = rowHtml(row._prev || ''); }
     });
 
     // suggested facts: approve one to move it into your facts, or dismiss it
@@ -1130,25 +1202,46 @@
 
   // timing: first Facts question a few seconds in, then one at a steady interval.
   // New questions only arrive while connected to Claude Code.
-  var TYPING_MS = 1800, INTERVAL_MS = 25000;
+  var TYPING_MS = 1800, INTERVAL_MS = 9000, QCAP = 6;
   var idx = 0;
   var connected = true;
   var feedTimer = null;
 
+  // how many UNANSWERED questions are currently on screen (answered cards stay
+  // as resolved cards but don't count against the live queue)
+  function openCount() { return factsQ.querySelectorAll('.q:not(.answered):not(.gone)').length; }
+  var hintEl = document.getElementById('qHint');
+  function queuedHint() {
+    if (!hintEl) return;
+    var rest = FEED.length - idx;
+    if (connected && rest > 0 && openCount() >= QCAP) {
+      hintEl.textContent = 'Claude has more to ask — answer or skip one and the next slides in · ' + rest + ' more queued';
+      hintEl.classList.add('show');
+    } else if (connected && rest > 0 && openCount() > 0) {
+      hintEl.textContent = 'New questions arrive as Claude works · ' + rest + ' more queued';
+      hintEl.classList.add('show');
+    } else {
+      hintEl.classList.remove('show');
+    }
+  }
   function scheduleNext(delay) {
     clearTimeout(feedTimer);
-    if (!connected || idx >= FEED.length) return;
+    if (!connected || idx >= FEED.length || openCount() >= QCAP) { queuedHint(); return; }
     feedTimer = setTimeout(runTick, delay);
   }
   function runTick() {
-    if (!connected || idx >= FEED.length) return;
+    if (!connected || idx >= FEED.length || openCount() >= QCAP) { queuedHint(); return; }
     setTimeout(function () {
-      if (!connected) return;            // disconnected mid-type: hold, resume on reconnect
+      if (!connected || openCount() >= QCAP) { queuedHint(); return; } // queue filled while typing: hold
       addQuestion(FEED[idx], factsQ);
       idx++;
+      queuedHint();
       scheduleNext(INTERVAL_MS - TYPING_MS);
     }, TYPING_MS);
   }
+  // Refill-as-you-clear: after the user answers/skips one, free the slot and
+  // drip the next reserve question in (the cap holds the visible queue at <=6).
+  window.mmPumpQuestions = function () { if (openCount() < QCAP) scheduleNext(1400); else queuedHint(); };
   scheduleNext(2000 - TYPING_MS);        // first card appears at ~2s
 
   // connect / disconnect toggle: while disconnected, no new questions arrive
@@ -1228,12 +1321,19 @@
       q.style.minHeight = q.offsetHeight + 'px'; // freeze current height before the swap
       q.classList.add('answered');
       q.innerHTML = answeredInner(p);
+      // the memory loop applies to the Proactive Questions feed only (not Site improvement)
+      if (factsQ.contains(q)) {
+        if (window.mmAddFact) window.mmAddFact(p.fact || p.answer); // distill into a saved fact
+        if (window.mmPumpQuestions) window.mmPumpQuestions();       // slot freed -> drip the next
+      }
       checkEmpty();
       return;
     }
     // skip an open question
     if (e.target.closest('.btn-skip')) {
+      var inFacts = factsQ.contains(q);
       q.classList.add('gone');
+      if (inFacts && window.mmPumpQuestions) window.mmPumpQuestions(); // slot freed -> drip the next
       setTimeout(checkEmpty, 300);
       return;
     }
@@ -1278,7 +1378,7 @@
 
 <script>
 (function(){
-  var THRESHOLD=3, MAXN=6, GREEN='31,107,84', SOFT='150,172,160';
+  var THRESHOLD=3, MAXN=6, GREEN='92,44,6', SOFT='196,176,150';
   var CLUSTERS=[
     { id:'basics',  title:'The basics',  x:0,    y:0,   z:0,   revealAt:0 },
     { id:'site',    title:'Send rules',  x:86,   y:-52, z:-14, revealAt:0 },
@@ -1325,8 +1425,8 @@
   function lerp(a,b,t){ return Math.round(a+(b-a)*t); }
   function clusterColor(c){ var n=c._active;
     if(c.frontier||n===0) return SOFT;
-    if(n<THRESHOLD){ var t=n/THRESHOLD; return lerp(150,90,t)+','+lerp(172,150,t)+','+lerp(160,120,t); }
-    var t2=Math.min(1,(n-THRESHOLD)/3); return lerp(31,16,t2)+','+lerp(107,70,t2)+','+lerp(84,52,t2); }
+    if(n<THRESHOLD){ var t=n/THRESHOLD; return lerp(196,150,t)+","+lerp(176,110,t)+","+lerp(150,72,t); }
+    var t2=Math.min(1,(n-THRESHOLD)/3); return lerp(150,92,t2)+","+lerp(110,44,t2)+","+lerp(72,6,t2); }
   function updateWarmth(){ var beat=BEATS[step], total=CLUSTERS.reduce(function(a,n){ return a+(beat.c[n.id]||0); },0);
     card.classList.toggle('warm1', total>=12 && total<18);
     card.classList.toggle('warm2', total>=18 && total<22);
@@ -1346,7 +1446,7 @@
     CLUSTERS.forEach(function(c){ if(!c._shown||c.frontier||c._active===0) return;
       var p=c._p,f=fog(p.scale),rad=(26+c._active*9)*p.scale,a=Math.min(0.085,(0.010+0.012*c._active)*f)*c._rev;
       var g=ctx.createRadialGradient(p.sx,p.sy,0,p.sx,p.sy,rad);
-      g.addColorStop(0,'rgba(31,107,84,'+a+')'); g.addColorStop(1,'rgba(31,107,84,0)');
+      g.addColorStop(0,'rgba(92,44,6,'+a+')'); g.addColorStop(1,'rgba(92,44,6,0)');
       ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.sx,p.sy,rad,0,7); ctx.fill(); });
     CLUSTERS.forEach(function(c){ if(!c._shown||c.frontier||c._active===0) return;
       var p=c._p,f=fog(p.scale),rad=(11+c._active*4.6)*p.scale,a=Math.min(0.16,(0.045+0.019*c._active)*f)*c._rev;
