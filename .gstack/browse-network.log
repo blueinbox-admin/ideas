@@ -1,4 +1,0 @@
-[2026-06-16T18:11:08.704Z] GET http://localhost:8756/salesforce-activememory/ → 200 (7ms, 82498B)
-[2026-06-16T18:11:08.720Z] GET https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Source+Sans+3:wght@400;500;600&display=swap → pending (?ms, ?B)
-[2026-06-16T18:11:08.904Z] GET https://fonts.gstatic.com/s/sourcesans3/v19/nwpStKy2OAdR1K-IwhWudF-R3w8aZejf5Hc.woff2 → 200 (89ms, 28792B)
-[2026-06-16T18:11:08.904Z] GET https://fonts.gstatic.com/s/bricolagegrotesque/v9/3y9K6as8bTXq_nANBjzKo3IeZx8z6up5BeSl9D4dj_x9PpZBMlGIInHWVyNJ.woff2 → 200 (116ms, 76868B)
