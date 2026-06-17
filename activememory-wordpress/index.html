@@ -3,437 +3,170 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Active Memory Mockup</title>
+<title>Reyes Law Firm — Active Memory</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  /* ===== Palette 15 (lifted from web/app/globals.css — the real app) =====
+     Warm sandy PAGE, cream SURFACES floating on it, chocolate-brown ink/primary,
+     teal as a sparing accent. The personality lives in --bg showing between cards. */
   :root {
-    /* palette15 — café-quirky warm brown identity, teal accent */
-    --green: #00a88e;        /* teal accent (wordmark mark, active states, flow icons) */
-    --green-deep: #5c2c06;   /* chocolate brown (headings, wordmark text) */
-    --green-tint: #e8f4ef;   /* soft teal tint surface */
-    --green-line: #cfe6dc;   /* soft teal line */
-    --ink: #4a2305;          /* dark chocolate text */
-    --muted: #8c6446;
-    --faint: #b9a08a;
-    --line: #e7dccc;         /* sand line */
-    --line-soft: #f1e9dc;
-    --bg: #f0e6d8;           /* warm cream page */
+    --bg: 240 230 216;          /* warm sandy page */
+    --surface: 252 248 242;     /* near-white cream card */
+    --ink: 92 44 6;             /* chocolate brown text */
+    --ink-muted: 140 100 70;
+    --ink-soft: 185 160 138;
+    --heading: 92 44 6;
+    --link: 0 168 142;          /* teal */
+    --link-hover: 0 132 112;
+    --primary: 92 44 6;         /* chocolate */
+    --primary-hover: 62 28 0;
+    --on-primary: 250 244 232;
+    --secondary: 0 168 142;     /* teal */
+    --secondary-hover: 0 132 112;
+    --success: 76 128 119;
+    --on-success: 196 252 240;
+    --sand: 210 188 158;        /* borders */
+    --sand-light: 215 238 228;
+    --amber: 176 124 52;
+    --amber-bg: 245 234 214;
+    --focus: 0 168 142;
+    --font-display: 'Bricolage Grotesque', sans-serif;
+    --font-body: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   }
-  html, body { height: 100%; }
-  h1, h2, h3, .p-head h1, .map-name, .map-title, .map-subtitle, .flow-label {
-    font-family: 'Bricolage Grotesque', 'Source Sans 3', sans-serif; letter-spacing: -0.01em;
-  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; }
   body {
-    font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-    color: var(--ink);
-    background: var(--bg);
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
+    font-family: var(--font-body);
+    color: rgb(var(--ink));
+    background: rgb(var(--bg));
+    font-size: 14.5px;
+    line-height: 1.55;
     -webkit-font-smoothing: antialiased;
   }
-  .col { display: flex; flex-direction: column; height: 100%; }
-  .topbar { flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-start; gap: 18px; padding: 12px 30px; background: #fff; border-bottom: 1px solid var(--line); }
-  .tb-left { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
-  /* You <-> map <-> Claude Code paradigm across the header */
-  .conn-col { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-start; gap: 9px; }
-  .conn-cap { display: none; max-width: 240px; font-size: 12px; line-height: 1.4; color: var(--muted); padding-left: 4px; }
-  .flow { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; gap: 6px; min-width: 0; }
-  .flow-cap { flex: 0 0 auto; width: 178px; margin-right: 88px; text-align: center; font-size: 12.5px; line-height: 1.4; color: var(--ink); }
-  .flow-end { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 0 0 auto; width: 96px; background: none; border: none; padding: 0; font: inherit; text-align: center; }
-  button.flow-end { cursor: pointer; }
-  .flow-node { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; position: relative; background: var(--green-tint); border: 1px solid var(--green-line); color: var(--green); }
-  .flow-node svg { width: 25px; height: 25px; }
-  .flow-node.cc { background: var(--green-deep); border-color: var(--green-deep); }
-  .flow-label { font-size: 12.5px; font-weight: 600; color: var(--ink); letter-spacing: -0.01em; }
-  .flow-sub { font-size: 10px; color: var(--faint); line-height: 1.2; }
-  .flow-arrow { width: 58px; height: 18px; color: var(--muted); flex: 0 0 auto; }
-  .flow-node .cc-dot { position: absolute; top: -1px; right: -1px; width: 11px; height: 11px; border-radius: 50%; background: #18c39a; box-shadow: 0 0 0 2px #fff; animation: pulse 2s infinite; }
-  .flow-node.cc.off { background: #9aa39d; border-color: #9aa39d; }
-  .flow-node.cc.off .cc-dot { background: #c2c7c4; animation: none; }
-  .topbar-row { display: flex; align-items: center; gap: 12px; }
-  .session-chip { font-size: 12.5px; color: var(--muted); }
-  .session-chip b { color: var(--ink); font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
-  .topbar-note { font-size: 11.5px; color: var(--faint); text-align: left; max-width: 420px; }
-  .shell { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; background: #fff; }
-  /* ===== knowledge map widget (lives in the header, top-right) ===== */
-  .map-dock { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 0; background: transparent; }
-  .map-name { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: var(--green-deep); }
-  #factlist, #guardlist { max-height: 252px; overflow-y: auto; padding-right: 4px; }
-  .map-card { position: relative; display: flex; align-items: center; gap: 16px; width: 100%; max-width: 392px; padding: 6px 10px; background: transparent; transition: box-shadow .4s ease; border-radius: 14px; }
-  .map-text { flex: 0 0 130px; }
-  .map-viz { flex: 0 0 218px; min-width: 0; position: relative; }
-  .map-card.warm3 { box-shadow: 0 0 30px rgba(31,107,84,.10); }
-  .map-title { font-size:13px; font-weight:600; color:var(--green-deep); letter-spacing:-0.01em; line-height:1.3; }
-  .map-subtitle { font-size:11px; color:var(--faint); line-height:1.35; margin-top:3px; }
-  .map-hint { position:absolute; bottom:9px; right:13px; font-size:9px; color:var(--faint); opacity:.7; pointer-events:none; transition:opacity .3s; }
-  .map-card:hover .map-hint { opacity:0; }
-  .map-card canvas { display:block; width:100%; height:auto; cursor:grab; }
-  .map-toast { position:absolute; left:13px; right:13px; bottom:10px; background:rgba(22,81,63,0.95); color:#eafff6; font-size:10.5px; font-weight:500; padding:7px 10px; border-radius:8px; opacity:0; transform:translateY(6px); transition:opacity .3s, transform .3s; pointer-events:none; text-align:center; line-height:1.35; }
-  .map-toast.show { opacity:1; transform:translateY(0); }
+  h1, h2, h3, .display, .brand, .scope-title, .tree-label, .legend { font-family: var(--font-display); }
 
-  /* ============ LEFT: structured profile form ============ */
-  .profile {
-    flex: 0 0 auto;
-    width: 40%;
-    min-width: 330px;
-    background: #fff;
+  /* ===== the split: Active Memory app (left) + a peek at Claude Code (right) ===== */
+  .workspace { display: flex; min-height: 100vh; }
+  .app-pane { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; max-height: 100vh; overflow-y: auto; }
+
+  /* ===== topbar ===== */
+  .topbar { flex: 0 0 auto; border-bottom: 1px solid rgb(var(--sand)); background: rgb(var(--surface)); }
+  .topbar-inner { max-width: 1100px; margin: 0 auto; padding: 16px 28px; display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
+  .brand { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; color: rgb(var(--heading)); }
+  .brand .mark { color: rgb(var(--heading)); margin-right: 7px; }
+  .tagline { font-size: 12.5px; color: rgb(var(--ink-soft)); margin-top: 3px; }
+  .topbar-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+  .org { font-size: 13px; color: rgb(var(--ink-muted)); }
+
+  /* connection indicator: two dots — this app + Claude Code */
+  .conn { display: flex; align-items: center; gap: 14px; font-size: 12px; }
+  .conn-item { display: inline-flex; align-items: center; gap: 6px; color: rgb(var(--ink-soft)); white-space: nowrap; }
+  .conn-dot { width: 8px; height: 8px; border-radius: 50%; background: rgb(var(--ink-soft)); flex: 0 0 auto; }
+  .conn-dot.app { background: rgb(var(--secondary)); }
+  .conn-working { color: rgb(var(--secondary-hover)); font-weight: 600; }
+  .conn-working .conn-dot { background: rgb(var(--secondary)); }
+  .conn-dot.pulse { animation: conn-pulse 1.6s ease-in-out infinite; }
+  @keyframes conn-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgb(var(--secondary) / 0.5); }
+    50%      { box-shadow: 0 0 0 5px rgb(var(--secondary) / 0); }
   }
 
-  /* draggable divider */
-  .divider {
-    flex: 0 0 6px; width: 6px; cursor: col-resize; position: relative; z-index: 5;
-    background: transparent;
+  /* ===== two-column folder layout ===== */
+  .layout { flex: 1 1 auto; width: 100%; max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 232px 1fr; align-items: start; }
+  .sidebar { padding: 22px 14px 60px; border-right: 1px solid rgb(var(--sand)); min-height: 70vh; }
+  .content { padding: 22px 28px 80px; min-width: 0; }
+
+  /* sidebar / folder tree */
+  .tree-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: rgb(var(--ink-soft)); padding: 0 10px; margin: 4px 0 8px; }
+  .tree-item {
+    display: flex; align-items: center; gap: 9px; width: 100%; text-align: left;
+    padding: 8px 10px; border-radius: 9px; border: 1px solid transparent;
+    color: rgb(var(--ink-muted)); text-decoration: none; font-size: 14px; cursor: pointer; background: none;
   }
-  .divider::after {
-    content: ""; position: absolute; top: 0; bottom: 0; left: 2px; width: 1px;
-    background: transparent; transition: background .12s, width .12s, left .12s;
-  }
-  .divider:hover::after, .divider.drag::after { background: var(--green); width: 2px; left: 2px; }
-  body.resizing { cursor: col-resize; user-select: none; }
-  .p-head {
-    flex: 0 0 auto;
-    width: 100%; max-width: 880px; align-self: center;
-    padding: 24px 36px 18px;
-    border-bottom: 1px solid var(--line);
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .p-head h1 {
-    font-size: 18px; font-weight: 600; letter-spacing: -0.02em;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .p-head h1 .mark {
-    width: 24px; height: 24px; border-radius: 6px; background: var(--green);
-    display: grid; place-items: center; color: #fff; font-size: 13px;
-  }
-  .saved-state { font-size: 12px; color: var(--faint); display: flex; align-items: center; gap: 6px; }
-  .saved-state .tick { color: var(--green); font-weight: 700; }
+  .tree-item:hover { background: rgb(var(--sand-light) / 0.6); color: rgb(var(--ink)); }
+  .tree-item.active { background: rgb(var(--surface)); border-color: rgb(var(--sand)); color: rgb(var(--ink)); font-weight: 600; }
+  .tree-item.root { font-weight: 600; color: rgb(var(--ink)); }
+  .tree-ico { width: 16px; flex: 0 0 auto; opacity: 0.85; }
+  .tree-name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tree-count { font-size: 11px; font-weight: 600; min-width: 19px; height: 18px; padding: 0 6px; display: inline-grid; place-items: center; border-radius: 9px; background: rgb(var(--amber-bg)); color: rgb(var(--amber)); }
+  .tree-count.zero { background: rgb(var(--sand-light)); color: rgb(var(--ink-soft)); }
+  .tree-divider { height: 1px; background: rgb(var(--sand)); margin: 12px 8px; }
+  .new-project { display: flex; gap: 6px; margin: 14px 10px 0; }
+  .new-project input { flex: 1 1 auto; min-width: 0; font: inherit; font-size: 13px; border: 1px solid rgb(var(--sand)); border-radius: 8px; padding: 6px 9px; background: rgb(var(--surface)); color: rgb(var(--ink)); }
+  .new-project input::placeholder { color: rgb(var(--ink-soft)); }
+  .new-project button { flex: 0 0 auto; width: 30px; cursor: pointer; font: inherit; font-size: 17px; line-height: 1; border: 1px solid rgb(var(--sand)); border-radius: 8px; background: rgb(var(--surface)); color: rgb(var(--ink-muted)); }
+  .new-project button:hover { border-color: rgb(var(--primary)); color: rgb(var(--primary)); }
+
+  /* content header */
+  .scope-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+  .scope-title { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: rgb(var(--heading)); margin: 0; }
+  .scope-kind { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgb(var(--ink-muted)); }
+  .scope-sub { font-size: 13px; color: rgb(var(--ink-muted)); margin: 0 0 18px; max-width: 620px; }
 
   /* tabs */
-  .tabs { flex: 0 0 auto; width: 100%; max-width: 880px; align-self: center; display: flex; gap: 2px; padding: 0 36px; background: #fff; border-bottom: 1px solid var(--line); }
-  .tab {
-    font: inherit; font-size: 13px; font-weight: 600; color: var(--muted);
-    background: none; border: none; cursor: pointer; padding: 13px 14px;
-    border-bottom: 2px solid transparent; margin-bottom: -1px;
-    display: inline-flex; align-items: center; gap: 6px;
-  }
-  .tab:hover { color: var(--ink); }
-  .tab.active { color: var(--green-deep); border-bottom-color: var(--green); }
-  .tab .tdot { width: 7px; height: 7px; border-radius: 50%; }
-  .tab .tdot.ok { background: #18c39a; }
-  .tab .tdot.wait { background: #cf9b34; }
-  .panel { display: none; max-width: 800px; margin: 0 auto; }
+  .tabs { display: flex; gap: 26px; border-bottom: 1px solid rgb(var(--sand)); margin: 6px 0 22px; }
+  .tab { appearance: none; background: none; border: none; cursor: pointer; font: inherit; font-size: 14px; padding: 9px 2px; color: rgb(var(--ink-muted)); border-bottom: 2px solid transparent; display: flex; align-items: center; gap: 8px; }
+  .tab:hover { color: rgb(var(--ink)); }
+  .tab.active { color: rgb(var(--heading)); border-bottom-color: rgb(var(--primary)); font-weight: 600; }
+  .badge { display: inline-grid; place-items: center; min-width: 20px; height: 18px; padding: 0 6px; font-size: 11px; font-weight: 600; border-radius: 9px; background: rgb(var(--sand) / 0.35); color: rgb(var(--ink-muted)); }
+  .badge.amber { background: rgb(var(--amber-bg)); color: rgb(var(--amber)); }
+
+  /* sections */
+  .legend { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgb(var(--heading)); margin: 26px 0 6px; }
+  .legend:first-child { margin-top: 0; }
+  .note { font-size: 13px; color: rgb(var(--ink-muted)); margin: 0 0 14px; max-width: 640px; }
+
+  /* memory cards — cream surfaces floating on the sandy page */
+  .card { display: flex; align-items: flex-start; gap: 12px; padding: 13px 15px; background: rgb(var(--surface)); border: 1px solid rgb(var(--sand)); border-radius: 12px; margin-bottom: 9px; }
+  .card .body { flex: 1 1 auto; min-width: 0; }
+  .card .content { color: rgb(var(--ink)); }
+  .card .meta { font-size: 11px; color: rgb(var(--ink-soft)); margin-top: 5px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .type-pill { display: inline-block; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; padding: 1px 6px; border-radius: 5px; background: rgb(var(--sand-light)); color: rgb(var(--success)); margin-right: 7px; }
+  .type-pill.guardrail { background: rgb(var(--amber-bg)); color: rgb(var(--amber)); }
+  .proj-tag { font-size: 10.5px; font-weight: 600; padding: 1px 7px; border-radius: 5px; background: rgb(var(--primary) / 0.08); color: rgb(var(--primary)); }
+  .proj-tag.root { background: rgb(var(--secondary) / 0.12); color: rgb(var(--secondary-hover)); }
+  .tick { color: rgb(var(--success)); font-weight: 700; flex: 0 0 auto; margin-top: 1px; }
+
+  .actions { display: flex; gap: 6px; flex: 0 0 auto; }
+  .btn { appearance: none; cursor: pointer; font: inherit; font-size: 12.5px; font-weight: 600; padding: 6px 13px; border-radius: 8px; border: 1px solid rgb(var(--sand)); background: rgb(var(--surface)); color: rgb(var(--ink)); }
+  .btn:hover { border-color: rgb(var(--ink-soft)); }
+  .btn.primary { background: rgb(var(--primary)); border-color: rgb(var(--primary)); color: rgb(var(--on-primary)); }
+  .btn.primary:hover { background: rgb(var(--primary-hover)); border-color: rgb(var(--primary-hover)); }
+  .btn.ghost { color: rgb(var(--ink-muted)); }
+  .card .content.editable { cursor: text; border-radius: 7px; margin: -3px -6px; padding: 3px 6px; transition: background 0.12s; }
+  .card .content.editable:hover { background: rgb(var(--sand-light)); }
+
+  /* add form */
+  .addform { display: flex; gap: 8px; margin-top: 12px; align-items: flex-start; }
+  .addform textarea { flex: 1 1 auto; font: inherit; border: 1px solid rgb(var(--sand)); border-radius: 9px; padding: 10px 12px; background: rgb(var(--surface)); color: rgb(var(--ink)); resize: vertical; min-height: 44px; }
+  .addform textarea::placeholder { color: rgb(var(--ink-soft)); }
+  .addform textarea:focus { outline: 2px solid rgb(var(--focus) / 0.4); border-color: rgb(var(--focus)); }
+
+  /* proactive question cards */
+  .qcard { align-items: flex-start; }
+  .qcard .content { font-weight: 600; padding: 0; }
+  .qwhy { font-size: 12px; color: rgb(var(--ink-soft)); margin-top: 6px; }
+  .qform { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .qform textarea { font: inherit; border: 1px solid rgb(var(--sand)); border-radius: 9px; padding: 10px 12px; background: rgb(var(--surface)); color: rgb(var(--ink)); resize: vertical; min-height: 44px; width: 100%; }
+  .qform textarea::placeholder { color: rgb(var(--ink-soft)); }
+  .qform .actions { justify-content: flex-end; }
+  .qskip { flex: 0 0 auto; }
+  .empty { color: rgb(var(--ink-soft)); font-size: 13px; padding: 16px 0; }
+  .confirmed-list { margin-top: 18px; border-top: 1px solid rgb(var(--sand)); padding-top: 16px; }
+  .panel { display: none; }
   .panel.active { display: block; }
-  .badge { display: inline-grid; place-items: center; min-width: 18px; height: 18px; margin-left: 7px; padding: 0 5px; border-radius: 9px; background: var(--green); color: #fff; font-size: 10.5px; font-weight: 700; vertical-align: middle; }
-  .badge:empty { visibility: hidden; }
-  .qfeed { margin-top: 4px; }
-  .feed-empty { font-size: 12.5px; color: var(--faint); padding: 6px 0 2px; }
 
-  /* ===== Ask David: human-in-the-loop chat ===== */
-  .ask-who { display: flex; align-items: center; gap: 10px; margin: -4px 0 16px; }
-  .ask-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; flex: 0 0 auto; }
-  .ask-avatar svg { width: 19px; height: 19px; }
-  .tab-ico { width: 15px; height: 15px; flex: 0 0 auto; }
-  .ask-name { font-size: 13.5px; font-weight: 600; color: var(--ink); }
-  .ask-status { font-size: 11.5px; color: var(--faint); display: flex; align-items: center; gap: 6px; }
-  .ask-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #18c39a; display: inline-block; }
-  .chat { display: flex; flex-direction: column; gap: 9px; padding: 4px 0; max-height: 440px; overflow-y: auto; }
-  .msg { display: flex; }
-  .msg.them { justify-content: flex-start; }
-  .msg.me { justify-content: flex-end; }
-  .msg .bubble { max-width: 80%; font-size: 13.5px; line-height: 1.45; padding: 9px 13px; border-radius: 14px; }
-  .msg.them .bubble { background: #f1f3f2; color: var(--ink); border-bottom-left-radius: 5px; }
-  .msg.me .bubble { background: var(--green); color: #fff; border-bottom-right-radius: 5px; }
-  .chat-typing { display: none; }
-  .chat-typing.show { display: flex; justify-content: flex-start; }
-  .chat-typing .bubble { background: #f1f3f2; color: var(--faint); font-size: 12.5px; font-style: italic; padding: 9px 13px; border-radius: 14px; border-bottom-left-radius: 5px; }
-  .chat-compose { display: flex; gap: 8px; margin-top: 14px; }
-  .chat-compose .input { flex: 1; }
-  .chat-compose .btn { flex: 0 0 auto; }
-
-  /* "Other facts" freeform list */
-  .facts-note { font-size: 12.5px; color: var(--muted); line-height: 1.5; margin: -4px 0 16px; }
-  .fact {
-    display: flex; align-items: flex-start; gap: 9px; padding: 11px 13px;
-    background: #fff; border: 1px solid var(--line); border-radius: 9px; margin-bottom: 8px;
-    font-size: 13.5px; color: #36433d; line-height: 1.45; transition: background-color 1.3s ease;
-  }
-  .fact .tick { color: var(--green); flex: 0 0 auto; font-weight: 700; }
-  .fact .fact-del {
-    margin-left: auto; flex: 0 0 auto; align-self: center;
-    background: none; border: none; cursor: pointer; font: inherit; font-size: 12px;
-    font-weight: 600; color: var(--faint); padding: 0 0 0 10px;
-    opacity: 0; transition: opacity .12s, color .12s;
-  }
-  .fact:hover .fact-del, .fact:focus-within .fact-del { opacity: 1; }
-  .fact .fact-del:hover { color: #b23b3b; }
-  .fact.fresh { background-color: #c4e6d6; }
-  .fact.gone {
-    opacity: 0; transform: translateX(14px); max-height: 0;
-    padding-top: 0; padding-bottom: 0; margin-bottom: 0; overflow: hidden;
-    transition: opacity .2s ease, transform .2s ease, max-height .26s ease,
-                padding .26s ease, margin .26s ease;
-  }
-  .addfact { display: flex; gap: 8px; margin-top: 14px; }
-  .addfact .input { flex: 1; }
-  .addfact .btn { flex: 0 0 auto; }
-
-  /* facts Claude suggests (read from the owner's systems) -> approve to add */
-  .suggestlist { margin-bottom: 4px; }
-  .suggest {
-    display: flex; align-items: center; gap: 12px; padding: 11px 13px;
-    background: #fbfaf4; border: 1px dashed #ddd5be; border-radius: 9px; margin-bottom: 8px;
-    transition: opacity 2.4s ease, transform 2.4s ease, background-color 4.2s ease;
-  }
-  .suggest-main { flex: 1; min-width: 0; }
-  .suggest-src { display: block; font-size: 9.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); margin-bottom: 3px; }
-  .suggest-text { font-size: 13.5px; color: #36433d; line-height: 1.45; }
-  .suggest-actions { flex: 0 0 auto; display: flex; align-items: center; gap: 4px; }
-  .suggest-add { padding: 6px 15px; font-size: 12.5px; }
-  .suggest-dismiss { padding: 6px 9px; font-size: 12.5px; }
-  .suggest.gone {
-    transition: opacity .22s ease, transform .22s ease, max-height .26s ease, padding .26s ease, margin .26s ease;
-    opacity: 0; transform: translateX(14px); max-height: 0;
-    padding-top: 0; padding-bottom: 0; margin-bottom: 0; overflow: hidden;
-  }
-  /* fade in one at a time when the Facts tab opens, exactly like the Build Memory questions */
-  .suggest.enter { opacity: 0; transform: translateY(-6px); }
-  .suggest.fresh { background-color: #bce3d2; }
-
-  .p-body { flex: 1 1 auto; overflow-y: auto; padding: 14px 36px 40px; }
-
-  .fieldset { padding: 22px 0 6px; }
-  .fieldset + .fieldset { border-top: 1px solid var(--line-soft); }
-  .legend {
-    font-size: 11px; letter-spacing: 0.13em; text-transform: uppercase;
-    color: var(--faint); font-weight: 600; margin-bottom: 16px;
-  }
-  .field { margin-bottom: 16px; }
-  .field:last-child { margin-bottom: 4px; }
-  .field label { display: block; font-size: 12.5px; color: var(--muted); margin-bottom: 6px; }
-  .input, .textarea {
-    width: 100%; font: inherit; font-size: 14px; color: var(--ink); line-height: 1.5;
-    border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px;
-    background: #fff; transition: border-color .12s, box-shadow .12s, background .12s;
-  }
-  .textarea { resize: vertical; min-height: 44px; }
-  .input:focus, .textarea:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px var(--green-tint); }
-  .field.dirty .input, .field.dirty .textarea { background: #fffdf6; border-color: #e7d7a8; }
-  .row2 { display: flex; gap: 14px; }
-  .row2 .field { flex: 1; }
-
-  /* sticky save bar */
-  .save-bar {
-    flex: 0 0 auto; width: 100%; max-width: 672px; align-self: center; border-top: 1px solid var(--line);
-    padding: 14px 36px; background: #fff;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .save-bar .hint { font-size: 12.5px; color: var(--faint); }
-  .save-bar .hint.show-dirty { color: #a07c1f; }
-  .btn { font: inherit; font-size: 13px; font-weight: 600; padding: 9px 20px; border-radius: 9px; cursor: pointer; border: 1px solid transparent; transition: background .12s, color .12s, opacity .12s; }
-  .btn-save { background: var(--green); color: #fff; }
-  .btn-save:hover { background: var(--green-deep); }
-  .btn-save:disabled { opacity: .45; cursor: default; }
-  .btn-save.done { background: var(--green-deep); }
-
-  /* ============ RIGHT: question queue ============ */
-  .queue { flex: 1 1 0; min-width: 380px; background: var(--bg); }
-  .q-head { flex: 0 0 auto; padding: 24px 28px 16px; border-bottom: 1px solid var(--line); }
-  .q-head .top, .q-head .note { max-width: 720px; margin-left: auto; margin-right: auto; }
-  .q-head .top { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-  .q-head h2 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
-  /* connect / disconnect toggle */
-  .conn-toggle {
-    display: inline-flex; align-items: center; gap: 11px; font: inherit; cursor: pointer;
-    border: 1px solid var(--green-line); background: var(--green-tint);
-    border-radius: 999px; padding: 10px 13px 10px 20px; transition: background .15s, border-color .15s;
-  }
-  .conn-toggle .conn-dot {
-    width: 11px; height: 11px; border-radius: 50%; background: #18c39a;
-    box-shadow: 0 0 0 0 rgba(43,189,126,0.6); animation: pulse 2s infinite;
-  }
-  .conn-toggle .conn-label { font-size: 16px; font-weight: 600; color: var(--green-deep); letter-spacing: -0.01em; display: inline-block; width: 212px; text-align: left; white-space: nowrap; }
-  .conn-switch { width: 46px; height: 26px; border-radius: 999px; background: var(--green); position: relative; flex: 0 0 auto; transition: background .15s; }
-  .conn-knob { position: absolute; top: 3px; left: 23px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.22); transition: left .16s; }
-  .conn-toggle.off { background: #f4f5f4; border-color: var(--line); }
-  .conn-toggle.off .conn-dot { background: #c2c7c4; animation: none; box-shadow: none; }
-  .conn-toggle.off .conn-label { color: var(--muted); }
-  .conn-toggle.off .conn-switch { background: #c5cac7; }
-  .conn-toggle.off .conn-knob { left: 3px; }
-  /* the Claude Code node is the toggle now, so drop the old pill chrome */
-  .flow-end.conn-toggle, .flow-end.conn-toggle.off { display: flex; flex-direction: column; align-items: center; gap: 6px; background: none; border: none; border-radius: 0; padding: 0; width: 100px; }
-  .flow-end.conn-toggle.off .flow-node.cc { background: #9aa39d; border-color: #9aa39d; }
-  .flow-end.conn-toggle.off .flow-sub { color: var(--muted); }
-  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(43,189,126,0.5);} 70% { box-shadow: 0 0 0 6px rgba(43,189,126,0);} 100% { box-shadow: 0 0 0 0 rgba(43,189,126,0);} }
-  .q-head .note { margin-top: 6px; font-size: 12.5px; color: var(--faint); }
-
-  .q-body { flex: 1; overflow-y: auto; padding: 14px 28px 40px; }
-
-  .q {
-    background: #fff; border: 1px solid var(--green-line); border-radius: 12px;
-    overflow: hidden; box-shadow: 0 1px 2px rgba(20,40,30,0.04);
-    max-width: 720px; margin: 0 auto 14px;
-    transition: opacity 2.4s ease, transform 2.4s ease, background-color 4.2s ease;
-    max-height: 700px; background-color: #fff;
-  }
-  .q.enter { opacity: 0; transform: translateY(-6px); }
-  .q.fresh { background-color: #bce3d2; }
-  /* answered cards read as a settled state: whole card goes soft green */
-  .q.answered, .q.answered .card-body { background-color: var(--green-tint); }
-  .q.answered .improve { background-color: #fff; }
-  .q.gone {
-    opacity: 0; transform: translateX(14px); max-height: 0; margin-bottom: 0;
-    transition: opacity .2s ease, transform .2s ease, max-height .28s ease, margin .28s ease;
-  }
-
-  /* card header bar with round icon + source tag */
-  .card-head {
-    display: flex; align-items: center; gap: 9px; padding: 11px 14px;
-    background: var(--green-tint); border-bottom: 1px solid var(--green-line);
-    font-size: 13px; font-weight: 600; color: var(--green-deep);
-  }
-  .card-head .cico { width: 9px; height: 9px; border-radius: 50%; background: var(--green); flex: 0 0 auto; }
-  .card-head .cico.check {
-    width: 19px; height: 19px; background: var(--green); color: #fff;
-    display: grid; place-items: center; font-size: 11px;
-  }
-  .card-head .src { margin-left: auto; font-size: 11px; font-weight: 500; color: #7d9a8e; }
-  .card-head .edit {
-    margin-left: auto; font: inherit; font-size: 12px; font-weight: 600;
-    color: var(--green); background: none; border: none; cursor: pointer; padding: 0;
-  }
-  .card-head .edit:hover { color: var(--green-deep); }
-  .card-head .del {
-    margin-left: auto; font: inherit; font-size: 12px; font-weight: 600;
-    color: var(--faint); background: none; border: none; cursor: pointer; padding: 0;
-    opacity: 0; transition: opacity .12s, color .12s;
-  }
-  .q:hover .card-head .del, .q:focus-within .card-head .del { opacity: 1; }
-  .card-head .del:hover { color: #b23b3b; }
-  .card-body { padding: 13px 14px; }
-
-  .q .given { font-size: 13.5px; color: var(--ink); line-height: 1.45; background: var(--line-soft); border-radius: 9px; padding: 9px 12px; margin-top: 12px; }
-
-  /* "what this changes for you" on saved cards: Before / Now / So */
-  .improve { margin-top: 12px; padding: 10px 13px; background: var(--green-tint); border: 1px solid var(--green-line); border-radius: 9px; }
-  .improve-label { font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--green); font-weight: 600; margin-bottom: 7px; }
-  .improve-rows { display: flex; flex-direction: column; gap: 5px; }
-  .improve-row { font-size: 12.5px; line-height: 1.45; color: #5c4636; display: grid; grid-template-columns: 42px 1fr; gap: 9px; align-items: baseline; }
-  .improve-row .lbl { font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; color: #8aa89b; padding-top: 1px; }
-  .improve-row.now { margin-top: 2px; padding-top: 6px; border-top: 1px solid var(--green-line); }
-  .improve-row.now .lbl { color: var(--green); }
-  .improve-row.now .txt { color: #1c3b32; }
-  /* plain-English gloss: reads as a continuation of the "Before" line above it */
-  .improve-row .cost { display: block; margin-top: 4px; color: #5c4636; }
-
-  /* open-card hook: the present-tense cost of leaving this unanswered. Hugs its text. */
-  .hookbox { margin: 12px 0; padding: 0; }
-  .hookbox .hl { display: inline; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #b8862f; font-weight: 700; margin-right: 8px; }
-  .hookbox .ht { display: inline; font-size: 12px; line-height: 1.5; color: var(--muted); }
-  .hookbox .ht-cost { display: block; margin-top: 5px; font-size: 12px; line-height: 1.5; color: var(--muted); }
-
-  /* "tell Claude Code" snippet: the app proposes a line, you run it in Claude Code */
-  .cc-block { margin: 12px 0 2px; padding: 10px 12px; background: #f4f6f5; border: 1px solid var(--line); border-radius: 9px; }
-  .cc-label { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 7px; }
-  .cc-row { display: flex; align-items: center; gap: 10px; }
-  .cc-code { flex: 1; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: #5c4636; line-height: 1.4; }
-  .cc-copy { flex: 0 0 auto; font: inherit; font-size: 12px; font-weight: 600; color: var(--green); background: #fff; border: 1px solid var(--green-line); border-radius: 7px; padding: 5px 11px; cursor: pointer; transition: background .12s, color .12s; }
-  .cc-copy:hover { background: var(--green-tint); }
-  .cc-copy.copied { color: #fff; background: var(--green); border-color: var(--green); }
-
-  /* left form: connection rows + status pills */
-  .conn { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .conn-sub { font-size: 12.5px; color: var(--muted); }
-  .stat-pill { font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 20px; }
-  .stat-pill.ok { color: var(--green); background: var(--green-tint); border: 1px solid var(--green-line); }
-  .stat-pill.wait { color: #a07c1f; background: #fbf3df; border: 1px solid #ecdcb4; }
-
-  /* typing cue while "Claude works" */
-  .typing { display: flex; align-items: center; gap: 8px; padding: 16px 0 4px; font-size: 12.5px; color: var(--faint); opacity: 0; transition: opacity .25s; }
-  .typing.show { opacity: 1; }
-  .typing .pips { display: inline-flex; gap: 3px; }
-  .typing .pips i { width: 5px; height: 5px; border-radius: 50%; background: var(--green); opacity: .35; animation: pip 1.1s infinite; }
-  .typing .pips i:nth-child(2) { animation-delay: .18s; }
-  .typing .pips i:nth-child(3) { animation-delay: .36s; }
-  @keyframes pip { 0%,100% { opacity: .25; } 50% { opacity: 1; } }
-  .q .meta { font-size: 11px; letter-spacing: 0.04em; color: var(--faint); display: flex; align-items: center; gap: 7px; margin-bottom: 9px; }
-  .q .meta .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex: 0 0 auto; }
-  .q .context {
-    font-size: 12px; color: var(--muted); line-height: 1.45; font-style: italic;
-    border-left: 2px solid var(--line); padding-left: 10px; margin: 0 0 11px;
-  }
-  .q .ask { font-size: 14.5px; line-height: 1.5; color: var(--ink); margin-bottom: 14px; }
-  .q .ask b { font-weight: 600; }
-  .answer { width: 100%; font: inherit; font-size: 13.5px; color: var(--ink); line-height: 1.45; border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; resize: none; background: #fff; margin-bottom: 12px; }
-  .answer::placeholder { color: var(--faint); }
-  .answer:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px var(--green-tint); }
-  .answer.saved { background: transparent; border-color: transparent; cursor: text; margin-bottom: 0; }
-  .answer.saved:hover { border-color: var(--line); }
-  .answer.saved:focus { background: #fff; border-color: var(--green); }
-  .saved-actions { display: flex; align-items: center; gap: 10px; margin-top: 11px; }
-  .saved-actions[hidden] { display: none; }
-  .saved-flag { font-size: 12px; font-weight: 600; color: var(--green); display: none; }
-  .saved-actions.done .btn-save, .saved-actions.done .btn-skip { display: none; }
-  .saved-actions.done .saved-flag { display: inline; }
-
-  /* edit actions live in the fixed-height header, so revealing them never changes
-     the card height. styled as inline text buttons to sit on the header line. */
-  .card-head .saved-actions { margin-top: 0; margin-left: auto; gap: 14px; }
-  .card-head .saved-actions .btn-save {
-    background: none; color: var(--green); border: none; border-radius: 0;
-    padding: 0; font-size: 12px; font-weight: 600;
-  }
-  .card-head .saved-actions .btn-save:hover { background: none; color: var(--green-deep); }
-  .card-head .saved-actions .btn-skip { padding: 0; font-size: 12px; }
-  .card-head .saved-actions .saved-flag { font-size: 12px; }
-  /* while editing, the Save/Cancel pair replaces Delete on the right */
-  .card-head .saved-actions:not([hidden]) + .del { display: none; }
-
-  .actions { display: flex; align-items: center; gap: 10px; }
-  .btn-skip { background: transparent; color: var(--muted); border: none; padding: 9px 8px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
-  .btn-skip:hover { color: var(--ink); }
-  .yesno { display: flex; gap: 8px; }
-  .chip { font: inherit; font-size: 13px; font-weight: 600; padding: 8px 18px; border-radius: 9px; cursor: pointer; border: 1px solid var(--line); background: #fff; color: var(--ink); transition: background .12s, border-color .12s, color .12s; }
-  .chip:hover { border-color: var(--green); background: var(--green-tint); color: var(--green-deep); }
-  .empty { font-size: 12.5px; color: var(--faint); padding: 18px 0 0; text-align: center; }
-  .paused-note { display: none; align-items: center; justify-content: center; gap: 8px; max-width: 720px; margin: 6px auto 0; padding: 12px; font-size: 12.5px; color: var(--muted); text-align: center; }
-  .paused-note .pdot { width: 7px; height: 7px; border-radius: 50%; background: #c2c7c4; flex: 0 0 auto; }
-  .paused-note.show { display: flex; }
-
-  ::-webkit-scrollbar { width: 8px; }
-  ::-webkit-scrollbar-thumb { background: rgba(120,130,125,0.28); border-radius: 6px; }
-
-  /* medium screens: tighten the flow so it doesn't crowd the connection pill */
-  /* narrow desktop: move the caption from between toggle and You to under the pill */
-  @media (max-width: 1180px) {
-    .flow-cap { display: none; }
-    .conn-cap { display: block; }
-  }
-  @media (max-width: 1080px) {
-    .flow-arrow { width: 42px; }
-    .flow { gap: 3px; }
-    .map-viz { flex: 0 0 188px; }
-  }
-  /* tablet: the flow gets cramped, so hide it and keep the pill + caption */
-  @media (max-width: 900px) {
-    .flow { display: none; }
-  }
-
-  /* ===== Workspace split: the Zoutcomes app (left) + a peek at Claude Code (right) ===== */
-  .workspace { flex: 1 1 auto; display: flex; min-height: 0; overflow: hidden; }
-  .workspace > .shell { flex: 1 1 auto; min-width: 0; }
-
+  /* ===== a peek at Claude Code, running alongside ===== */
   .cc-pane {
-    flex: 0 0 clamp(380px, 35%, 540px);
-    display: flex; flex-direction: column; min-height: 0;
-    background: #20160c; border-left: 1px solid #3a2a16; color: #ece3d4;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    flex: 0 0 clamp(340px, 35%, 540px);
+    display: flex; flex-direction: column; max-height: 100vh;
+    background: #20160c; color: #ece3d4;
+    font-family: var(--font-mono);
   }
-  .cc-head { flex: 0 0 auto; display: flex; align-items: center; gap: 11px; padding: 11px 15px; background: #1a1109; border-bottom: 1px solid #2e2012; }
+  .cc-head { flex: 0 0 auto; display: flex; align-items: center; gap: 11px; padding: 13px 15px; background: #1a1109; border-bottom: 1px solid #2e2012; }
   .cc-dots { display: flex; gap: 6px; }
   .cc-dots i { width: 11px; height: 11px; border-radius: 50%; display: block; }
   .cc-dots i:nth-child(1) { background: #ff5f57; }
@@ -442,8 +175,7 @@
   .cc-title { font-size: 12.5px; color: #cdbfa6; font-weight: 600; }
   .cc-conn { margin-left: auto; display: flex; align-items: center; gap: 7px; font-size: 11px; color: #7fe9d2; }
   .cc-conn .d { width: 7px; height: 7px; border-radius: 50%; background: #2fd3b5; box-shadow: 0 0 0 3px rgba(47,211,181,.18); }
-
-  .cc-body { flex: 1 1 auto; overflow-y: auto; padding: 17px 16px 12px; font-size: 12.7px; line-height: 1.62; }
+  .cc-body { flex: 1 1 auto; overflow-y: auto; padding: 18px 16px 12px; font-size: 12.7px; line-height: 1.62; }
   .cc-user { color: #f3ebdb; margin-bottom: 14px; }
   .cc-user .caret { color: #2fd3b5; font-weight: 700; margin-right: 9px; }
   .cc-tool { margin: 0 0 14px; padding: 9px 11px; border-radius: 9px; background: rgba(47,211,181,.07); border: 1px solid rgba(47,211,181,.22); color: #bfeede; font-size: 12px; }
@@ -459,251 +191,166 @@
   .cc-foot { flex: 0 0 auto; padding: 0 16px 15px; font-size: 11px; color: #9a8a6e; line-height: 1.5; }
   .cc-foot b { color: #caa86f; font-weight: 600; }
 
-  /* on smaller screens the peek gets cramped — drop it, the app stands alone */
-  @media (max-width: 1040px) { .cc-pane { display: none; } }
-
-  /* ============ MOBILE: stack the two columns, let the page scroll ============ */
-  @media (max-width: 760px) {
-    html, body { height: auto; }
-    body { flex-direction: column; height: auto; min-height: 100vh; overflow-y: auto; }
-    .workspace { display: block; flex: 0 0 auto; overflow: visible; }
-
-    /* mobile: hide the whole You/map/Claude Code flow, keep the switch + caption */
-    .topbar { flex-direction: column; align-items: center; gap: 12px; padding: 14px 18px; }
-    .flow { display: none; }
-    .conn-col { align-items: center; }
-    .conn-cap { text-align: center; padding-left: 0; max-width: 280px; }
-
-    /* the single panel grows with its content instead of scrolling on its own */
-    .shell { flex: 0 0 auto; }
-    .p-body { flex: 0 0 auto; overflow: visible; }
-
-    /* tighter side padding on small screens */
-    .p-head, .p-body { padding-left: 20px; padding-right: 20px; }
-    .tabs { padding-left: 16px; padding-right: 16px; }
+  /* ===== responsive ===== */
+  @media (max-width: 900px) {
+    .cc-pane { display: none; }       /* the peek needs width; drop it, the app stands alone */
+  }
+  @media (max-width: 680px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { border-right: none; border-bottom: 1px solid rgb(var(--sand)); min-height: 0; padding-bottom: 18px; }
   }
 </style>
 </head>
 <body>
-
-    <header class="topbar">
-
-    <!-- connection on/off switch, left side (caption tucks under it on smaller screens) -->
-    <div class="conn-col">
-      <button class="conn-toggle" id="connToggle" type="button" aria-pressed="true" title="Connection to Claude Code">
-        <span class="conn-dot"></span>
-        <span class="conn-label" id="connLabel">Connected to Claude Code</span>
-        <span class="conn-switch"><span class="conn-knob"></span></span>
-      </button>
-      <span class="conn-cap">You keep using Claude Code as always. Zoutcomes works alongside it, remembering how your site and business run, so Claude gets your setup right instead of guessing.</span>
-    </div>
-
-    <div class="flow">
-
-      <!-- value caption, between the connection switch and You -->
-      <span class="flow-cap">You keep using Claude Code as always. Zoutcomes works alongside it, remembering how your site and business run, so Claude gets your setup right instead of guessing.</span>
-
-      <!-- YOU: you teach the brain (answer questions, add facts, chat) -->
-      <div class="flow-end">
-        <span class="flow-label">You</span>
-        <span class="flow-sub">answer &amp; add facts</span>
-      </div>
-
-      <svg class="flow-arrow" viewBox="0 0 64 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-        <line x1="8" y1="11" x2="56" y2="11"/>
-        <path d="M8 11 l6 -4 M8 11 l6 4"/>
-        <path d="M56 11 l-6 -4 M56 11 l-6 4"/>
-      </svg>
-
-      <!-- THE MAP: just the brain canvas now -->
-      <div class="map-dock">
-        <span class="map-name">Zoutcomes</span>
-        <div class="map-card" id="mmCard">
-          <div class="map-viz">
-            <canvas id="mmCanvas"></canvas>
-            <span class="map-hint">hover to explore</span>
-          </div>
-          <div class="map-toast" id="mmToast"></div>
-        </div>
-      </div>
-
-      <svg class="flow-arrow" viewBox="0 0 64 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-        <line x1="8" y1="11" x2="56" y2="11"/>
-        <path d="M8 11 l6 -4 M8 11 l6 4"/>
-        <path d="M56 11 l-6 -4 M56 11 l-6 4"/>
-      </svg>
-
-      <!-- CLAUDE CODE: reads the brain to do the work (status reflects the switch) -->
-      <div class="flow-end">
-        <span class="flow-label">Claude Code</span>
-        <span class="flow-sub" id="ccStatus">Live</span>
-      </div>
-
-    </div>
-  </header>
-
-  <!-- ===================== SPLIT: the app (left) + a peek at Claude Code (right) ===================== -->
   <div class="workspace">
 
-  <!-- ===================== ONE PANEL, THREE TABS ===================== -->
-  <div class="shell">
-    <div class="p-head">
-      <h1><span class="mark">◧</span> Reyes Law Firm</h1>
-    </div>
-
-    <div class="tabs" id="tabs">
-      <button class="tab active" data-tab="questions">Build Memory<span class="badge" id="badge-questions"></span></button>
-      <button class="tab" data-tab="facts">Facts<span class="badge" id="badge-facts"></span></button>
-      <button class="tab" data-tab="guardrails">Guardrails<span class="badge" id="badge-guard"></span></button>
-      <button class="tab" data-tab="site">Site improvement<span class="badge" id="badge-site"></span></button>
-      <button class="tab" data-tab="ask"><svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>Ask David</button>
-    </div>
-
-    <div class="p-body" id="formBody">
-
-      <!-- ====== TAB: FACTS (what you've told Claude) ====== -->
-      <div class="panel" data-panel="facts">
-
-        <div class="fieldset">
-          <div class="legend">Suggested by Claude</div>
-          <p class="facts-note">Claude read your site and books and spotted these. Nothing is saved until you say so. Add the ones that are right.</p>
-          <div class="suggestlist" id="suggestList"></div>
-        </div>
-
-        <div class="fieldset">
-          <div class="legend">Add a fact</div>
-          <p class="facts-note">Tell Zoutcomes anything worth knowing. Your site, your business, how you like things done. Some it could guess, some it can't. Write it once, and Claude Code has it for every task after.</p>
-          <div class="factlist" id="factlist">
-            <div class="fact"><span class="tick">✓</span> Lena is my paralegal. She opens new matters and does first drafts. I review and sign everything that goes out.<button class="fact-del" type="button">Delete</button></div>
-            <div class="fact"><span class="tick">✓</span> We don't take DIY-will clients. Too much back-and-forth for the fee.<button class="fact-del" type="button">Delete</button></div>
-            <div class="fact"><span class="tick">✓</span> I've stopped taking litigation. Estate planning and probate only now.<button class="fact-del" type="button">Delete</button></div>
-            <div class="fact"><span class="tick">✓</span> Anything with a court deadline is urgent. Probate cutoffs are hard and I can't miss them.<button class="fact-del" type="button">Delete</button></div>
-            <div class="fact"><span class="tick">✓</span> Busy season is January to April. Push estate reviews then.<button class="fact-del" type="button">Delete</button></div>
-            <div class="fact"><span class="tick">✓</span> Referrals from Dr. Lin's office get a same-week appointment.<button class="fact-del" type="button">Delete</button></div>
+    <!-- ============ THE ACTIVE MEMORY APP (mirrors web/) ============ -->
+    <div class="app-pane">
+      <header class="topbar">
+        <div class="topbar-inner">
+          <div>
+            <div class="brand"><span class="mark">◧</span>Zoutcomes</div>
+            <div class="tagline">The memory Claude Code reads before it touches your site, so it stops guessing.</div>
           </div>
-          <div class="addfact">
-            <input class="input" id="factInput" placeholder="">
-            <button class="btn btn-save" id="factAdd" type="button">Add</button>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ====== TAB: GUARDRAILS (never/always rules Claude obeys) ====== -->
-      <div class="panel" data-panel="guardrails">
-
-        <div class="fieldset">
-          <div class="legend">Suggested by Claude</div>
-          <p class="facts-note">Zoutcomes spotted things worth locking down and suggests a rule for each. Nothing is enforced until you say so. Keep the ones that are right.</p>
-          <div class="suggestlist" id="suggestListG"></div>
-        </div>
-
-        <div class="fieldset">
-          <div class="legend">Add a guardrail</div>
-          <p class="facts-note">The things Claude must never do, and the ones it must always do. Save them once and Claude Code follows them on every task, so a wrong move can't reach your live site.</p>
-          <div class="factlist" id="guardlist">
-            <div class="fact"><span class="tick">✓</span> Never publish changes live. Always leave them as a draft for me to approve first.<button class="fact-del" type="button">Delete</button></div>
-            <div class="fact"><span class="tick">✓</span> Always put the "Book a free 15-minute consult" button on every page you build.<button class="fact-del" type="button">Delete</button></div>
-            <div class="fact"><span class="tick">✓</span> Never feature DIY wills or hourly work on the site. We turn those away.<button class="fact-del" type="button">Delete</button></div>
-            <div class="fact"><span class="tick">✓</span> Never use the words "guarantee" or "cheap" in any copy. Some are brand, some are bar advertising rules.<button class="fact-del" type="button">Delete</button></div>
-            <div class="fact"><span class="tick">✓</span> Never change the homepage without showing me the draft first.<button class="fact-del" type="button">Delete</button></div>
-          </div>
-          <div class="addfact">
-            <input class="input" id="guardInput" placeholder="">
-            <button class="btn btn-save" id="guardAdd" type="button">Add</button>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ====== TAB: ACTIVE QUESTIONS (proactive questions Claude asks as it works) ====== -->
-      <div class="panel active" data-panel="questions">
-
-        <div class="fieldset">
-          <div class="legend">Build Memory</div>
-          <p class="facts-note">Zoutcomes is the memory Claude Code reads from. These questions fill it. Answer when you like, nothing to run here. The more it knows, the smarter Claude Code is every time you use it.</p>
-          <div class="qfeed" id="factsQ"></div>
-        </div>
-
-      </div>
-
-      <!-- ====== TAB: SITE IMPROVEMENT (proactive "I noticed..." questions) ====== -->
-      <div class="panel" data-panel="site">
-
-        <div class="fieldset">
-          <div class="legend">Site improvement</div>
-          <p class="facts-note">Zoutcomes reads your site and watches how it's doing. It asks you probing questions, then hands you a prompt to copy straight into Claude Code.</p>
-          <div class="qfeed" id="siteQ"></div>
-        </div>
-
-      </div>
-
-      <!-- ====== TAB: ASK DAVID (human in the loop) ====== -->
-      <div class="panel" data-panel="ask">
-
-        <div class="fieldset">
-          <div class="legend">Ask David</div>
-          <div class="ask-who">
-            <span class="ask-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></span>
-            <div>
-              <div class="ask-name">David, Blue Inbox</div>
-              <div class="ask-status">Usually replies same day</div>
+          <div class="topbar-right">
+            <div class="conn">
+              <span class="conn-item"><span class="conn-dot app"></span>App · live</span>
+              <span class="conn-item conn-working"><span class="conn-dot pulse"></span>Claude Code · working</span>
             </div>
-          </div>
-
-          <div class="chat" id="chat">
-            <div class="msg them"><span class="bubble">hey Diana! i'm around whenever something comes up. setup, a rule you're not sure how to answer, whether to even let Claude do a thing. just ask.</span></div>
-
-            <div class="msg me"><span class="bubble">Claude keeps asking what counts as a lead and honestly I'm not sure what to tell it.</span></div>
-            <div class="msg them"><span class="bubble">quick one. just booked consults, or every contact form fill too? most firms count booked consults only, so the number actually means something.</span></div>
-            <div class="msg me"><span class="bubble">Just booked consults.</span></div>
-            <div class="msg them"><span class="bubble">nice. saved that as a rule, so every lead report counts booked consults only and Claude won't keep asking.</span></div>
-
-            <div class="msg me"><span class="bubble">Can you make sure Claude never puts DIY wills on the site? I keep turning those away but they're still listed.</span></div>
-            <div class="msg them"><span class="bubble">yep, that's the kind of thing this is for. i'll save it as a rule so Claude keeps DIY wills off every page it touches. anything else you don't want featured?</span></div>
-            <div class="msg me"><span class="bubble">Yeah, nothing hourly. I only do flat fee.</span></div>
-            <div class="msg them"><span class="bubble">got it, flat-fee only on the site. saved both, so Claude won't advertise work you don't take.</span></div>
-
-            <div class="msg me"><span class="bubble">Is it actually safe to let Claude change the website by itself?</span></div>
-            <div class="msg them"><span class="bubble">honestly i'd keep it on a short leash at first. i set it so Claude saves every change as a draft and never goes live till you ok it. you stay in control, it just does the grunt work.</span></div>
-            <div class="msg me"><span class="bubble">Perfect, let's do that.</span></div>
-            <div class="msg them"><span class="bubble">done, and saved as a rule so it holds for every edit going forward.</span></div>
-
-            <div class="msg me"><span class="bubble">Last thing. Everything Claude writes sounds stiff and lawyerly.</span></div>
-            <div class="msg them"><span class="bubble">got it. i'll have it write warmer and plainer, the way you'd talk to a first-timer. want that as the default everywhere?</span></div>
-            <div class="msg me"><span class="bubble">Yes please.</span></div>
-            <div class="msg them"><span class="bubble">done, and saved so every page and email follows that voice from here on. you'll see it fill in on your map.</span></div>
-
-            <div class="chat-typing" id="chatTyping"><span class="bubble">David is typing…</span></div>
-          </div>
-
-          <div class="chat-compose">
-            <input class="input" id="chatInput" placeholder="Ask David anything...">
-            <button class="btn btn-save" id="chatSend" type="button">Send</button>
+            <div class="org">Reyes Law Firm</div>
           </div>
         </div>
+      </header>
 
+      <div class="layout">
+        <!-- folder sidebar -->
+        <aside class="sidebar">
+          <div class="tree-label">Memory</div>
+          <a class="tree-item root active" href="#">
+            <svg class="tree-ico" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7 8 2.5 13.5 7M4 6.2V13h8V6.2"/></svg>
+            <span class="tree-name">Reyes Law Firm</span>
+            <span class="tree-count">3</span>
+          </a>
+          <div class="tree-divider"></div>
+          <a class="tree-item" href="#">
+            <svg class="tree-ico" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4.5a1 1 0 0 1 1-1h3l1.2 1.4H13a1 1 0 0 1 1 1V12a1 1 0 0 1-1 1H2.5a1 1 0 0 1-1-1z"/></svg>
+            <span class="tree-name">website</span>
+            <span class="tree-count">2</span>
+          </a>
+          <a class="tree-item" href="#">
+            <svg class="tree-ico" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4.5a1 1 0 0 1 1-1h3l1.2 1.4H13a1 1 0 0 1 1 1V12a1 1 0 0 1-1 1H2.5a1 1 0 0 1-1-1z"/></svg>
+            <span class="tree-name">intake</span>
+            <span class="tree-count zero">0</span>
+          </a>
+          <form class="new-project" onsubmit="return false">
+            <input placeholder="New project…" autocomplete="off">
+            <button type="submit" aria-label="Create project">+</button>
+          </form>
+        </aside>
+
+        <!-- scoped content -->
+        <main class="content">
+          <div class="scope-head">
+            <span class="scope-kind">Org root</span>
+            <h1 class="scope-title">Reyes Law Firm</h1>
+          </div>
+          <p class="scope-sub">Memory that applies to everything Claude does for the firm — how the practice runs, the site, and the rules it must never break.</p>
+
+          <nav class="tabs" id="tabs">
+            <button class="tab active" data-tab="review">Review <span class="badge amber">4</span></button>
+            <button class="tab" data-tab="facts">Facts <span class="badge">6</span></button>
+            <button class="tab" data-tab="guardrails">Guardrails <span class="badge amber">5</span></button>
+          </nav>
+
+          <!-- REVIEW -->
+          <section class="panel active" data-panel="review">
+            <div class="legend">Add your own facts</div>
+            <p class="note">Goals, strategy, and business logic about your firm, so Claude works better for you. Saved straight to the Facts tab.</p>
+            <form class="addform" onsubmit="return false">
+              <textarea placeholder="A fact, goal, or convention true across the firm — how you work, who does what, what you're trying to do."></textarea>
+              <button class="btn primary" type="submit">Add</button>
+            </form>
+
+            <div class="legend">Questions and facts to confirm</div>
+            <p class="note">Questions Claude needs answered, and facts it read from your site to confirm. Each one you handle becomes a confirmed fact on the Facts tab.</p>
+
+            <div class="card qcard">
+              <div class="body">
+                <div class="content">Other than the homepage, which pages should I never change without showing you first?</div>
+                <div class="qwhy">Why Claude asks: only the homepage is protected today — other key pages may deserve the same review.</div>
+                <form class="qform" onsubmit="return false">
+                  <textarea></textarea>
+                  <div class="actions"><button class="btn primary" type="submit">Save answer</button></div>
+                </form>
+              </div>
+              <div class="qskip"><button class="btn ghost" type="button">Skip</button></div>
+            </div>
+
+            <div class="card">
+              <div class="body">
+                <div class="content">Every service page ends with a “Book a free 15-minute consult” button.</div>
+                <div class="meta"><span class="proj-tag root">org root</span><span>Read from your site</span></div>
+              </div>
+              <div class="actions"><button class="btn primary" type="button">Confirm</button><button class="btn ghost" type="button">Skip</button></div>
+            </div>
+
+            <div class="card">
+              <div class="body">
+                <div class="content">Your homepage describes the firm as estate planning and probate.</div>
+                <div class="meta"><span class="proj-tag root">org root</span><span>Read from your site</span></div>
+              </div>
+              <div class="actions"><button class="btn primary" type="button">Confirm</button><button class="btn ghost" type="button">Skip</button></div>
+            </div>
+          </section>
+
+          <!-- FACTS -->
+          <section class="panel" data-panel="facts">
+            <div class="legend">Confirmed facts</div>
+            <p class="note">What Claude actually knows about your firm — your answers, the facts you added, and what you've confirmed. Click any to edit.</p>
+
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Lena is my paralegal. She opens new matters and does first drafts. I review and sign everything that goes out.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>We don't take DIY-will clients. Too much back-and-forth for the fee.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Estate planning and probate only now — I've stopped taking litigation.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Anything with a court deadline is urgent. Probate cutoffs are hard and I can't miss them.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Busy season is January to April. Push estate reviews then.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Referrals from Dr. Lin's office get a same-week appointment.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+
+            <p class="note" style="margin-top:20px;"><span style="color:rgb(var(--ink-muted));">Plus 38 pages read from your WordPress site, used quietly for exact-name lookups — not shown here because there's nothing to decide about them.</span></p>
+          </section>
+
+          <!-- GUARDRAILS -->
+          <section class="panel" data-panel="guardrails">
+            <div class="legend">Guardrails (firm-wide)</div>
+            <p class="note">Hard rules Claude must never violate. These fire on every task, in every project.</p>
+
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never publish changes live. Always leave them as a draft for me to approve first.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Always put the “Book a free 15-minute consult” button on every page you build.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never feature DIY wills or hourly work on the site. We turn those away.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never use the words “guarantee” or “cheap” in any copy. Some are brand, some are bar advertising rules.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never change the homepage without showing me the draft first.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+
+            <form class="addform" onsubmit="return false">
+              <textarea placeholder="A rule Claude must never violate (e.g. &quot;Never list a phone number that isn't the main office line.&quot;)."></textarea>
+              <button class="btn primary" type="submit">Add</button>
+            </form>
+          </section>
+        </main>
       </div>
-
     </div>
-  </div><!-- /.shell -->
 
-    <!-- A peek at where the customer actually works. They live in Claude Code; Zoutcomes runs alongside it. -->
+    <!-- ============ A PEEK AT CLAUDE CODE, RUNNING ALONGSIDE ============ -->
     <aside class="cc-pane" aria-label="A peek at Claude Code, running alongside">
       <div class="cc-head">
         <div class="cc-dots"><i></i><i></i><i></i></div>
         <span class="cc-title">Claude Code — reyes-law-firm</span>
         <span class="cc-conn"><span class="d"></span> Zoutcomes</span>
       </div>
-
       <div class="cc-body">
         <div class="cc-user"><span class="caret">▸</span>Add a new service page for probate administration.</div>
-
         <div class="cc-tool">
           <span class="t-name">get_business_context</span>("probate service page")
           <span class="t-src">↳ Zoutcomes — pulled 3 facts, 4 guardrails for the Reyes Law Firm site</span>
         </div>
-
         <div class="cc-assistant">
           <span class="who">Claude</span> Done — drafted a <b>Probate Administration</b> page. Going by how your site runs:
           <ul>
@@ -713,18 +360,16 @@
             <li>Wrote it warm and plain, and steered clear of <span class="cc-mem">“guarantee” and “cheap.”</span></li>
           </ul>
         </div>
-
         <div class="cc-user"><span class="caret">▸</span>perfect</div>
       </div>
-
       <div class="cc-input"><span>Type / for commands</span><span class="cur">▍</span></div>
       <div class="cc-foot">You never re-explained any of this. <b>Zoutcomes</b> already told Claude how the firm runs, so it got your setup right instead of guessing.</div>
     </aside>
 
-  </div><!-- /.workspace -->
+  </div>
 
 <script>
-  // ---- Left tabs ----
+  // simple tab switching — the only interactivity this mock needs
   document.getElementById('tabs').addEventListener('click', function (e) {
     var tab = e.target.closest('.tab');
     if (!tab) return;
@@ -734,830 +379,6 @@
       p.classList.toggle('active', p.getAttribute('data-panel') === name);
     });
   });
-
-  // ---- Suggested facts drop in on their own, lighting up the Facts tab badge ----
-  var SUGGESTIONS = [
-    { src: 'From WordPress', text: 'Every service page ends with a "Book a free 15-minute consult" button.' },
-    { src: 'From WordPress', text: 'Your homepage describes the firm as estate planning and probate.' },
-    { src: 'From WordPress', text: 'Your pages read formal and lawyerly in tone.' }
-  ];
-  function setFactsBadge() {
-    var b = document.getElementById('badge-facts');
-    var box = document.getElementById('suggestList');
-    if (!b || !box) return;
-    var n = box.querySelectorAll('.suggest:not(.gone)').length;
-    b.textContent = n ? String(n) : '';
-  }
-  (function dripSuggestions() {
-    var box = document.getElementById('suggestList');
-    if (!box) return;
-    SUGGESTIONS.forEach(function (s, i) {
-      setTimeout(function () {
-        var card = document.createElement('div');
-        card.className = 'suggest enter';
-        card.innerHTML =
-          '<div class="suggest-main">' +
-            '<span class="suggest-src">' + s.src + '</span>' +
-            '<span class="suggest-text">' + s.text + '</span>' +
-          '</div>' +
-          '<div class="suggest-actions">' +
-            '<button class="btn btn-save suggest-add" type="button">Add</button>' +
-            '<button class="btn-skip suggest-dismiss" type="button">Dismiss</button>' +
-          '</div>';
-        box.insertBefore(card, box.firstChild); // newest drops in at the top
-        void card.offsetHeight; // reflow, then animate in
-        card.classList.remove('enter');
-        card.classList.add('fresh');
-        setFactsBadge(); // light up the Facts tab notification
-        setTimeout(function () { card.classList.remove('fresh'); }, 3600); // green glow holds, then fades out slowly
-      }, 2000 + i * 25000); // same cadence as the Build Memory feed (INTERVAL_MS)
-    });
-  })();
-
-  // ---- Other facts: add one fact at a time ----
-  (function () {
-    var add = document.getElementById('factAdd');
-    var input = document.getElementById('factInput');
-    var list = document.getElementById('factlist');
-    function addFactRow(text) {
-      var row = document.createElement('div');
-      row.className = 'fact fresh';
-      row.innerHTML = '<span class="tick">✓</span> ' + text.replace(/</g, '&lt;') +
-        '<button class="fact-del" type="button">Delete</button>';
-      list.appendChild(row);
-      setTimeout(function () { row.classList.remove('fresh'); }, 1400);
-      if (window.mmAdvance) window.mmAdvance();
-    }
-    function addFact() {
-      var v = input.value.trim();
-      if (!v) return;
-      addFactRow(v);
-      input.value = '';
-      input.focus();
-    }
-    add.addEventListener('click', addFact);
-    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') addFact(); });
-    list.addEventListener('click', function (e) {
-      if (!e.target.closest('.fact-del')) return;
-      var row = e.target.closest('.fact');
-      row.classList.add('gone');
-      setTimeout(function () { row.remove(); }, 280);
-    });
-
-    // suggested facts: approve one to move it into your facts, or dismiss it
-    var suggestList = document.getElementById('suggestList');
-    if (suggestList) {
-      suggestList.addEventListener('click', function (e) {
-        var card = e.target.closest('.suggest');
-        if (!card) return;
-        if (e.target.closest('.suggest-add')) {
-          var t = card.querySelector('.suggest-text');
-          if (t) addFactRow(t.textContent.trim());
-        } else if (!e.target.closest('.suggest-dismiss')) {
-          return;
-        }
-        card.classList.add('gone');
-        setFactsBadge(); // clear the notification count as suggestions are handled
-        setTimeout(function () { card.remove(); }, 280);
-      });
-    }
-  })();
-
-  // ---- Guardrails: suggested guardrails (confirm/skip) + add your own ----
-  var GUARD_SUGGESTIONS = [
-    { src: 'Claude noticed', text: 'Always save changes as a draft. Never publish to the live site until you approve.' },
-    { src: 'Claude noticed', text: 'Never use the word "guarantee" in site copy. It can break bar advertising rules.' },
-    { src: 'Claude noticed', text: 'Never feature DIY wills on the site. You turn those clients away.' }
-  ];
-  function setGuardBadge() {
-    var b = document.getElementById('badge-guard');
-    var box = document.getElementById('suggestListG');
-    if (!b || !box) return;
-    var n = box.querySelectorAll('.suggest:not(.gone)').length;
-    b.textContent = n ? String(n) : '';
-  }
-  (function dripGuardrails() {
-    var box = document.getElementById('suggestListG');
-    if (!box) return;
-    GUARD_SUGGESTIONS.forEach(function (s, i) {
-      setTimeout(function () {
-        var card = document.createElement('div');
-        card.className = 'suggest enter';
-        card.innerHTML =
-          '<div class="suggest-main">' +
-            '<span class="suggest-src">' + s.src + '</span>' +
-            '<span class="suggest-text">' + s.text + '</span>' +
-          '</div>' +
-          '<div class="suggest-actions">' +
-            '<button class="btn btn-save suggest-add" type="button">Add</button>' +
-            '<button class="btn-skip suggest-dismiss" type="button">Dismiss</button>' +
-          '</div>';
-        box.insertBefore(card, box.firstChild);
-        void card.offsetHeight;
-        card.classList.remove('enter');
-        card.classList.add('fresh');
-        setGuardBadge();
-        setTimeout(function () { card.classList.remove('fresh'); }, 3600);
-      }, 3000 + i * 25000);
-    });
-  })();
-
-  // ---- Guardrails: add one at a time + accept/dismiss suggestions ----
-  (function () {
-    var add = document.getElementById('guardAdd');
-    var input = document.getElementById('guardInput');
-    var list = document.getElementById('guardlist');
-    if (!add || !input || !list) return;
-    function addRow(text) {
-      var row = document.createElement('div');
-      row.className = 'fact fresh';
-      row.innerHTML = '<span class="tick">✓</span> ' + text.replace(/</g, '&lt;') +
-        '<button class="fact-del" type="button">Delete</button>';
-      list.appendChild(row);
-      setTimeout(function () { row.classList.remove('fresh'); }, 1400);
-      if (window.mmAdvance) window.mmAdvance();
-    }
-    function addGuard() {
-      var v = input.value.trim();
-      if (!v) return;
-      addRow(v);
-      input.value = '';
-      input.focus();
-    }
-    add.addEventListener('click', addGuard);
-    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') addGuard(); });
-    list.addEventListener('click', function (e) {
-      if (!e.target.closest('.fact-del')) return;
-      var row = e.target.closest('.fact');
-      row.classList.add('gone');
-      setTimeout(function () { row.remove(); }, 280);
-    });
-    var sg = document.getElementById('suggestListG');
-    if (sg) {
-      sg.addEventListener('click', function (e) {
-        var card = e.target.closest('.suggest');
-        if (!card) return;
-        if (e.target.closest('.suggest-add')) {
-          var t = card.querySelector('.suggest-text');
-          if (t) addRow(t.textContent.trim());
-        } else if (!e.target.closest('.suggest-dismiss')) {
-          return;
-        }
-        card.classList.add('gone');
-        setGuardBadge();
-        setTimeout(function () { card.remove(); }, 280);
-      });
-    }
-  })();
-
-  // ---- Ask David: simple back-and-forth chat (mock) ----
-  (function () {
-    var chat = document.getElementById('chat');
-    var input = document.getElementById('chatInput');
-    var send = document.getElementById('chatSend');
-    var typing = document.getElementById('chatTyping');
-    if (!chat || !input || !send) return;
-    function add(side, text) {
-      var m = document.createElement('div');
-      m.className = 'msg ' + side;
-      var b = document.createElement('span');
-      b.className = 'bubble';
-      b.textContent = text;
-      m.appendChild(b);
-      chat.insertBefore(m, typing); // keep the typing row last
-      chat.scrollTop = chat.scrollHeight;
-    }
-    function sendMsg() {
-      var v = input.value.trim();
-      if (!v) return;
-      add('me', v);
-      input.value = '';
-      input.focus();
-      setTimeout(function () { typing.classList.add('show'); chat.scrollTop = chat.scrollHeight; }, 500);
-      setTimeout(function () {
-        typing.classList.remove('show');
-        add('them', 'Got it, let me take a look and get back to you. I usually reply the same day.');
-      }, 2300);
-    }
-    send.addEventListener('click', sendMsg);
-    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') sendMsg(); });
-  })();
-
-  // ---- Question feeds: preset questions fade in over time, as if Claude is working next door ----
-  // The good questions are the ones Claude can't answer on its own: definitions, rules, and
-  // preferences that live only in your head, never on the site itself.
-  var factsQ = document.getElementById('factsQ');
-  var siteQ = document.getElementById('siteQ');
-  var formBody = document.getElementById('formBody');
-
-  // Questions are DURABLE facts about the business, not live "Claude is stuck right now"
-  // questions. The user answers whenever. Each one teaches Claude something it can't infer
-  // on its own, and improves every future task.
-
-  // Every question is something Claude CANNOT see or glean: definitions, private rules,
-  // and preferences. Nothing derivable from the website itself.
-
-  // already-answered seed (shows the queue -> profile loop, and how it improves Claude)
-  var SEED_ANSWERED = {
-    meta: 'A rule for your website', source: 'WordPress',
-    context: 'You just asked Claude to "fix the typo on the homepage."',
-    ask: 'Should Claude publish changes live, or always leave them as drafts for you to review first?',
-    answer: 'Always a draft. I approve before anything goes live.',
-    ph: 'e.g. always drafts, I approve first...',
-    improve: {
-      before: 'Your always-draft-first rule was said out loud, never set as a guardrail Claude works under. With nothing holding it back, Claude could publish straight to your live site.',
-      cost: 'A wrong edit could reach your clients before you had seen it.',
-      now: 'it leaves a draft for you to approve, and nothing reaches clients until you sign off.'
-    }
-  };
-
-  // open seed (already waiting when the page loads)
-  var SEED_OPEN = {
-    meta: 'A rule for your website', source: 'WordPress',
-    context: 'You just asked Claude to "add a new estate planning page to the site."',
-    ask: 'Claude can match your site\'s look on its own. What it can\'t know is what belongs on a service page. What does every one of yours need? Say a plain-English summary, your flat-fee pricing, and an FAQ.',
-    ph: 'e.g. plain-English summary, flat-fee pricing, an FAQ section...',
-    improve: {
-      before: 'Claude can match your site\'s look, but it has had no way to know which sections you consider required, because that standard lives only in your head. So it kept shipping new pages missing the parts you always include.',
-      cost: 'New pages came back half-finished, and you added the missing pieces by hand every time.',
-      now: 'it builds each page with your standard sections already in place, so new pages are complete on the first try.'
-    }
-  };
-
-  // these fade in over time. All WordPress and how-the-firm-works questions.
-  // Each carries a "context" line: what you said in Claude Code that prompted the question.
-  var FEED = [
-    {
-    meta: 'How you measure the site', source: 'WordPress',
-    context: 'You just asked Claude to "report this month\'s leads from the site."',
-    ask: 'What counts as a lead? A booked consult, a contact-form fill, or a phone call from your tracked number? Claude needs your definition before it can report anything.',
-    ph: 'e.g. a booked consult or a contact form, never raw traffic...',
-    improve: {
-      before: 'What counts as a lead is your definition, not something in the analytics, which log every click and form fill the same. With it written down nowhere, Claude counted something different each run.',
-      cost: 'Every report counted the wrong things, so the numbers looked busy but told you nothing.',
-      now: 'it counts leads your way, so the report reflects real prospects instead of noise.'
-    }
-  },
-    {
-    meta: 'How you measure the site', source: 'WordPress',
-    context: 'You just asked Claude to "tell me where my clients come from."',
-    ask: 'Your site can see a visit, but not that it started as a referral, a Google search, or your newsletter. How do you tag where a lead came from?',
-    ph: 'e.g. referrals are noted in the booking, newsletter links use a code...',
-    improve: {
-      before: 'How you tag where a lead came from lives in your head, not in the visit data, which only shows a click. With no rule to follow, Claude attributed leads differently every run.',
-      cost: 'You kept guessing which marketing worked, and spent on whatever felt busy.',
-      now: 'it ties each lead to its real source, so you can see what actually brings clients in.'
-    }
-  },
-    {
-    meta: 'A rule for your website', source: 'WordPress',
-    context: 'You just asked Claude to "rewrite the homepage intro."',
-    ask: 'Your current pages read formal and lawyerly. Going forward, should Claude write warmer and plainer than what is on the site now, so first-timers feel at ease?',
-    ph: 'e.g. yes, much warmer than the current site...',
-    improve: {
-      before: 'Claude reads your site and copies the formal tone already there. That you want to move away from it is the opposite of what it sees, so with that direction saved nowhere, each new draft matched the stiff voice again.',
-      cost: 'Every new page reinforced the stiff voice you were trying to leave behind.',
-      now: 'it writes in the warmer voice you are moving toward, so the site shifts the way you want.'
-    }
-  },
-    // ---- NEW: website + how the firm works, surfaced first ----
-    // WordPress
-    { meta: 'A rule for your website', source: 'WordPress',
-      context: 'You just asked Claude to "update the services page."',
-      ask: 'Are there services you do NOT want promoted on the site, like the DIY wills you turn away?',
-      ph: 'e.g. never feature DIY wills or anything hourly...',
-      improve: {
-        before: 'That you turn away DIY wills is a rule only you hold; your live site still features them. Working off the visible site with nothing telling it otherwise, Claude kept featuring them too.',
-        cost: 'Your site keeps advertising the work you turn down, and your inbox fills with leads you have to reject.',
-        now: 'it keeps those off the site, so you stop fielding inquiries you only turn down.'
-      } },
-    // How you work -- labeling / vocabulary
-    { meta: 'A rule for your website', source: 'WordPress',
-      context: 'You just asked Claude to "write the new fees page."',
-      ask: 'Are there words you never use with clients, like "cheap," "guarantee," or even "death"? Some are brand, some are bar advertising rules.',
-      ph: 'e.g. never "guarantee" or "cheap"; say "when the time comes," not "death"...',
-      improve: {
-        before: 'Your off-limits words are a brand and compliance rule, invisible in the copy. With no list to enforce, Claude kept reaching for words you would never use.',
-        cost: 'You were proofreading every page for the same forbidden words, and one wrong term can break a bar advertising rule.',
-        now: 'it avoids your off-limits words everywhere it writes, so nothing needs a compliance proofread.'
-      } },
-    // How you work -- intake workflow
-    { meta: 'How your firm works', source: 'Your business',
-      context: 'You just asked Claude to "follow up with this week\'s consult bookings."',
-      ask: 'Walk Claude through what happens after someone books a consult. What are the steps from first call to signed client?',
-      ph: 'e.g. consult, conflict check, engagement letter, intake form...',
-      improve: {
-        before: 'Your intake steps lived only in your head, never written as a procedure Claude could follow. So each time it ran them, it rebuilt the order from scratch and dropped or reordered steps.',
-        cost: 'New clients slipped through a different crack each time, and you re-checked every file by hand.',
-        now: 'it follows your steps in order, so every new client gets the same path without you steering.'
-      } },
-    // How you work -- how the firm thinks (good fit)
-    { meta: 'How your firm works', source: 'Your business',
-      context: 'You just asked Claude to "sort this week\'s new inquiries."',
-      ask: 'How do you tell a good-fit client from one you would rather pass on?',
-      ph: 'e.g. flat-fee estate work yes, hourly disputes no...',
-      improve: {
-        before: 'How you tell a good client from a time-sink is a judgment call only you make, nowhere in the inquiry data. With no rule to go on, Claude scored every inquiry the same and surfaced ones you would never take.',
-        cost: 'You kept triaging the inbox yourself, because Claude couldn\'t tell a real client from a time-sink.',
-        now: 'it surfaces the good-fit inquiries first, and your time goes to clients worth having.'
-      } },
-    // ---- existing WordPress ----
-    { meta: 'A rule for your website', source: 'WordPress',
-      context: 'You just asked Claude to "add a new estate planning page to the site."',
-      ask: 'When Claude writes or updates a page, should it always include your "Book a free 15-minute consult" button, or only on service pages?',
-      ph: 'e.g. every page, near the top and bottom...',
-      improve: {
-        before: 'That every page needs your booking button is a rule only you hold, not something the template enforces. With it saved nowhere, Claude kept shipping pages without it.',
-        cost: 'Pages went live with no way to reach you, and you only noticed after they were public.',
-        now: 'it adds the button to every page it builds, so none ships without a way to book you.'
-      } },
-  ];
-
-  // ---- Site improvement: proactive "Claude noticed X, want me to act?" questions.
-  // Each one delivers value the moment you say yes (the fix ships) AND saves a rule.
-  // These don't act on your site. Each one saves a rule (what the app does) and
-  // hands you a line to run in Claude Code (where the connected tools do the work).
-  var SITE_FEED = [
-    { source: 'Site improvement',
-      context: 'Claude noticed: your contact page gets the most visits of any page, but it has no "Book a consult" button.',
-      ask: 'Want it to be a rule that your high-traffic pages always include a booking button?',
-      ph: 'e.g. yes, always...',
-      cc: 'Add a "Book a consult" button to the contact page on reyeslaw.com.',
-      improve: {
-        before: 'The page people land on most had no way to book you, so your busiest page was quietly sending visitors away.',
-        cost: 'Your highest-traffic page converted the worst, and nothing flagged the leak.',
-        now: 'every page Claude writes for you in Claude Code starts with a booking button, and you have the line to fix this one now.'
-      } },
-    { source: 'Site improvement',
-      context: 'Claude noticed: your probate posts get read about 4x more than your other topics, but you publish them the least.',
-      ask: 'Want Claude to treat probate as your priority topic from now on?',
-      ph: 'e.g. yes, lead with probate...',
-      cc: 'Draft three probate blog post ideas for reyeslaw.com, in our usual voice.',
-      improve: {
-        before: 'Which topics actually pull readers lived in the traffic data, not in any plan, so your writing time spread evenly across topics that did not land.',
-        cost: 'You spent the same effort on posts few people read.',
-        now: 'Claude leads with probate whenever it writes for you, so each post does more.'
-      } },
-    { source: 'Site improvement',
-      context: 'Claude noticed: your services page still lists litigation, which you told it you stopped taking.',
-      ask: 'Want Claude to keep services you have dropped off the site from now on?',
-      ph: 'e.g. yes, keep dropped work off...',
-      cc: 'Remove litigation from the services page on reyeslaw.com.',
-      improve: {
-        before: 'Your live site still advertised work you no longer take, because nothing connected that rule to the public pages.',
-        cost: 'You kept fielding litigation inquiries you only turn away.',
-        now: 'Claude keeps dropped services off your pages, and flags them if they reappear.'
-      } }
-  ];
-
-  function feedEmpty(box) {
-    var em = box && box.querySelector('.feed-empty');
-    if (!em) return;
-    var open = box.querySelectorAll('.q:not(.gone):not(.answered)').length;
-    em.style.display = open ? 'none' : 'block';
-  }
-  function setBadge(id, box) {
-    var b = document.getElementById(id);
-    if (!b || !box) return;
-    var n = box.querySelectorAll('.q:not(.gone):not(.answered)').length;
-    b.textContent = n ? String(n) : '';
-  }
-  function checkEmpty() {
-    feedEmpty(factsQ); feedEmpty(siteQ);
-    setBadge('badge-questions', factsQ); setBadge('badge-site', siteQ);
-  }
-
-  function questionInner(p, value, editing) {
-    value = value || '';
-    var secondBtn = editing
-      ? '<button class="btn-skip" data-cancel>Cancel</button>'
-      : '<button class="btn-skip" data-q>Skip</button>';
-    return '<div class="card-head"><span class="cico"></span>' + (p.source || p.meta) + '</div>' +
-      '<div class="card-body">' +
-        (p.context ? '<div class="context">' + p.context + '</div>' : '') +
-        '<div class="ask">' + p.ask + '</div>' +
-        '<textarea class="answer" rows="2">' + value + '</textarea>' +
-        hookHtml(p) +
-        '<div class="actions">' +
-          '<button class="btn btn-save" data-q>Save</button>' +
-          secondBtn +
-        '</div>' +
-      '</div>';
-  }
-
-  // The present-tense cost of leaving this unanswered. Reserves the same vertical
-  // space the Before/Now/So box will fill once answered, so the card doesn't resize.
-  function hookHtml(p) {
-    if (p.source === 'Site improvement') return ''; // site cards skip the "Without this" hook
-    var text = p.hook || (p.improve && p.improve.before);
-    if (!text) return '';
-    var cost = p.improve && p.improve.cost;
-    return '<div class="hookbox"><div class="hl">Without this</div><div class="ht">' + text + '</div>' +
-      (cost ? '<div class="ht-cost">' + cost + '</div>' : '') + '</div>';
-  }
-
-  // The app doesn't touch your site. For one-off changes it hands you a line to
-  // paste into Claude Code, where the connected tools actually do the work.
-  function ccHtml(p) {
-    if (!p.cc) return '';
-    return '<div class="cc-block"><div class="cc-label">To do it now, tell Claude Code</div>' +
-      '<div class="cc-row"><code class="cc-code">' + p.cc + '</code>' +
-      '<button class="cc-copy" type="button" data-copy>Copy</button></div></div>';
-  }
-
-  function buildQuestion(p) {
-    var q = document.createElement('div');
-    q.className = 'q enter';
-    q.innerHTML = questionInner(p, '', false);
-    q._preset = p;
-    return q;
-  }
-
-  function answeredInner(p) {
-    var improveHtml = p.improve
-      ? '<div class="improve"><div class="improve-label">What this changes for you</div>' +
-        '<div class="improve-rows">' +
-          '<div class="improve-row"><span class="lbl">Before</span><span class="txt">' + p.improve.before +
-            (p.improve.cost ? '<span class="cost">' + p.improve.cost + '</span>' : '') + '</span></div>' +
-          '<div class="improve-row now"><span class="lbl">Now</span><span class="txt">' + p.improve.now + '</span></div>' +
-        '</div></div>'
-      : '';
-    return '<div class="card-head"><span class="cico check">✓</span>' + (p.source || p.meta) +
-        '<div class="saved-actions" hidden>' +
-          '<button class="btn btn-save" data-resave>Save</button>' +
-          '<button class="btn-skip" data-revert>Cancel</button>' +
-          '<span class="saved-flag">Saved ✓</span>' +
-        '</div>' +
-        '<button class="del" data-delete type="button">Delete</button></div>' +
-      '<div class="card-body">' +
-        (p.context ? '<div class="context">' + p.context + '</div>' : '') +
-        '<div class="ask">' + p.ask + '</div>' +
-        '<textarea class="answer saved" rows="2">' + (p.answer || '') + '</textarea>' +
-        improveHtml +
-        ccHtml(p) +
-      '</div>';
-  }
-
-  function buildAnswered(p) {
-    var q = document.createElement('div');
-    q.className = 'q answered';
-    q.innerHTML = answeredInner(p);
-    q._preset = p;
-    return q;
-  }
-
-  // the Facts feed starts empty; shuffle so the order differs each visit,
-  // then the first one types in at ~2s like any new arrival
-  FEED.unshift(SEED_OPEN);
-  for (var s = FEED.length - 1; s > 0; s--) {
-    var r = Math.floor(Math.random() * (s + 1));
-    var tmp = FEED[s]; FEED[s] = FEED[r]; FEED[r] = tmp;
-  }
-
-  // each feed gets an empty-state line and an anchor where new cards land
-  function initFeed(box, emptyText) {
-    if (emptyText) {
-      var em = document.createElement('div');
-      em.className = 'feed-empty';
-      em.textContent = emptyText;
-      em.style.display = 'none';
-      box.appendChild(em);
-    }
-    var anchor = document.createElement('div');
-    anchor.className = 'feed-anchor';
-    anchor.style.cssText = 'height:0;';
-    box.appendChild(anchor);
-    box._anchor = anchor;
-  }
-  initFeed(factsQ, '');
-  initFeed(siteQ, 'Nothing to improve right now. Nice.');
-
-  function addQuestion(p, box) {
-    box = box || factsQ;
-    var q = buildQuestion(p);
-    box.insertBefore(q, box._anchor); // newest at the bottom
-    void q.offsetHeight; // reflow, then animate in
-    q.classList.remove('enter');
-    q.classList.add('fresh');
-    // bring the new question into view (the panel scrolls on desktop, the page on mobile)
-    q.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    setTimeout(function () { q.classList.remove('fresh'); }, 3600); // bg glow holds, then fades out slowly
-    checkEmpty();
-  }
-
-  // site-improvement questions are present from the start (a settled list, no drip)
-  SITE_FEED.forEach(function (p) {
-    var q = buildQuestion(p);
-    q.classList.remove('enter');
-    siteQ.insertBefore(q, siteQ._anchor);
-  });
-  checkEmpty();
-
-  // timing: first Facts question a few seconds in, then one at a steady interval.
-  // New questions only arrive while connected to Claude Code.
-  var TYPING_MS = 1800, INTERVAL_MS = 25000;
-  var idx = 0;
-  var connected = true;
-  var feedTimer = null;
-
-  function scheduleNext(delay) {
-    clearTimeout(feedTimer);
-    if (!connected || idx >= FEED.length) return;
-    feedTimer = setTimeout(runTick, delay);
-  }
-  function runTick() {
-    if (!connected || idx >= FEED.length) return;
-    setTimeout(function () {
-      if (!connected) return;            // disconnected mid-type: hold, resume on reconnect
-      addQuestion(FEED[idx], factsQ);
-      idx++;
-      scheduleNext(INTERVAL_MS - TYPING_MS);
-    }, TYPING_MS);
-  }
-  scheduleNext(2000 - TYPING_MS);        // first card appears at ~2s
-
-  // connect / disconnect toggle: while disconnected, no new questions arrive
-  var connToggle = document.getElementById('connToggle');
-  var connLabel = document.getElementById('connLabel');
-  var ccNode = document.getElementById('ccNode');
-  var ccStatus = document.getElementById('ccStatus');
-  var pausedMsg = document.getElementById('pausedMsg');
-  function setConnected(on) {
-    connected = on;
-    connToggle.classList.toggle('off', !on);
-    connToggle.setAttribute('aria-pressed', on ? 'true' : 'false');
-    connLabel.textContent = on ? 'Connected to Claude Code' : 'Disconnected';
-    if (ccNode) ccNode.classList.toggle('off', !on);
-    if (ccStatus) ccStatus.textContent = on ? 'Live' : 'Paused';
-    var _chip = document.getElementById('sessionChip');
-    var _note = document.getElementById('topbarNote');
-    if (_chip) _chip.style.display = on ? '' : 'none';
-    if (_note) _note.textContent = on
-      ? 'New questions show up as Claude works in your session.'
-      : 'Disconnected. While the session is off, no new questions arrive.';
-    if (pausedMsg) pausedMsg.classList.toggle('show', !on);
-    if (on) { scheduleNext(1200); }      // reconnected: resume shortly
-    else { clearTimeout(feedTimer); }
-  }
-  connToggle.addEventListener('click', function () { setConnected(!connected); });
-
-  formBody.addEventListener('click', function (e) {
-    // copy a "tell Claude Code" line to the clipboard
-    var copyBtn = e.target.closest('[data-copy]');
-    if (copyBtn) {
-      var code = copyBtn.parentNode.querySelector('.cc-code');
-      var text = code ? code.textContent : '';
-      if (navigator.clipboard && text) { navigator.clipboard.writeText(text); }
-      var old = copyBtn.textContent;
-      copyBtn.textContent = 'Copied';
-      copyBtn.classList.add('copied');
-      setTimeout(function () { copyBtn.textContent = old; copyBtn.classList.remove('copied'); }, 1500);
-      return;
-    }
-
-    var q = e.target.closest('.q');
-    if (!q) return;
-    var p = q._preset || {};
-    var ta, actions;
-
-    // delete a saved answer entirely
-    if (e.target.closest('[data-delete]')) {
-      q.style.minHeight = ''; // release the locked height so the card can collapse
-      q.classList.add('gone');
-      setTimeout(function () { q.remove(); checkEmpty(); }, 300);
-      return;
-    }
-    // re-save an edited saved answer
-    if (e.target.closest('[data-resave]')) {
-      ta = q.querySelector('.answer.saved');
-      p.answer = (ta && ta.value.trim()) ? ta.value.trim() : 'Yes.';
-      actions = q.querySelector('.saved-actions');
-      if (actions) {
-        actions.classList.add('done');           // hide buttons, show "Saved ✓"
-        setTimeout(function () { actions.hidden = true; actions.classList.remove('done'); }, 1500);
-      }
-      return;
-    }
-    // discard edits to a saved answer
-    if (e.target.closest('[data-revert]')) {
-      ta = q.querySelector('.answer.saved');
-      if (ta) ta.value = p.answer || '';
-      actions = q.querySelector('.saved-actions');
-      if (actions) { actions.hidden = true; actions.classList.remove('done'); }
-      return;
-    }
-    // answer an open question -> becomes a saved card (lock height so it can't jump)
-    if (e.target.closest('.btn-save')) {
-      ta = q.querySelector('.answer');
-      p.answer = (ta && ta.value.trim()) ? ta.value.trim() : 'Yes.';
-      q.style.minHeight = q.offsetHeight + 'px'; // freeze current height before the swap
-      q.classList.add('answered');
-      q.innerHTML = answeredInner(p);
-      checkEmpty();
-      return;
-    }
-    // skip an open question
-    if (e.target.closest('.btn-skip')) {
-      q.classList.add('gone');
-      setTimeout(checkEmpty, 300);
-      return;
-    }
-  });
-
-  // Enter saves the answer; Shift+Enter still inserts a newline.
-  formBody.addEventListener('keydown', function (e) {
-    if (e.key !== 'Enter' || e.shiftKey) return;
-    var ta = e.target.closest('.answer');
-    if (!ta) return;
-    e.preventDefault();
-    var q = e.target.closest('.q');
-    var saveBtn = q && q.querySelector('.btn-save');
-    if (saveBtn) saveBtn.click();
-  });
-
-  // Editing a saved answer: show Save/Cancel as soon as you focus or change it,
-  // and tuck them away only if you click out without changing anything.
-  function revealSaved(q) {
-    if (!q) return;
-    var actions = q.querySelector('.saved-actions');
-    if (actions) { actions.hidden = false; actions.classList.remove('done'); }
-  }
-  formBody.addEventListener('focusin', function (e) {
-    if (e.target.closest('.answer.saved')) revealSaved(e.target.closest('.q'));
-  });
-  formBody.addEventListener('input', function (e) {
-    if (e.target.closest('.answer.saved')) revealSaved(e.target.closest('.q'));
-  });
-  formBody.addEventListener('focusout', function (e) {
-    var ta = e.target.closest('.answer.saved');
-    if (!ta) return;
-    var q = e.target.closest('.q');
-    if (!q || !q._preset) return;
-    var actions = q.querySelector('.saved-actions');
-    if (!actions) return;
-    if (e.relatedTarget && actions.contains(e.relatedTarget)) return; // moving onto Save/Cancel
-    var dirty = ta.value.trim() !== (q._preset.answer || '').trim();
-    if (!dirty) actions.hidden = true;
-  });
 </script>
-
-<script>
-(function(){
-  var THRESHOLD=3, MAXN=6, GREEN='31,107,84', SOFT='150,172,160';
-  var CLUSTERS=[
-    { id:'basics',  title:'The basics',  x:0,    y:0,   z:0,   revealAt:0 },
-    { id:'site',    title:'Site rules',  x:86,   y:-52, z:-14, revealAt:0 },
-    { id:'books',   title:'Books',       x:104,  y:44,  z:30,  revealAt:0 },
-    { id:'voice',   title:'Voice',       x:-96,  y:-26, z:18,  revealAt:0 },
-    { id:'clients', title:'Clients',     x:-34,  y:64,  z:-22, revealAt:0 },
-    { id:'process', title:'Process',     x:-104, y:40,  z:26,  revealAt:0 },
-    { id:'sched',   title:'Scheduling',  x:-44,  y:-74, z:-30, revealAt:0, frontier:true },
-    { id:'refer',   title:'Referrals',   x:40,   y:86,  z:14,  revealAt:1, frontier:true }
-  ];
-  var CBY={}; CLUSTERS.forEach(function(c){ CBY[c.id]=c; });
-  var LINKS={ l1:{a:'site',b:'books'}, l2:{a:'clients',b:'books'}, l3:{a:'voice',b:'site'}, l4:{a:'process',b:'clients'}, l5:{a:'clients',b:'site'}, l6:{a:'voice',b:'process'} };
-  // each answer lights more cross-links, so the map gains corners as it grows
-  var ALL=['l1','l2','l3','l4','l5','l6'];
-  var BEATS=[
-    { c:{basics:5,site:3,books:3,voice:2,clients:2,process:2}, links:['l1','l3','l4'],          toast:null },
-    { c:{basics:5,site:3,books:3,voice:3,clients:2,process:2}, links:['l1','l3','l4','l6'],     toast:null },
-    { c:{basics:5,site:4,books:3,voice:3,clients:3,process:2}, links:['l1','l2','l3','l4','l6'],toast:null },
-    { c:{basics:5,site:4,books:4,voice:3,clients:3,process:3}, links:ALL,                       toast:null },
-    { c:{basics:6,site:4,books:4,voice:4,clients:3,process:3}, links:ALL,                       toast:null },
-    { c:{basics:6,site:5,books:4,voice:4,clients:4,process:3}, links:ALL,                       toast:null },
-    { c:{basics:6,site:5,books:5,voice:4,clients:4,process:4}, links:ALL,                       toast:null },
-    { c:{basics:6,site:6,books:5,voice:4,clients:5,process:4}, links:ALL,                       toast:null },
-    { c:{basics:6,site:6,books:6,voice:5,clients:5,process:5}, links:ALL,                       toast:null }
-  ];
-  function rng(s){ return function(){ s=(s*1664525+1013904223)>>>0; return s/4294967296; }; }
-  CLUSTERS.forEach(function(c,ci){
-    var r=rng(97+ci*131), n=c.frontier?3:MAXN, R=15; c.nodes=[]; c._rev=0;
-    for (var i=0;i<n;i++){ var u=r()*2-1,t=r()*Math.PI*2,sp=Math.sqrt(1-u*u),rad=R*(0.45+0.55*r());
-      c.nodes.push({ ox:rad*sp*Math.cos(t), oy:rad*sp*Math.sin(t), oz:rad*u, alpha:0 }); }
-  });
-  var card=document.getElementById('mmCard'), cv=document.getElementById('mmCanvas');
-  if(!card||!cv) return;
-  var ctx=cv.getContext('2d');
-  var W=322,H=196,dpr=Math.max(1,Math.min(2,window.devicePixelRatio||1));
-  cv.width=W*dpr; cv.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
-  var step=0, ang=0.5, shimmer=0, transit=0, rings=[], hovered=false, rafId=null;
-  var FOCAL=340, TILT=-0.34, ZOOM=1.14;
-  function rot(p){ var c0=Math.cos(TILT),s0=Math.sin(TILT);
-    var y1=p.y*c0-p.z*s0, z1=p.y*s0+p.z*c0, x1=p.x; var ca=Math.cos(ang),sa=Math.sin(ang);
-    return { x:x1*ca - z1*sa, y:y1, z:x1*sa + z1*ca }; }
-  function project(p){ var r=rot(p), sc=FOCAL/(FOCAL+r.z); return { sx:W/2+r.x*sc*ZOOM, sy:H/2+r.y*sc*ZOOM, scale:sc, z:r.z }; }
-  function fog(sc){ var f=(sc-0.76)/0.72; return Math.max(0,Math.min(1,f))*0.62+0.38; }
-  function lerp(a,b,t){ return Math.round(a+(b-a)*t); }
-  function clusterColor(c){ var n=c._active;
-    if(c.frontier||n===0) return SOFT;
-    if(n<THRESHOLD){ var t=n/THRESHOLD; return lerp(150,90,t)+','+lerp(172,150,t)+','+lerp(160,120,t); }
-    var t2=Math.min(1,(n-THRESHOLD)/3); return lerp(31,16,t2)+','+lerp(107,70,t2)+','+lerp(84,52,t2); }
-  function updateWarmth(){ var beat=BEATS[step], total=CLUSTERS.reduce(function(a,n){ return a+(beat.c[n.id]||0); },0);
-    card.classList.toggle('warm1', total>=12 && total<18);
-    card.classList.toggle('warm2', total>=18 && total<22);
-    card.classList.toggle('warm3', total>=22); }
-  function line(a,b,st,w){ ctx.strokeStyle=st; ctx.lineWidth=w; ctx.beginPath(); ctx.moveTo(a.sx,a.sy); ctx.lineTo(b.sx,b.sy); ctx.stroke(); }
-  function transitDot(ca,cb,t){ var x=ca.x+(cb.x-ca.x)*t, y=ca.y+(cb.y-ca.y)*t, z=ca.z+(cb.z-ca.z)*t;
-    var p=project({x:x,y:y,z:z}), f=fog(p.scale), r=2.6*p.scale, gr=r*3.2;
-    var g=ctx.createRadialGradient(p.sx,p.sy,0,p.sx,p.sy,gr);
-    g.addColorStop(0,'rgba('+GREEN+','+(0.55*f)+')'); g.addColorStop(0.4,'rgba('+GREEN+','+(0.22*f)+')'); g.addColorStop(1,'rgba('+GREEN+',0)');
-    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.sx,p.sy,gr,0,7); ctx.fill();
-    ctx.fillStyle='rgba('+GREEN+','+Math.min(1,0.9*f)+')'; ctx.beginPath(); ctx.arc(p.sx,p.sy,r*0.85,0,7); ctx.fill(); }
-  function draw(){
-    ctx.clearRect(0,0,W,H); var beat=BEATS[step];
-    CLUSTERS.forEach(function(c){ var active=(beat.c[c.id]||0), lit=!c.frontier && active>=THRESHOLD;
-      c._shown=step>=c.revealAt; c._rev += ((c._shown?1:0)-c._rev)*0.13;
-      c._p=project(c); c._lit=lit; c._active=active; c._col=clusterColor(c); });
-    CLUSTERS.forEach(function(c){ if(!c._shown||c.frontier||c._active===0) return;
-      var p=c._p,f=fog(p.scale),rad=(26+c._active*9)*p.scale,a=Math.min(0.085,(0.010+0.012*c._active)*f)*c._rev;
-      var g=ctx.createRadialGradient(p.sx,p.sy,0,p.sx,p.sy,rad);
-      g.addColorStop(0,'rgba(31,107,84,'+a+')'); g.addColorStop(1,'rgba(31,107,84,0)');
-      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.sx,p.sy,rad,0,7); ctx.fill(); });
-    CLUSTERS.forEach(function(c){ if(!c._shown||c.frontier||c._active===0) return;
-      var p=c._p,f=fog(p.scale),rad=(11+c._active*4.6)*p.scale,a=Math.min(0.16,(0.045+0.019*c._active)*f)*c._rev;
-      var g=ctx.createRadialGradient(p.sx,p.sy,0,p.sx,p.sy,rad);
-      g.addColorStop(0,'rgba('+c._col+','+a+')'); g.addColorStop(1,'rgba('+c._col+',0)');
-      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.sx,p.sy,rad,0,7); ctx.fill(); });
-    ctx.lineCap='round'; var hub=CBY.basics._p;
-    var present=CLUSTERS.filter(function(c){ return c._shown && !c.frontier && c._active>0; });
-    present.forEach(function(c){ if(c.id==='basics') return;
-      var f=Math.min(hub.scale,c._p.scale), seeded=!c._lit;
-      line(hub,c._p,'rgba('+GREEN+','+((seeded?0.20:0.30)*fog(f))+')',1.7*f); });
-    var web=present.filter(function(c){ return c.id!=='basics'; });
-    web.forEach(function(c){
-      var near=web.filter(function(o){ return o!==c; })
-        .map(function(o){ return { o:o, d:Math.hypot(c.x-o.x,c.y-o.y) }; })
-        .sort(function(a,b){ return a.d-b.d; }).slice(0,2);
-      near.forEach(function(it){ var f=Math.min(c._p.scale,it.o._p.scale); line(c._p,it.o._p,'rgba('+GREEN+','+(0.18*fog(f))+')',1.25*f); }); });
-    CLUSTERS.forEach(function(c){ if(!c._shown||c.frontier||c._active<2) return; var ns=c.nodes,m=c._active,lit=c._lit;
-      for (var i=0;i<m;i++){ var j=(i+1)%m; if(j===i) continue;
-        var a=project({x:c.x+ns[i].ox,y:c.y+ns[i].oy,z:c.z+ns[i].oz});
-        var b=project({x:c.x+ns[j].ox,y:c.y+ns[j].oy,z:c.z+ns[j].oz});
-        line(a,b,'rgba('+GREEN+','+((lit?0.30:0.22)*fog(Math.min(a.scale,b.scale)))+')',1.15*Math.min(a.scale,b.scale)); } });
-    beat.links.forEach(function(k){ var L=LINKS[k]; if(!CBY[L.a]._shown||!CBY[L.b]._shown) return;
-      var a=CBY[L.a]._p,b=CBY[L.b]._p,f=Math.min(a.scale,b.scale); line(a,b,'rgba('+GREEN+','+(0.6*fog(f))+')',2.6*f); });
-    beat.links.forEach(function(k){ var L=LINKS[k]; if(!CBY[L.a]._shown||!CBY[L.b]._shown) return;
-      [0.30,0.63].forEach(function(t0){ transitDot(CBY[L.a],CBY[L.b],(t0+transit)%1); }); });
-    present.forEach(function(c){ if(c.id==='basics'||!c._lit) return; transitDot(CBY.basics,c,(0.46+transit)%1); });
-    var draws=[];
-    CLUSTERS.forEach(function(c){ c.nodes.forEach(function(nd,i){
-      var vis=c._shown && (c.frontier?true:i<c._active); var target=vis?1:0;
-      nd.alpha += (target-nd.alpha)*0.16; if(nd.alpha<0.02) return;
-      var p=project({x:c.x+nd.ox,y:c.y+nd.oy,z:c.z+nd.oz}); draws.push({c:c,nd:nd,p:p}); }); });
-    draws.sort(function(a,b){ return b.p.z-a.p.z; });
-    draws.forEach(function(d){ var p=d.p,f=fog(p.scale),col=d.c._col;
-      var a=(d.c.frontier?0.28:(d.c._lit?1:0.55))*d.nd.alpha*f; var r=(d.c._lit?3.9:3.3)*p.scale, gr=r*3.4;
-      var g=ctx.createRadialGradient(p.sx,p.sy,0,p.sx,p.sy,gr);
-      g.addColorStop(0,'rgba('+col+','+(0.30*a)+')'); g.addColorStop(0.45,'rgba('+col+','+(0.12*a)+')'); g.addColorStop(1,'rgba('+col+',0)');
-      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.sx,p.sy,gr,0,7); ctx.fill();
-      ctx.fillStyle='rgba('+col+','+Math.min(1,a)+')'; ctx.beginPath(); ctx.arc(p.sx,p.sy,r*0.82,0,7); ctx.fill(); });
-    for (var ri=0;ri<rings.length;ri++){ var rg=rings[ri], pc=project(CBY[rg.id]), rr=5+42*rg.t;
-      ctx.strokeStyle='rgba('+GREEN+','+(0.6*(1-rg.t))+')'; ctx.lineWidth=1.5*(1-rg.t)+0.2;
-      ctx.beginPath(); ctx.arc(pc.sx,pc.sy,rr,0,7); ctx.stroke(); }
-    // labels track their cluster (so they rotate with the map) but float off the corner.
-    // no "?": phrases just start faint and darken as that area gets answered.
-    // labels are drawn in the canvas's internal coords, so CSS shrinking the canvas shrinks them too.
-    // bump the font as the canvas displays smaller, so phrases keep roughly their full-size reading size.
-    var dispW = cv.clientWidth || W;
-    var labelPx = Math.max(12, Math.min(16, 12 * 218 / dispW));
-    ctx.textAlign='center'; ctx.font='600 ' + labelPx.toFixed(1) + 'px -apple-system, system-ui, sans-serif';
-    var ccx=W/2, ccy=H/2;
-    CLUSTERS.forEach(function(c){ var p=c._p; if(!c._shown || p.z<-150) return; var rev=c._rev;
-      var dx=p.sx-ccx, dy=p.sy-ccy, dd=Math.hypot(dx,dy), ox, oy;
-      if(dd<14){ ox=0; oy=-30; } else { ox=(dx/dd)*30; oy=(dy/dd)*30; }
-      var lx=Math.max(30,Math.min(W-30,p.sx+ox)), ly=Math.max(13,Math.min(H-7,p.sy+oy+4));
-      if(c._lit){ ctx.fillStyle='rgba('+c._col+','+(0.97*rev)+')'; }
-      else { var t=Math.min(1,c._active/THRESHOLD), g=Math.round(150-66*t), al=(0.42+0.42*t)*rev; ctx.fillStyle='rgba('+g+','+(g+5)+','+(g+1)+','+al+')'; }
-      ctx.fillText(c.title,lx,ly); });
-  }
-  function settled(){ var beat=BEATS[step], ok=true;
-    CLUSTERS.forEach(function(c){ var shown=step>=c.revealAt;
-      if(Math.abs((shown?1:0)-(c._rev||0))>0.01) ok=false;
-      c.nodes.forEach(function(nd,i){ var vis=shown && (c.frontier?true:i<(beat.c[c.id]||0));
-        if(Math.abs((vis?1:0)-nd.alpha)>0.01) ok=false; }); });
-    return ok && rings.length===0; }
-  function loop(){ if(hovered){ ang+=0.0045; shimmer=(shimmer+0.0075)%1; transit=(transit+0.0042)%1; }
-    for (var i=rings.length-1;i>=0;i--){ rings[i].t+=0.018; if(rings[i].t>=1) rings.splice(i,1); }
-    draw(); if(hovered || !settled()) rafId=requestAnimationFrame(loop); else rafId=null; }
-  function kick(){ if(rafId==null) rafId=requestAnimationFrame(loop); }
-  card.addEventListener('mouseenter', function(){ hovered=true; kick(); });
-  card.addEventListener('mouseleave', function(){ hovered=false; kick(); });
-  var toastT;
-  function toast(m){ var t=document.getElementById('mmToast'); t.textContent=m; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(hideToast,2900); }
-  function hideToast(){ document.getElementById('mmToast').classList.remove('show'); }
-  function applyBeat(prevStep){ var beat=BEATS[step], prev=prevStep==null?null:BEATS[prevStep];
-    if(prev) CLUSTERS.forEach(function(c){ if(!c.frontier && (prev.c[c.id]||0)<THRESHOLD && (beat.c[c.id]||0)>=THRESHOLD) rings.push({id:c.id,t:0}); });
-    updateWarmth(); if(beat.toast) toast(beat.toast); else hideToast(); kick(); }
-  function advance(){ if(step>=BEATS.length-1) return; var p=step; step++; applyBeat(p); }
-  window.mmAdvance = advance;
-  // each answered question grows the map by one beat
-  document.addEventListener('click', function(e){ var t=e.target; if(t&&t.closest&&t.closest('.btn-save[data-q]')) setTimeout(advance,0); }, true);
-  (function init(){ var beat=BEATS[0];
-    CLUSTERS.forEach(function(c){ var shown=0>=c.revealAt; c._rev=shown?1:0;
-      c.nodes.forEach(function(nd,i){ nd.alpha=(shown && (c.frontier?true:i<(beat.c[c.id]||0)))?1:0; }); });
-    updateWarmth(); draw(); })();
-})();
-</script>
-
 </body>
 </html>
