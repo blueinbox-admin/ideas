@@ -198,38 +198,49 @@
   .panel.active { display: block; }
 
   /* ===== a peek at Claude Code, running alongside ===== */
-  /* ----- Claude Code desktop app — its "Code" tab, light theme ----- */
-  .cc-win { flex: 0 0 clamp(420px, 41%, 600px); background: #fff; color: #1d1d1f; font-family: var(--font-body); }
+  /* ----- Claude Code desktop app — its "Code" tab (neutral system UI, not Zoutcomes' font) ----- */
+  .cc-win { flex: 0 0 clamp(440px, 42%, 620px); background: #fff; color: #1d1d1f;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif; }
   .ccd { display: flex; flex: 1 1 auto; min-height: 0; }
-  .ccd-side { flex: 0 0 138px; display: flex; flex-direction: column; background: #f7f6f4; border-right: 1px solid #ececea; padding: 10px 8px; min-height: 0; }
-  .ccd-traffic { display: flex; gap: 7px; padding: 2px 4px 11px; }
-  .ccd-traffic i { width: 11px; height: 11px; border-radius: 50%; display: block; }
+  .ccd-side { flex: 0 0 158px; display: flex; flex-direction: column; background: #f6f6f7; border-right: 1px solid #ebebed; padding: 11px 9px; min-height: 0; }
+  .ccd-traffic { display: flex; gap: 8px; padding: 2px 4px 12px; }
+  .ccd-traffic i { width: 12px; height: 12px; border-radius: 50%; display: block; }
   .ccd-traffic i:nth-child(1) { background: #ff5f57; }
   .ccd-traffic i:nth-child(2) { background: #febc2e; }
   .ccd-traffic i:nth-child(3) { background: #28c840; }
-  .ccd-tabs { display: flex; gap: 3px; background: #eceae7; border-radius: 9px; padding: 3px; margin-bottom: 10px; }
-  .ccd-tab { flex: 1 1 auto; display: grid; place-items: center; height: 26px; border-radius: 7px; color: #76736d; }
-  .ccd-tab.active { background: #fff; color: #1d1d1f; box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+  /* segmented control: two icon tabs + a wider active "Code" tab with label */
+  .ccd-tabs { display: flex; gap: 3px; background: #e7e7ea; border-radius: 9px; padding: 3px; margin-bottom: 13px; }
+  .ccd-tab { flex: 0 0 30px; display: grid; place-items: center; height: 27px; border-radius: 7px; color: #75757a; }
+  .ccd-tab.code { flex: 1 1 auto; grid-auto-flow: column; gap: 6px; font-size: 12.5px; font-weight: 600; }
+  .ccd-tab.active { background: #fff; color: #1d1d1f; box-shadow: 0 1px 2px rgba(0,0,0,.12); }
   .ccd-tab svg { width: 15px; height: 15px; }
-  .ccd-nav { display: flex; align-items: center; gap: 9px; padding: 6px 7px; border-radius: 7px; color: #3a3a3a; font-size: 12.5px; }
-  .ccd-nav svg { width: 14px; height: 14px; color: #76736d; flex: 0 0 auto; }
-  .ccd-seclabel { font-size: 10.5px; color: #a3a09a; padding: 13px 7px 4px; }
-  .ccd-rec { padding: 6px 7px; border-radius: 7px; color: #4a4a4a; font-size: 12px; display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; }
-  .ccd-rec .rdot { width: 5px; height: 5px; border-radius: 50%; border: 1px solid #b9b6b0; flex: 0 0 auto; }
+  .ccd-nav { display: flex; align-items: center; gap: 10px; padding: 7px 7px; border-radius: 7px; color: #34343a; font-size: 13px; cursor: default; }
+  .ccd-nav:hover { background: #ececef; }
+  .ccd-nav svg { width: 15px; height: 15px; color: #75757a; flex: 0 0 auto; }
+  .ccd-nav .chev { margin-left: auto; }
+  .ccd-seclabel { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #9a9a9f; padding: 15px 7px 5px; }
+  .ccd-seclabel svg { width: 13px; height: 13px; color: #b0b0b5; }
+  .ccd-rec { padding: 7px 7px; border-radius: 7px; color: #45454b; font-size: 12.5px; display: flex; align-items: center; gap: 9px; white-space: nowrap; overflow: hidden; cursor: default; }
+  .ccd-rec .rdot { width: 6px; height: 6px; border-radius: 50%; border: 1.5px solid #bcbcc1; flex: 0 0 auto; }
   .ccd-rec .rname { overflow: hidden; text-overflow: ellipsis; }
-  .ccd-rec.active { background: #eceae7; color: #1d1d1f; }
+  .ccd-rec.active { background: #e7e7ea; color: #1d1d1f; }
   .ccd-spacer { flex: 1 1 auto; }
-  .ccd-user { display: flex; align-items: center; gap: 8px; padding: 9px 7px 2px; border-top: 1px solid #ececea; font-size: 12px; color: #3a3a3a; }
-  .ccd-user .av { width: 22px; height: 22px; border-radius: 50%; background: #c96442; color: #fff; display: grid; place-items: center; font-size: 10px; font-weight: 600; flex: 0 0 auto; }
-  .ccd-user .pl { color: #a3a09a; }
+  .ccd-user { display: flex; align-items: center; gap: 9px; padding: 9px 7px 2px; border-top: 1px solid #ebebed; font-size: 12.5px; color: #34343a; }
+  .ccd-user .av { width: 24px; height: 24px; border-radius: 50%; background: #c96442; color: #fff; display: grid; place-items: center; font-size: 10px; font-weight: 600; flex: 0 0 auto; }
+  .ccd-user .pl { color: #9a9a9f; }
+  .ccd-user .chev { margin-left: auto; color: #b0b0b5; }
+  .ccd-user .chev svg, .ccd-nav .chev svg { width: 13px; height: 13px; }
 
   .ccd-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
-  .ccd-top { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid #f0efed; font-size: 13px; color: #3a3a3a; }
-  .ccd-top svg { width: 15px; height: 15px; color: #8a8a86; flex: 0 0 auto; }
+  .ccd-top { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid #efeff1; font-size: 13px; color: #45454b; overflow: hidden; }
+  .ccd-top > svg { width: 16px; height: 16px; color: #8a8a90; flex: 0 0 auto; }
+  .ccd-top .crumb { display: inline-flex; align-items: center; gap: 6px; min-width: 0; white-space: nowrap; overflow: hidden; }
+  .ccd-top .crumb b { overflow: hidden; text-overflow: ellipsis; }
   .ccd-top .crumb b { color: #1d1d1f; font-weight: 600; }
+  .ccd-top .crumb svg { width: 13px; height: 13px; color: #b0b0b5; }
   .ccd-top .grow { flex: 1 1 auto; }
   .ccd-convo { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 16px 16px 8px; font-size: 13px; line-height: 1.55; }
-  .ccd-u { background: #f4f3f1; border-radius: 12px; padding: 9px 12px; margin-bottom: 14px; color: #1d1d1f; }
+  .ccd-u { background: #f3f3f5; border-radius: 12px; padding: 10px 13px; margin-bottom: 14px; color: #1d1d1f; }
   .ccd-tool { margin: 0 0 14px; padding: 9px 11px; border-radius: 10px; background: #f2f7f4; border: 1px solid #d7e6df; color: #2f6b58; font-size: 12px; font-family: var(--font-mono); }
   .ccd-tool .tn { color: #1f8a6d; }
   .ccd-tool .ts { display: block; margin-top: 5px; color: #5d7c71; }
@@ -239,11 +250,13 @@
   .ccd-a li { margin-bottom: 5px; }
   .ccd-a .mem { color: #1f8a6d; border-bottom: 1px dotted rgba(31,138,109,.4); }
   .ccd-compose { flex: 0 0 auto; padding: 8px 14px 12px; }
-  .ccd-input { display: flex; align-items: center; justify-content: space-between; border: 1px solid #e2e1de; border-radius: 12px; padding: 11px 14px; font-size: 13px; color: #9a9a96; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
-  .ccd-input .ret { color: #c2bfb9; }
-  .ccd-bar { display: flex; align-items: center; justify-content: space-between; margin-top: 9px; font-size: 12px; color: #76736d; }
-  .ccd-bar .grp { display: flex; align-items: center; gap: 11px; }
-  .ccd-bar .pill { color: #3a3a3a; }
+  .ccd-input { display: flex; align-items: center; justify-content: space-between; border: 1px solid #e0e0e3; border-radius: 12px; padding: 12px 14px; font-size: 13px; color: #9a9a9f; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+  .ccd-input .ret { color: #c2c2c6; }
+  .ccd-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; font-size: 11.5px; color: #75757a; }
+  .ccd-bar .grp { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+  .ccd-bar .grp svg { width: 14px; height: 14px; flex: 0 0 auto; }
+  .ccd-bar .pill { color: #34343a; }
+  .ccd-spin { width: 13px; height: 13px; border: 2px solid #e2e2e5; border-top-color: #9a9a9f; border-radius: 50%; animation: spin .8s linear infinite; flex: 0 0 auto; }
 
   /* ===== interactive demo bits ===== */
   .card.fresh { animation: fresh-in 2s ease; }
@@ -263,8 +276,8 @@
   .ccd-working { display: flex; align-items: center; gap: 8px; color: #8a8a86; font-size: 12.5px; margin-bottom: 14px; }
   .ccd-working .sp { width: 12px; height: 12px; border: 2px solid #d9d7d2; border-top-color: #c96442; border-radius: 50%; animation: spin .7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .ccd-replay { appearance: none; cursor: pointer; font: inherit; font-size: 11.5px; color: #5f6368; background: #f4f3f1; border: 1px solid #e2e1de; border-radius: 7px; padding: 4px 9px; }
-  .ccd-replay:hover { color: #1d1d1f; border-color: #cfcdc8; }
+  .ccd-replay { appearance: none; cursor: pointer; font: inherit; font-size: 14px; line-height: 1; color: #75757a; background: transparent; border: none; border-radius: 7px; width: 26px; height: 26px; flex: 0 0 auto; }
+  .ccd-replay:hover { color: #1d1d1f; background: #ececef; }
   .ccd-hint { font-size: 11px; color: #a3a09a; text-align: center; padding: 26px 16px; }
   @media (prefers-reduced-motion: reduce) { .card.fresh, .card.hl, .ccd-convo > * { animation: none; } }
 
@@ -456,36 +469,43 @@
         <div class="ccd-side">
           <div class="ccd-traffic"><i></i><i></i><i></i></div>
           <div class="ccd-tabs">
-            <span class="ccd-tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 4z"/></svg></span>
-            <span class="ccd-tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11M4 5.5l1 1 2-2M4 11.5l1 1 2-2M4 17.5l1 1 2-2"/></svg></span>
-            <span class="ccd-tab active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4"/></svg></span>
+            <span class="ccd-tab" title="Chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 4z"/></svg></span>
+            <span class="ccd-tab" title="Tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11M4 5.5l1 1 2-2M4 11.5l1 1 2-2M4 17.5l1 1 2-2"/></svg></span>
+            <span class="ccd-tab code active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4"/></svg>Code</span>
           </div>
           <div class="ccd-nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>New session</div>
           <div class="ccd-nav"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg>Routines</div>
           <div class="ccd-nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Customize</div>
-          <div class="ccd-seclabel">Recents</div>
+          <div class="ccd-nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>More</div>
+          <div class="ccd-seclabel">Recents
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+          </div>
           <div class="ccd-rec active"><span class="rdot"></span><span class="rname">Reyes Law Firm site</span></div>
           <div class="ccd-rec"><span class="rdot"></span><span class="rname">Homepage refresh</span></div>
           <div class="ccd-rec"><span class="rdot"></span><span class="rname">Intake form copy</span></div>
           <div class="ccd-spacer"></div>
-          <div class="ccd-user"><span class="av">DZ</span>Dave<span class="pl">· Max</span></div>
+          <div class="ccd-user"><span class="av">DZ</span>Dave<span class="pl">· Max</span><span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></div>
         </div>
 
         <!-- session main -->
         <div class="ccd-main">
           <div class="ccd-top">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="11" rx="1"/><path d="M2 20h20"/></svg>
-            <span class="crumb">reyes-law-firm / <b>Reyes Law Firm site</b></span>
+            <span class="crumb"><b>Reyes Law Firm site</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
             <span class="grow"></span>
-            <button class="ccd-replay" id="replayBtn" type="button" title="Replay the demo">↻ Replay</button>
+            <button class="ccd-replay" id="replayBtn" type="button" title="Replay the demo" aria-label="Replay the demo">↻</button>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>
           </div>
           <div class="ccd-convo" id="ccConvo"></div>
           <div class="ccd-compose">
             <div class="ccd-input" id="ccInput"><span id="ccPrompt">Type / for commands</span><span class="ret">⏎</span></div>
             <div class="ccd-bar">
-              <span class="grp">Accept edits &nbsp;·&nbsp; +</span>
-              <span class="grp"><span class="pill">Opus 4.8 1M</span> Medium</span>
+              <span class="grp">Accept edits
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </span>
+              <span class="grp"><span class="pill">Opus 4.8 1M</span> Medium <span class="ccd-spin"></span></span>
             </div>
           </div>
         </div>
