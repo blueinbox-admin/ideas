@@ -264,10 +264,12 @@
   /* ===== interactive demo bits ===== */
   .card.fresh { animation: fresh-in 2s ease; }
   @keyframes fresh-in { 0% { background: rgb(var(--sand-light)); border-color: rgb(var(--secondary) / .55); } 100% { background: rgb(var(--surface)); border-color: rgb(var(--sand)); } }
-  .card.leaving { overflow: hidden; animation: card-leave .8s ease forwards; background: rgb(var(--sand-light)); border-color: rgb(var(--secondary) / .4); }
-  @keyframes card-leave { 0% { opacity: 1; max-height: 260px; } 35% { opacity: 1; max-height: 260px; } 100% { opacity: 0; max-height: 0; margin: 0; padding-top: 0; padding-bottom: 0; border-width: 0; } }
-  .saved-flash { display: flex; align-items: center; gap: 7px; font-weight: 600; font-size: 13.5px; color: rgb(var(--secondary-hover)); }
+  .card.leaving { overflow: hidden; align-items: center; background: rgb(var(--sand-light)); border-color: rgb(var(--secondary) / .4); }
+  .card.shrinking { transition: height .28s ease; }
+  .card.collapsing { transition: height .46s ease, opacity .46s ease, margin .46s ease, padding .46s ease, border-width .46s ease; opacity: 0; margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; border-width: 0; }
+  .saved-flash { display: flex; align-items: center; gap: 7px; font-weight: 600; font-size: 13.5px; color: rgb(var(--secondary-hover)); animation: flash-in .22s ease; }
   .saved-flash .tick { color: rgb(var(--secondary-hover)); }
+  @keyframes flash-in { from { opacity: 0; } to { opacity: 1; } }
   .card.hl { animation: guard-hl 2.8s ease; }
   @keyframes guard-hl { 0%, 100% { box-shadow: 0 0 0 0 rgb(var(--secondary) / 0); } 22%, 62% { box-shadow: 0 0 0 3px rgb(var(--secondary) / .5); border-color: rgb(var(--secondary)); } }
   .btn.added { background: rgb(var(--secondary)); border-color: rgb(var(--secondary)); color: rgb(var(--on-primary)); }
@@ -282,17 +284,17 @@
   .ccd-replay { appearance: none; cursor: pointer; font: inherit; font-size: 14px; line-height: 1; color: #75757a; background: transparent; border: none; border-radius: 7px; width: 26px; height: 26px; flex: 0 0 auto; }
   .ccd-replay:hover { color: #1d1d1f; background: #ececef; }
   .ccd-hint { font-size: 11px; color: #a3a09a; text-align: center; padding: 26px 16px; }
-  @media (prefers-reduced-motion: reduce) { .card.fresh, .card.hl, .ccd-convo > * { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .card.fresh, .card.hl, .ccd-convo > *, .saved-flash { animation: none; } .card.shrinking, .card.collapsing { transition: none; } }
 
   /* ===== floating demo controls (play / pause / restart) ===== */
-  .demo-ctrl { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 60;
-    display: flex; align-items: center; gap: 3px; padding: 5px 6px 5px 8px;
+  .demo-ctrl { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 60;
+    display: flex; align-items: center; gap: 6px; padding: 8px 12px 8px 14px;
     background: rgba(22,17,10,.74); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-    border-radius: 999px; box-shadow: 0 8px 24px rgba(0,0,0,.32); }
+    border-radius: 999px; box-shadow: 0 10px 30px rgba(0,0,0,.36); }
   .demo-ctrl button { appearance: none; cursor: pointer; border: none; background: transparent; color: #fff;
-    width: 30px; height: 30px; border-radius: 50%; font-size: 13px; line-height: 1; display: grid; place-items: center; }
+    width: 50px; height: 50px; border-radius: 50%; font-size: 21px; line-height: 1; display: grid; place-items: center; }
   .demo-ctrl button:hover { background: rgba(255,255,255,.16); }
-  .demo-ctrl .lbl { color: rgba(255,255,255,.62); font-size: 11px; letter-spacing: .02em; padding: 0 9px 0 5px;
+  .demo-ctrl .lbl { color: rgba(255,255,255,.7); font-size: 14px; letter-spacing: .02em; padding: 0 14px 0 8px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; }
 
   /* ===== responsive: BOTH windows visible at every viewport (stack on narrow) ===== */
@@ -590,7 +592,11 @@
   }
   function collapse(card, flashText) {
     if (!card || card.classList.contains('leaving')) return;
+    var SHRINK = 280, HOLD = 460, FOLD = 460;   // one uniform timeline, gently paced
+    var startH = card.offsetHeight;             // real height, measured before we touch content
     card.classList.add('leaving');
+    card.style.height = startH + 'px';
+    void card.offsetHeight;                      // commit the start height so the shrink animates
     if (flashText) {
       card.textContent = '';
       var f = document.createElement('div'); f.className = 'saved-flash';
@@ -599,7 +605,17 @@
       card.appendChild(f);
     }
     updateBadges();
-    setTimeout(function () { if (card.parentNode) card.parentNode.removeChild(card); updateBadges(); }, 850);
+    // step 1: smoothly settle to the flash line (no hard snap)
+    requestAnimationFrame(function () {
+      card.classList.add('shrinking');
+      card.style.height = card.scrollHeight + 'px';
+    });
+    // step 2: after a beat to read the label, fold the card away on one easing curve
+    setTimeout(function () {
+      card.classList.add('collapsing');
+      card.style.height = '0px';
+    }, SHRINK + HOLD);
+    setTimeout(function () { if (card.parentNode) card.parentNode.removeChild(card); updateBadges(); }, SHRINK + HOLD + FOLD);
   }
   function flashBtn(btn) {
     var old = btn.textContent; btn.textContent = 'Added ✓'; btn.classList.add('added');
