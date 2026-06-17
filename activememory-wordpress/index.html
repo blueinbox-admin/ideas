@@ -264,10 +264,11 @@
   /* ===== interactive demo bits ===== */
   .card.fresh { animation: fresh-in 2s ease; }
   @keyframes fresh-in { 0% { background: rgb(var(--sand-light)); border-color: rgb(var(--secondary) / .55); } 100% { background: rgb(var(--surface)); border-color: rgb(var(--sand)); } }
-  .card.leaving { position: relative; overflow: hidden; border-color: rgb(var(--secondary) / .4); }
+  .card.leaving { position: relative; overflow: hidden; border-color: rgb(var(--secondary) / .4);
+    transition: height .24s linear, opacity .24s linear, margin .24s linear, padding .24s linear, border-width .24s linear; }
   .skip-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 7px;
     background: rgb(var(--sand-light)); color: rgb(var(--secondary-hover)); font-weight: 600; font-size: 13.5px; border-radius: 12px; }
-  .card.collapsing { transition: height .5s linear, opacity .5s linear, margin .5s linear, padding .5s linear, border-width .5s linear; height: 0 !important; opacity: 0; margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; border-width: 0; }
+  .card.collapsing { height: 0 !important; opacity: 0; margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; border-width: 0; }
   .skip-overlay .tick { color: rgb(var(--secondary-hover)); }
   .card.hl { animation: guard-hl 2.8s ease; }
   @keyframes guard-hl { 0%, 100% { box-shadow: 0 0 0 0 rgb(var(--secondary) / 0); } 22%, 62% { box-shadow: 0 0 0 3px rgb(var(--secondary) / .5); border-color: rgb(var(--secondary)); } }
@@ -283,7 +284,7 @@
   .ccd-replay { appearance: none; cursor: pointer; font: inherit; font-size: 14px; line-height: 1; color: #75757a; background: transparent; border: none; border-radius: 7px; width: 26px; height: 26px; flex: 0 0 auto; }
   .ccd-replay:hover { color: #1d1d1f; background: #ececef; }
   .ccd-hint { font-size: 11px; color: #a3a09a; text-align: center; padding: 26px 16px; }
-  @media (prefers-reduced-motion: reduce) { .card.fresh, .card.hl, .ccd-convo > * { animation: none; } .card.collapsing { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .card.fresh, .card.hl, .ccd-convo > * { animation: none; } .card.leaving { transition: none; } }
 
   /* ===== floating demo controls (play / pause / restart) ===== */
   .demo-ctrl { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 60;
@@ -612,7 +613,7 @@
         updateBadges();
       });
       card.classList.add('collapsing');
-    }, 75);
+    }, 60);
   }
   function flashBtn(btn) {
     var old = btn.textContent; btn.textContent = 'Added ✓'; btn.classList.add('added');
