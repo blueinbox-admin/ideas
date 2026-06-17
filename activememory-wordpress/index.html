@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reyes Law Firm · Active Memory</title>
+<title>Reyes Law Firm — Active Memory</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=optional" rel="stylesheet">
 <style>
   /* ===== Palette 15 (lifted from web/app/globals.css — the real app) =====
      Warm sandy PAGE, cream SURFACES floating on it, chocolate-brown ink/primary,
@@ -113,7 +113,7 @@
   }
 
   /* ===== two-column folder layout ===== */
-  .layout { flex: 1 1 auto; width: 100%; max-width: 900px; margin: 0 auto; display: block; }
+  .layout { flex: 1 1 auto; width: 100%; max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 232px 1fr; align-items: start; }
   .sidebar { padding: 22px 14px 60px; border-right: 1px solid rgb(var(--sand)); min-height: 70vh; }
   .content { padding: 22px 28px 80px; min-width: 0; }
 
@@ -176,29 +176,6 @@
   .btn.ghost { color: rgb(var(--ink-muted)); }
   .card .content.editable { cursor: text; border-radius: 7px; margin: -3px -6px; padding: 3px 6px; transition: background 0.12s; }
   .card .content.editable:hover { background: rgb(var(--sand-light)); }
-
-  /* inline edit state: click a saved fact/guardrail to edit it, like the real app */
-  .card.editing .content { display: none; }
-  .edit-row { display: flex; align-items: flex-start; gap: 8px; flex: 1 1 auto; }
-  .edit-input { font: inherit; flex: 1 1 auto; border: 1px solid rgb(var(--focus)); border-radius: 8px; padding: 8px 11px;
-    background: rgb(var(--surface)); color: rgb(var(--ink)); resize: vertical; min-height: 42px; outline: 2px solid rgb(var(--focus) / 0.35); }
-  .edit-actions { display: flex; flex-direction: column; gap: 6px; flex: 0 0 auto; }
-
-  /* credentials form (fake WordPress connection) */
-  .cred-form { max-width: 600px; }
-  .cred-group { margin-bottom: 22px; }
-  .cred-group-head { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: rgb(var(--ink-soft)); margin: 0 0 10px; }
-  .cred-field { display: grid; grid-template-columns: 150px 1fr; align-items: center; gap: 12px; margin-bottom: 9px; }
-  .cred-field > label { font-size: 13px; color: rgb(var(--ink-muted)); }
-  .cred-field input { font: inherit; font-size: 13px; width: 100%; border: 1px solid rgb(var(--sand)); border-radius: 8px;
-    padding: 8px 11px; background: rgb(var(--surface)); color: rgb(var(--ink)); }
-  .cred-secret { display: flex; gap: 8px; }
-  .cred-secret input { flex: 1 1 auto; letter-spacing: .08em; }
-  .cred-toggle { flex: 0 0 auto; cursor: pointer; font: inherit; font-size: 12px; font-weight: 600; border: 1px solid rgb(var(--sand));
-    border-radius: 8px; padding: 0 13px; background: rgb(var(--surface)); color: rgb(var(--ink-muted)); }
-  .cred-toggle:hover { border-color: rgb(var(--ink-soft)); color: rgb(var(--ink)); }
-  .cred-actions { display: flex; align-items: center; gap: 13px; margin-top: 18px; }
-  .cred-saved { font-size: 13px; font-weight: 600; color: rgb(var(--secondary-hover)); }
 
   /* add form */
   .addform { display: flex; gap: 8px; margin-top: 12px; align-items: flex-start; }
@@ -339,17 +316,6 @@
     .app-win { height: 82vh; }
     .cc-win  { height: 76vh; }
   }
-  /* ===== chalk onboarding pointers: hand-drawn notes + rough arrows over everything ===== */
-  .chalk-layer { position: fixed; inset: 0; z-index: 58; pointer-events: none; overflow: hidden; }
-  .chalk-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-  .chalk-path { fill: none; stroke: rgb(var(--primary)); stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round;
-    filter: drop-shadow(0 1px 1px rgba(255,248,236,.6)); }
-  .chalk-note { position: absolute; max-width: 360px; padding: 11px 18px 12px; border-radius: 16px 16px 16px 5px;
-    font-family: var(--font-display); font-size: 29px; font-weight: 700; line-height: 1.16;
-    color: rgb(var(--ink)); background: rgb(var(--surface)); border: 1.5px solid rgb(var(--sand));
-    box-shadow: 0 12px 28px rgba(60,30,4,.3); -webkit-font-smoothing: antialiased; animation: chalk-pop .3s ease both; }
-  @keyframes chalk-pop { from { opacity: 0; } to { opacity: 1; } }
-  @media (prefers-reduced-motion: reduce) { .chalk-note { animation: none; } }
 </style>
 </head>
 <body>
@@ -370,7 +336,7 @@
     <section class="win app-win">
       <div class="chrome-tabs">
         <div class="chrome-dots"><i></i><i></i><i></i></div>
-        <div class="chrome-tab"><span class="fav">◧</span><span class="tname">Zoutcomes · Memory</span><span class="x">×</span></div>
+        <div class="chrome-tab"><span class="fav">◧</span><span class="tname">Zoutcomes — Memory</span><span class="x">×</span></div>
         <span class="chrome-newtab">+</span>
       </div>
       <div class="chrome-toolbar">
@@ -404,18 +370,28 @@
       </header>
 
       <div class="layout">
-        <!-- single org memory: no project sidebar -->
+        <!-- folder sidebar -->
+        <aside class="sidebar">
+          <div class="tree-label">Memory</div>
+          <a class="tree-item root active" href="#">
+            <svg class="tree-ico" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7 8 2.5 13.5 7M4 6.2V13h8V6.2"/></svg>
+            <span class="tree-name">Reyes Law Firm</span>
+            <span class="tree-count">3</span>
+          </a>
+        </aside>
+
+        <!-- scoped content -->
         <main class="content">
           <div class="scope-head">
+            <span class="scope-kind">Org root</span>
             <h1 class="scope-title">Reyes Law Firm</h1>
           </div>
-          <p class="scope-sub">Everything Claude knows about your firm. How the practice runs, the site, and the rules it must never break.</p>
+          <p class="scope-sub">Memory that applies to everything Claude does for the firm — how the practice runs, the site, and the rules it must never break.</p>
 
           <nav class="tabs" id="tabs">
             <button class="tab active" data-tab="review">Review <span class="badge amber" id="bReview">3</span></button>
-            <button class="tab" data-tab="facts">Saved Facts <span class="badge" id="bFacts">6</span></button>
+            <button class="tab" data-tab="facts">Facts <span class="badge" id="bFacts">6</span></button>
             <button class="tab" data-tab="guardrails">Guardrails <span class="badge amber" id="bGuard">5</span></button>
-            <button class="tab" data-tab="credentials">Credentials</button>
           </nav>
 
           <!-- REVIEW -->
@@ -423,7 +399,7 @@
             <div class="legend">Add your own facts</div>
             <p class="note">Goals, strategy, and business logic about your firm, so Claude works better for you. Saved straight to the Facts tab.</p>
             <form class="addform" id="factAdd" onsubmit="return false">
-              <textarea maxlength="280" placeholder="A fact, goal, or convention true across the firm. How you work, who does what, what you're trying to do."></textarea>
+              <textarea maxlength="280" placeholder="A fact, goal, or convention true across the firm — how you work, who does what, what you're trying to do."></textarea>
               <button class="btn primary" type="submit">Add</button>
             </form>
             <div class="add-toast" id="factToast" hidden>✓ Saved to Facts</div>
@@ -433,8 +409,8 @@
 
             <div class="card qcard">
               <div class="body">
-                <div class="content">Can I put client names or reviews on the site? I've heard there are rules and I don't want to mess that up.</div>
-                <div class="qwhy">Why Claude asks: people often want a testimonials section, but the rules vary and Claude won't assume.</div>
+                <div class="content">Other than the homepage, which pages should I never change without showing you first?</div>
+                <div class="qwhy">Why Claude asks: only the homepage is protected today — other key pages may deserve the same review.</div>
                 <form class="qform" onsubmit="return false">
                   <textarea></textarea>
                   <div class="actions"><button class="btn primary" type="submit">Save answer</button></div>
@@ -445,7 +421,7 @@
 
             <div class="card">
               <div class="body">
-                <div class="content">Your contact page shows one office: 1420 Oak Street, Suite 200.</div>
+                <div class="content">Every service page ends with a “Book a free 15-minute consult” button.</div>
                 <div class="meta"><span class="proj-tag root">org root</span><span>Read from your site</span></div>
               </div>
               <div class="actions"><button class="btn primary" type="button">Confirm</button><button class="btn ghost" type="button">Skip</button></div>
@@ -453,7 +429,7 @@
 
             <div class="card">
               <div class="body">
-                <div class="content">Your homepage says ‘Estate planning that keeps families out of court.’</div>
+                <div class="content">Your homepage describes the firm as estate planning and probate.</div>
                 <div class="meta"><span class="proj-tag root">org root</span><span>Read from your site</span></div>
               </div>
               <div class="actions"><button class="btn primary" type="button">Confirm</button><button class="btn ghost" type="button">Skip</button></div>
@@ -463,17 +439,16 @@
           <!-- FACTS -->
           <section class="panel" data-panel="facts">
             <div class="legend">Confirmed facts</div>
-            <p class="note">What Claude actually knows about your firm. Your answers, the facts you added, and what you've confirmed. Click any to edit.</p>
+            <p class="note">What Claude actually knows about your firm — your answers, the facts you added, and what you've confirmed. Click any to edit.</p>
 
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>It's just me and Lena, my assistant. She starts the files and does first drafts, I check and sign everything.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>We only do estate planning and probate now. I stopped taking court cases a couple years ago.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Probate has court dates I can't miss. If something has a deadline, treat it as urgent.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Most people find me through referrals, mostly Dr. Lin's office. Those folks get an appointment that same week.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>January through April is my crazy season. That's when everyone wants their estate looked at.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>My clients are mostly families and older folks, not companies. Keep it simple, no legal jargon.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Our blog should sound like me talking to a worried family at the kitchen table. Warm and plain, never like a law textbook.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Lena is my paralegal. She opens new matters and does first drafts. I review and sign everything that goes out.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>We don't take DIY-will clients. Too much back-and-forth for the fee.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Estate planning and probate only now — I've stopped taking litigation.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Anything with a court deadline is urgent. Probate cutoffs are hard and I can't miss them.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Busy season is January to April. Push estate reviews then.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Referrals from Dr. Lin's office get a same-week appointment.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
 
-            <p class="note" style="margin-top:20px;"><span style="color:rgb(var(--ink-muted));">Plus 38 pages read from your WordPress site, used quietly for exact-name lookups, not shown here because there's nothing to decide about them.</span></p>
+            <p class="note" style="margin-top:20px;"><span style="color:rgb(var(--ink-muted));">Plus 38 pages read from your WordPress site, used quietly for exact-name lookups — not shown here because there's nothing to decide about them.</span></p>
           </section>
 
           <!-- GUARDRAILS -->
@@ -481,38 +456,15 @@
             <div class="legend">Guardrails (firm-wide)</div>
             <p class="note">Hard rules Claude must never violate. These fire on every task, in every project.</p>
 
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Don't put anything live. Save it as a draft so I can look first.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Put the “Book a free 15-minute consult” button at the bottom of every page.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never say we guarantee anything or that we'll win. I can get in trouble for that.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Don't call me a specialist or an expert. I'm not allowed to use those words.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>We only do wills, estates, and probate. Keep lawsuits, DIY wills, and hourly work off the site.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Keep blog posts short, around 500 words, with one clear takeaway.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>End every blog post with a friendly nudge to book a free consult, never pushy.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never publish changes live. Always leave them as a draft for me to approve first.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Always put the “Book a free 15-minute consult” button on every page you build.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never feature DIY wills or hourly work on the site. We turn those away.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never use the words “guarantee” or “cheap” in any copy. Some are brand, some are bar advertising rules.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never change the homepage without showing me the draft first.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
 
             <form class="addform" id="guardAdd" onsubmit="return false">
               <textarea maxlength="280" placeholder="A rule Claude must never violate (e.g. &quot;Never list a phone number that isn't the main office line.&quot;)."></textarea>
               <button class="btn primary" type="submit">Add</button>
-            </form>
-          </section>
-
-          <!-- CREDENTIALS -->
-          <section class="panel" data-panel="credentials">
-            <div class="legend">WordPress connection</div>
-            <p class="note">How Claude reaches your site to read pages and save drafts. Stored securely, used only by this app and Claude.</p>
-            <form class="cred-form" onsubmit="return false">
-              <div class="cred-group">
-                <div class="cred-group-head">Your site</div>
-                <div class="cred-field"><label>Site URL</label><input type="text" value="https://reyeslawfirm.com" readonly></div>
-                <div class="cred-field"><label>WordPress user</label><input type="text" value="maria@reyeslawfirm.com" readonly></div>
-              </div>
-              <div class="cred-group">
-                <div class="cred-group-head">How Claude connects</div>
-                <div class="cred-field"><label>Application password</label>
-                  <div class="cred-secret"><input type="password" value="a7Kf 92Lm Qz3p 8RtB Xy0w" readonly><button class="cred-toggle" type="button">Show</button></div>
-                </div>
-                <div class="cred-field"><label>REST API base</label><input type="text" value="https://reyeslawfirm.com/wp-json/wp/v2" readonly></div>
-              </div>
-              <div class="cred-actions"><button class="btn primary" type="button">Save credentials</button><span class="cred-saved" hidden>✓ Saved</span></div>
             </form>
           </section>
         </main>
@@ -571,9 +523,6 @@
 
   </div>
 
-  <!-- chalk onboarding pointers draw here (over both windows) -->
-  <div class="chalk-layer" id="chalkLayer" aria-hidden="true"></div>
-
   <!-- floating demo controls -->
   <div class="demo-ctrl" id="demoCtrl">
     <button id="playPause" type="button" title="Pause" aria-label="Play / pause demo">⏸</button>
@@ -590,66 +539,6 @@
   var factsNote   = factsPanel.querySelector('p.note[style]');   // trailing "Plus N pages" note
   var guardForm   = byId('guardAdd');
   var convo       = byId('ccConvo');
-  var chalkLayer  = byId('chalkLayer');
-  var prefersReduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-
-  // ---------- chalk onboarding pointers (fade in, hold, fade out) ----------
-  function clearChalk(immediate) {
-    if (!chalkLayer) return;
-    if (immediate) { chalkLayer.innerHTML = ''; return; }
-    Array.prototype.slice.call(chalkLayer.children).forEach(function (k) {
-      if (k.dataset.fading) return; k.dataset.fading = '1';
-      k.style.animation = 'none'; k.style.transition = 'opacity .4s ease';
-      void k.offsetWidth; k.style.opacity = '0';                      // fade out, then remove
-      setTimeout(function () { if (k.parentNode) k.parentNode.removeChild(k); }, 430);
-    });
-  }
-  // Draw a hand-written note near `target` with a rough arrow pointing at it.
-  function chalkAnnotate(target, text, opts) {
-    if (!chalkLayer) return;
-    opts = opts || {};
-    var el = (typeof target === 'string') ? document.querySelector(target) : target;
-    if (!el) return;
-    var r = el.getBoundingClientRect();
-    if (!r.width && !r.height) return;
-    var side = opts.side || 'above', GAP = opts.gap != null ? opts.gap : 60;
-    var note = document.createElement('div');
-    note.className = 'chalk-note'; note.textContent = text;
-    note.style.transform = 'rotate(' + (opts.rotate != null ? opts.rotate : -2) + 'deg)';
-    note.style.left = '-9999px'; note.style.top = '0px';
-    chalkLayer.appendChild(note);
-    var nw = note.offsetWidth, nh = note.offsetHeight;
-    var ex, ey, nx, ny;
-    if (side === 'left')       { ex = r.left - 5;           ey = r.top + r.height / 2; nx = ex - GAP - nw; ny = ey - nh / 2; }
-    else if (side === 'right') { ex = r.right + 5;          ey = r.top + r.height / 2; nx = ex + GAP;      ny = ey - nh / 2; }
-    else if (side === 'below') { ex = r.left + r.width / 2; ey = r.bottom + 5;         nx = ex - nw / 2;   ny = ey + GAP; }
-    else                       { ex = r.left + r.width / 2; ey = r.top - 5;            nx = ex - nw / 2;   ny = ey - GAP - nh; }
-    nx = Math.max(8, Math.min(nx, window.innerWidth - nw - 8));
-    ny = Math.max(8, Math.min(ny, window.innerHeight - nh - 150));   // bottom keep-out clears the demo controls
-    note.style.left = nx + 'px'; note.style.top = ny + 'px';
-    var sx, sy;
-    if (side === 'left')       { sx = nx + nw;     sy = ny + nh / 2; }
-    else if (side === 'right') { sx = nx;          sy = ny + nh / 2; }
-    else if (side === 'below') { sx = nx + nw / 2; sy = ny; }
-    else                       { sx = nx + nw / 2; sy = ny + nh; }
-    var dx = ex - sx, dy = ey - sy, dist = Math.sqrt(dx * dx + dy * dy) || 1;
-    var bend = opts.bend != null ? opts.bend : 22;
-    var cx = (sx + ex) / 2 + (-dy / dist) * bend, cy = (sy + ey) / 2 + (dx / dist) * bend;
-    var ang = Math.atan2(ey - cy, ex - cx), hl = 12, sp = 0.45;
-    var d = 'M' + sx + ' ' + sy + ' Q' + cx + ' ' + cy + ' ' + ex + ' ' + ey +
-            ' M' + ex + ' ' + ey + ' L' + (ex - hl * Math.cos(ang - sp)) + ' ' + (ey - hl * Math.sin(ang - sp)) +
-            ' M' + ex + ' ' + ey + ' L' + (ex - hl * Math.cos(ang + sp)) + ' ' + (ey - hl * Math.sin(ang + sp));
-    var NS = 'http://www.w3.org/2000/svg';
-    var svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'chalk-svg');
-    var path = document.createElementNS(NS, 'path'); path.setAttribute('class', 'chalk-path'); path.setAttribute('d', d);
-    svg.appendChild(path); chalkLayer.appendChild(svg);
-    if (!prefersReduce && path.getTotalLength) {
-      var len = path.getTotalLength();
-      path.style.strokeDasharray = len; path.style.strokeDashoffset = len;
-      requestAnimationFrame(function () { path.style.transition = 'stroke-dashoffset .85s ease'; path.style.strokeDashoffset = '0'; });
-    }
-    return note;
-  }
 
   // ---------- tabs ----------
   function showTab(name) {
@@ -729,48 +618,10 @@
     updateBadges();
   }
 
-  // ---------- inline edit: click a saved fact/guardrail's text to edit it (like the real app) ----------
-  function enterEdit(contentEl) {
-    var card = contentEl.closest('.card'); if (!card || card.classList.contains('editing')) return;
-    var pill = contentEl.querySelector('.type-pill');
-    var tn = contentEl.lastChild;
-    var original = (tn && tn.nodeType === 3) ? tn.nodeValue.trim() : contentEl.textContent.replace(pill ? pill.textContent : '', '').trim();
-    card.classList.add('editing');
-    var row = document.createElement('div'); row.className = 'edit-row';
-    var ta = document.createElement('textarea'); ta.className = 'edit-input'; ta.value = original;
-    var acts = document.createElement('div'); acts.className = 'edit-actions';
-    var save = document.createElement('button'); save.type = 'button'; save.className = 'btn primary'; save.textContent = 'Save';
-    var cancel = document.createElement('button'); cancel.type = 'button'; cancel.className = 'btn ghost'; cancel.textContent = 'Cancel';
-    acts.appendChild(save); acts.appendChild(cancel);
-    row.appendChild(ta); row.appendChild(acts);
-    contentEl.parentNode.insertBefore(row, contentEl.nextSibling);
-    ta.focus(); try { ta.setSelectionRange(ta.value.length, ta.value.length); } catch (x) {}
-    function finish(commit) {
-      if (commit) {
-        var v = ta.value.trim() || original;
-        contentEl.innerHTML = '';
-        if (pill) contentEl.appendChild(pill);
-        contentEl.appendChild(document.createTextNode(v));
-      }
-      if (row.parentNode) row.parentNode.removeChild(row);
-      card.classList.remove('editing');
-    }
-    save.addEventListener('click', function () { finish(true); });
-    cancel.addEventListener('click', function () { finish(false); });
-    ta.addEventListener('keydown', function (ev) {
-      if (ev.key === 'Enter' && !ev.shiftKey) { ev.preventDefault(); finish(true); }
-      else if (ev.key === 'Escape') { ev.preventDefault(); finish(false); }
-    });
-  }
-
   // ---------- delegated clicks (Zoutcomes is fully interactive) ----------
   document.querySelector('.desktop').addEventListener('click', function (e) {
-    var editable = e.target.closest('.content.editable');
-    if (editable && !e.target.closest('button') && !e.target.closest('.edit-row')) { enterEdit(editable); return; }
     var btn = e.target.closest('button'); if (!btn) return;
-    if (btn.classList.contains('cred-toggle')) { var si = btn.parentNode.querySelector('input'); var show = si.type === 'password'; si.type = show ? 'text' : 'password'; btn.textContent = show ? 'Hide' : 'Show'; return; }
-    if (btn.closest('.cred-actions')) { var sv = btn.parentNode.querySelector('.cred-saved'); if (sv) { sv.hidden = false; setTimeout(function () { sv.hidden = true; }, 2000); } return; }
-    // card buttons no longer stop the demo; only a tab switch or the demo controls take over
+    if (btn.id !== 'replayBtn') stopStory();                 // any real interaction takes control
     if (btn.closest('#factAdd'))  { e.preventDefault(); addFromForm('factAdd', factsPanel, factsNote, 'fact', 'factToast'); return; }
     if (btn.closest('#guardAdd')) { e.preventDefault(); addFromForm('guardAdd', guardPanel, guardForm, 'guardrail'); return; }
     var card = btn.closest('.card');
@@ -813,7 +664,6 @@
   function stopStory() {
     clearTimers(); paused = false; flushResume();          // unblock any gated awaits (they bail on stale token)
     if (playing) { playing = false; runToken++; }
-    clearChalk();
     document.querySelectorAll('.ccd-working').forEach(function (w) { w.remove(); });
     var p = byId('ccPrompt'); if (p.classList.contains('typed')) { p.classList.remove('typed'); p.textContent = 'Type / for commands'; }
     updateCtrl();
@@ -827,15 +677,15 @@
     if (byId('beat2q')) return;
     var card = document.createElement('div'); card.className = 'card qcard fresh'; card.id = 'beat2q'; card.setAttribute('data-beat2', '1');
     card.innerHTML =
-      '<div class="body"><div class="content">How should the fees page talk about what I charge? Don’t guess. Tell me flat-fee or hourly, what to say, and whether to show any prices.</div>' +
-      '<div class="qwhy">Why Claude asks: it needs this to write the fees page and won’t guess pricing.</div>' +
+      '<div class="body"><div class="content">How should the site describe your fees? (e.g., flat-fee only — and whether to show prices)</div>' +
+      '<div class="qwhy">Why Claude asks: the Fees page is built — only the prices are a placeholder. Answer this and Claude drops the numbers in.</div>' +
       '<form class="qform" onsubmit="return false"><textarea></textarea><div class="actions"><button class="btn primary" type="submit">Save answer</button></div></form></div>' +
       '<div class="qskip"><button class="btn ghost" type="button">Skip</button></div>';
     reviewPanel.insertBefore(card, reviewPanel.querySelector('.card.qcard'));
     updateBadges();
   }
   function claudeFollowUp() {
-    addMsg('<span class="who">Claude</span> Got it. Saved how you want fees described. I’ve drafted the <b>Fees</b> page as a draft, with the consult button and no guarantees. I won’t need to ask again.', 'ccd-a');
+    addMsg('<span class="who">Claude</span> Got it — dropped your numbers into the <span class="mem">placeholder</span> on the <b>Fees</b> page, by the rules: <span class="mem">consult button</span>, no “guarantee/cheap.” I won’t need to ask again.', 'ccd-a');
   }
 
   async function playStory() {
@@ -843,49 +693,41 @@
     var alive = function () { return token === runToken && playing; };
     // pausing freezes at the next tick: when a timer fires while paused, it parks until resume
     var sleep = function (ms) { return new Promise(function (r) { timers.push(setTimeout(function () { if (paused) resumeResolvers.push(r); else r(); }, ms)); }); };
-    var type = async function (text) { var el = byId('ccPrompt'); el.classList.add('typed'); el.textContent = ''; for (var i = 0; i < text.length && alive(); i++) { el.textContent += text.charAt(i); await sleep(75); } };
+    var type = async function (text) { var el = byId('ccPrompt'); el.classList.add('typed'); el.textContent = ''; for (var i = 0; i < text.length && alive(); i++) { el.textContent += text.charAt(i); await sleep(26); } };
     var send = function () { var p = byId('ccPrompt'), t = p.textContent; p.classList.remove('typed'); p.textContent = 'Type / for commands'; addText(t, 'ccd-u'); };
 
     // reset
-    convo.innerHTML = ''; clearChalk(true);
+    convo.innerHTML = '';
     var oq = byId('beat2q'); if (oq) oq.remove();
     document.querySelectorAll('.card.hl').forEach(function (c) { c.classList.remove('hl'); });
     showTab('review'); updateBadges();
 
-    // BEAT 1: Claude uses your memory, and Zoutcomes reacts
+    // BEAT 1 — Claude USES your memory
     await sleep(600); if (!alive()) return;
-    chalkAnnotate('#ccInput', "In this demo you can't type in here. But this is where you'll make website updates, ask questions about your apps, or build anything.", { side: 'above', rotate: -2, gap: 54 });
-    await sleep(7000); if (!alive()) return;
-    await type('Update the first paragraph of the homepage to something fresh.'); if (!alive()) return;
-    await sleep(500); send();                                        // pointer 1 stays up through the first message
+    await type('Add a new service page for probate administration.'); if (!alive()) return;
+    await sleep(320); send();
     var w1 = working(); await sleep(1200); if (!alive()) return; w1.remove();
-    addMsg('<span class="gd"></span><div class="code"><span class="fn">get_business_context</span>("homepage intro")<span class="sub">↳ Zoutcomes · pulled your facts and guardrails for the Reyes Law Firm site</span></div>', 'ccd-tool');
-    await sleep(1400); if (!alive()) return;
-    showTab('guardrails'); clearChalk();                             // pointer 1 fades out; the one relevant rule lights up
-    var topGuard = guardPanel.querySelector('.card');                // only the rule that matters for a homepage edit, not all of them
-    topGuard.classList.remove('hl'); void topGuard.offsetWidth; topGuard.classList.add('hl');
-    await sleep(700); if (!alive()) return;                          // let the change register before pointing at it
-    chalkAnnotate(topGuard, 'You asked to refresh your homepage, so Zoutcomes reminded Claude of the rule that matters here: keep it a draft for you to approve, never live.', { side: 'above', rotate: -2, gap: 26 });
-    await sleep(4200); if (!alive()) return; clearChalk();
-    var w2 = working(); await sleep(900); if (!alive()) return; w2.remove();
-    addMsg('<span class="who">Claude</span> Done. I rewrote the homepage’s first paragraph and saved it as a <span class="mem">draft</span>. Kept it <span class="mem">warm and plain, no legal jargon</span>, stayed in <span class="mem">estate and probate</span>, and avoided any <span class="mem">guarantees</span> or calling you a <span class="mem">specialist</span>.', 'ccd-a');
-    await sleep(1600); if (!alive()) return;
-
-    // BEAT 2: Claude captures new memory, then hands off to you
-    await type('Now add a fees page for the firm.'); if (!alive()) return;
-    await sleep(500); send();
-    var w3 = working(); await sleep(1200); if (!alive()) return; w3.remove();
-    addMsg('<span class="gd"></span><div class="code"><span class="fn">get_business_context</span>("fees page")<span class="sub">↳ Zoutcomes · no pricing facts found for this</span></div>', 'ccd-tool');
+    addMsg('<span class="gd"></span><div class="code"><span class="fn">get_business_context</span>("probate service page")<span class="sub">↳ Zoutcomes — pulled 3 facts, 4 guardrails for the Reyes Law Firm site</span></div>', 'ccd-tool');
     await sleep(750); if (!alive()) return;
-    addMsg('<span class="who">Claude</span> I don’t know what you charge yet, so I won’t guess. I added a question in Zoutcomes. Answer it once and I’ll have it for every fees task.', 'ccd-a');
-    await sleep(900); if (!alive()) return;
-    dropBeat2Question(); showTab('review');
+    showTab('guardrails');
+    guardPanel.querySelectorAll('.card').forEach(function (c) { c.classList.remove('hl'); void c.offsetWidth; c.classList.add('hl'); });
+    await sleep(1900); if (!alive()) return;
+    var w2 = working(); await sleep(900); if (!alive()) return; w2.remove();
+    addMsg('<span class="who">Claude</span> Done — drafted a <b>Probate Administration</b> page by the rules: saved as a <span class="mem">draft</span>, added the <span class="mem">consult button</span>, <span class="mem">no DIY wills or hourly</span>, and avoided <span class="mem">“guarantee/cheap.”</span>', 'ccd-a');
+    await sleep(1500); if (!alive()) return;
+
+    // BEAT 2 — Claude CAPTURES new memory, then hands off to you
+    await type('Now add a fees page for the firm.'); if (!alive()) return;
+    await sleep(320); send();
+    var w3 = working(); await sleep(1200); if (!alive()) return; w3.remove();
+    addMsg('<span class="gd"></span><div class="code"><span class="fn">get_business_context</span>("fees page")<span class="sub">↳ Zoutcomes — no pricing facts found for this</span></div>', 'ccd-tool');
+    await sleep(750); if (!alive()) return;
+    addMsg('<span class="who">Claude</span> Built the <b>Fees</b> page — everything but the actual prices, which I won’t invent. Left that as a <span class="mem">placeholder</span> and added one question in Zoutcomes; answer it once and I’ll drop the numbers in. →', 'ccd-a');
     await sleep(800); if (!alive()) return;
-    chalkAnnotate('#beat2q', 'This is our app. It runs alongside Claude Code, reading your site, learning your company, and asking the right questions so Claude gets personalized to your business.', { side: 'above', rotate: -2, gap: 46 });
-    await sleep(8000); if (!alive()) return; clearChalk();
-    chalkAnnotate('#beat2q', 'Go ahead, try clicking around. Answer this, Confirm or Skip a card, or add your own facts and rules.', { side: 'above', rotate: -2, gap: 46 });
-    addMsg('<span class="who" style="color:#8a8a86;">Demo</span> Your turn. Answer this question, or Confirm and Skip the cards below. Everything on the Zoutcomes side (left) is clickable.', 'ccd-a');
-    playing = false; updateCtrl();   // story complete; the chalk pointer and interactivity stay until you click
+    dropBeat2Question(); showTab('review');
+    await sleep(250); if (!alive()) return;
+    addMsg('<span class="who" style="color:#8a8a86;">Demo</span> Your turn — answer the new question in Zoutcomes (left), and watch Claude pick it up. Or add your own facts and rules.', 'ccd-a');
+    playing = false; updateCtrl();   // story complete; everything stays interactive
   }
 
   // floating demo controls
