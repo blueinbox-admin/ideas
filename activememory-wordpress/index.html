@@ -585,7 +585,7 @@
       // overlay a full-card tinted panel with a single big glyph (recognized instantly —
       // no time to read a word as the card folds away in ~⅓s)
       var f = document.createElement('div'); f.className = 'skip-overlay';
-      var isSkip = (flashText === 'Skipped');
+      var isSkip = (flashText === 'Skipped' || flashText === 'Removed');
       var ic = document.createElement('span');
       ic.className = 'leave-icon' + (isSkip ? ' skip' : '');
       ic.textContent = isSkip ? '✕' : '✓';   // muted ✕ for skip, teal ✓ for save/confirm
@@ -636,7 +636,7 @@
       var label = btn.textContent.trim();
       if (label === 'Confirm') { var txt = card.querySelector('.content').textContent; collapse(card, 'Confirmed'); factsPanel.insertBefore(makeCard(txt, 'fact'), factsNote); updateBadges(); }
       else if (label === 'Skip') collapse(card, 'Skipped');
-      else if (label === 'Remove') collapse(card, '');
+      else if (label === 'Remove') collapse(card, 'Removed');
     }
   });
 
