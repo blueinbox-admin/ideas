@@ -48,27 +48,47 @@
   }
   h1, h2, h3, .display, .brand, .scope-title, .tree-label, .legend { font-family: var(--font-display); }
 
-  /* ===== the desktop: two SEPARATE app windows running side by side ===== */
+  /* ===== the desktop: a real wallpaper, with two SEPARATE apps on it ===== */
   .desktop {
-    height: 100vh; box-sizing: border-box; padding: 26px; display: flex; gap: 24px;
-    background:
-      radial-gradient(1100px 720px at 72% -12%, rgb(var(--secondary) / 0.12), transparent 60%),
-      linear-gradient(152deg, #46371f 0%, #6b5532 46%, #9a8052 100%);
+    position: relative; height: 100vh; box-sizing: border-box;
+    padding: 30px 150px 30px 30px;   /* right strip left clear for desktop icons */
+    display: flex; gap: 24px; background: #5a6a5e; overflow: hidden;
   }
-  /* shared macOS-window chrome: rounded all corners + a real drop shadow */
-  .win { display: flex; flex-direction: column; min-height: 0; overflow: hidden; border-radius: 14px;
-    box-shadow: 0 26px 70px rgba(34,20,6,.46), 0 2px 10px rgba(0,0,0,.18); }
-  .app-win { flex: 1 1 auto; min-width: 0; background: rgb(var(--surface)); }
+  .wallpaper { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+
+  /* pretend desktop icons down the right edge */
+  .desktop-icons { position: absolute; top: 24px; right: 14px; z-index: 1; width: 124px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+  .dicon { display: flex; flex-direction: column; align-items: center; gap: 5px; width: 100%; cursor: default; }
+  .dicon svg { width: 52px; height: 44px; filter: drop-shadow(0 1px 2px rgba(0,0,0,.35)); }
+  .dicon .thumb { width: 46px; height: 56px; border-radius: 3px; background: #fff; border: 1px solid rgba(0,0,0,.2); box-shadow: 0 1px 3px rgba(0,0,0,.35); }
+  .dicon span { font-size: 11px; line-height: 1.2; color: #fff; text-align: center; text-shadow: 0 1px 2px rgba(0,0,0,.7); max-width: 110px; }
+
+  /* shared window chrome: rounded corners + a real drop shadow */
+  .win { position: relative; z-index: 2; display: flex; flex-direction: column; min-height: 0; overflow: hidden; border-radius: 12px;
+    box-shadow: 0 28px 70px rgba(0,0,0,.45), 0 2px 10px rgba(0,0,0,.25); }
+  .app-win { flex: 1 1 auto; min-width: 0; background: #fff; }
   .app-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; background: rgb(var(--bg)); }
-  /* macOS title bar (the app window) */
-  .win-bar { flex: 0 0 auto; display: flex; align-items: center; gap: 11px; height: 38px; padding: 0 14px;
-    background: #f3ebdd; border-bottom: 1px solid rgb(var(--sand)); }
-  .win-dots { display: flex; gap: 7px; }
-  .win-dots i { width: 11px; height: 11px; border-radius: 50%; display: block; }
-  .win-dots i:nth-child(1) { background: #ff5f57; }
-  .win-dots i:nth-child(2) { background: #febc2e; }
-  .win-dots i:nth-child(3) { background: #28c840; }
-  .win-title { font-family: var(--font-display); font-size: 12.5px; font-weight: 600; color: rgb(var(--ink-muted)); letter-spacing: -.01em; }
+
+  /* ----- Chrome browser chrome (Zoutcomes is a WEB APP) ----- */
+  .chrome-tabs { flex: 0 0 auto; display: flex; align-items: flex-end; gap: 11px; height: 40px; padding: 0 12px; background: #dee1e6; }
+  .chrome-dots { display: flex; gap: 8px; align-self: center; }
+  .chrome-dots i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+  .chrome-dots i:nth-child(1) { background: #ff5f57; }
+  .chrome-dots i:nth-child(2) { background: #febc2e; }
+  .chrome-dots i:nth-child(3) { background: #28c840; }
+  .chrome-tab { display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 11px; background: #fff; border-radius: 9px 9px 0 0; font-size: 12px; color: #3c4043; max-width: 230px; }
+  .chrome-tab .fav { width: 15px; height: 15px; border-radius: 4px; background: rgb(var(--primary)); color: rgb(var(--on-primary)); display: grid; place-items: center; font-size: 9px; flex: 0 0 auto; }
+  .chrome-tab .tname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .chrome-tab .x { margin-left: 4px; color: #9aa0a6; font-size: 13px; }
+  .chrome-newtab { align-self: center; color: #5f6368; font-size: 19px; line-height: 1; }
+  .chrome-toolbar { flex: 0 0 auto; display: flex; align-items: center; gap: 13px; height: 44px; padding: 0 14px; background: #fff; border-bottom: 1px solid #e7e9ec; }
+  .chrome-nav { display: flex; gap: 15px; color: #5f6368; }
+  .chrome-nav svg { width: 17px; height: 17px; }
+  .chrome-omni { flex: 1 1 auto; display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 14px; background: #f1f3f4; border-radius: 16px; font-size: 12.5px; color: #3c4043; }
+  .chrome-omni .lock { color: #5f6368; flex: 0 0 auto; }
+  .chrome-omni .lock svg { width: 12px; height: 12px; display: block; }
+  .chrome-menu { color: #5f6368; font-size: 19px; line-height: 1; flex: 0 0 auto; }
+  .chrome-avatar { width: 22px; height: 22px; border-radius: 50%; background: rgb(var(--secondary)); color: #fff; display: grid; place-items: center; font-size: 11px; font-weight: 600; flex: 0 0 auto; }
 
   /* ===== topbar ===== */
   .topbar { flex: 0 0 auto; position: sticky; top: 0; z-index: 2; border-bottom: 1px solid rgb(var(--sand)); background: rgb(var(--surface)); }
@@ -178,35 +198,52 @@
   .panel.active { display: block; }
 
   /* ===== a peek at Claude Code, running alongside ===== */
-  .cc-win {
-    flex: 0 0 clamp(340px, 34%, 520px);
-    background: #20160c; color: #ece3d4;
-    font-family: var(--font-mono);
-  }
-  .cc-head { flex: 0 0 auto; display: flex; align-items: center; gap: 11px; padding: 13px 15px; background: #1a1109; border-bottom: 1px solid #2e2012; }
-  .cc-dots { display: flex; gap: 6px; }
-  .cc-dots i { width: 11px; height: 11px; border-radius: 50%; display: block; }
-  .cc-dots i:nth-child(1) { background: #ff5f57; }
-  .cc-dots i:nth-child(2) { background: #febc2e; }
-  .cc-dots i:nth-child(3) { background: #28c840; }
-  .cc-title { font-size: 12.5px; color: #cdbfa6; font-weight: 600; }
-  .cc-conn { margin-left: auto; display: flex; align-items: center; gap: 7px; font-size: 11px; color: #7fe9d2; }
-  .cc-conn .d { width: 7px; height: 7px; border-radius: 50%; background: #2fd3b5; box-shadow: 0 0 0 3px rgba(47,211,181,.18); }
-  .cc-body { flex: 1 1 auto; overflow-y: auto; padding: 18px 16px 12px; font-size: 12.7px; line-height: 1.62; }
-  .cc-user { color: #f3ebdb; margin-bottom: 14px; }
-  .cc-user .caret { color: #2fd3b5; font-weight: 700; margin-right: 9px; }
-  .cc-tool { margin: 0 0 14px; padding: 9px 11px; border-radius: 9px; background: rgba(47,211,181,.07); border: 1px solid rgba(47,211,181,.22); color: #bfeede; font-size: 12px; }
-  .cc-tool .t-name { color: #7fe9d2; }
-  .cc-tool .t-src { display: block; margin-top: 5px; color: #9bd9c7; opacity: .9; }
-  .cc-assistant { color: #ded3c0; margin-bottom: 14px; }
-  .cc-assistant .who { color: #caa86f; font-weight: 600; }
-  .cc-assistant ul { margin: 9px 0 0; padding-left: 19px; }
-  .cc-assistant li { margin-bottom: 6px; }
-  .cc-mem { color: #7fe9d2; border-bottom: 1px dotted rgba(127,233,210,.45); }
-  .cc-input { flex: 0 0 auto; margin: 0 13px 11px; padding: 10px 13px; border: 1px solid #3a2a16; border-radius: 10px; background: #1a1109; color: #8c7d63; font-size: 12.5px; display: flex; align-items: center; justify-content: space-between; }
-  .cc-input .cur { color: #2fd3b5; }
-  .cc-foot { flex: 0 0 auto; padding: 0 16px 15px; font-size: 11px; color: #9a8a6e; line-height: 1.5; }
-  .cc-foot b { color: #caa86f; font-weight: 600; }
+  /* ----- Claude Code desktop app — its "Code" tab, light theme ----- */
+  .cc-win { flex: 0 0 clamp(420px, 41%, 600px); background: #fff; color: #1d1d1f; font-family: var(--font-body); }
+  .ccd { display: flex; flex: 1 1 auto; min-height: 0; }
+  .ccd-side { flex: 0 0 138px; display: flex; flex-direction: column; background: #f7f6f4; border-right: 1px solid #ececea; padding: 10px 8px; min-height: 0; }
+  .ccd-traffic { display: flex; gap: 7px; padding: 2px 4px 11px; }
+  .ccd-traffic i { width: 11px; height: 11px; border-radius: 50%; display: block; }
+  .ccd-traffic i:nth-child(1) { background: #ff5f57; }
+  .ccd-traffic i:nth-child(2) { background: #febc2e; }
+  .ccd-traffic i:nth-child(3) { background: #28c840; }
+  .ccd-tabs { display: flex; gap: 3px; background: #eceae7; border-radius: 9px; padding: 3px; margin-bottom: 10px; }
+  .ccd-tab { flex: 1 1 auto; display: grid; place-items: center; height: 26px; border-radius: 7px; color: #76736d; }
+  .ccd-tab.active { background: #fff; color: #1d1d1f; box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+  .ccd-tab svg { width: 15px; height: 15px; }
+  .ccd-nav { display: flex; align-items: center; gap: 9px; padding: 6px 7px; border-radius: 7px; color: #3a3a3a; font-size: 12.5px; }
+  .ccd-nav svg { width: 14px; height: 14px; color: #76736d; flex: 0 0 auto; }
+  .ccd-seclabel { font-size: 10.5px; color: #a3a09a; padding: 13px 7px 4px; }
+  .ccd-rec { padding: 6px 7px; border-radius: 7px; color: #4a4a4a; font-size: 12px; display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; }
+  .ccd-rec .rdot { width: 5px; height: 5px; border-radius: 50%; border: 1px solid #b9b6b0; flex: 0 0 auto; }
+  .ccd-rec .rname { overflow: hidden; text-overflow: ellipsis; }
+  .ccd-rec.active { background: #eceae7; color: #1d1d1f; }
+  .ccd-spacer { flex: 1 1 auto; }
+  .ccd-user { display: flex; align-items: center; gap: 8px; padding: 9px 7px 2px; border-top: 1px solid #ececea; font-size: 12px; color: #3a3a3a; }
+  .ccd-user .av { width: 22px; height: 22px; border-radius: 50%; background: #c96442; color: #fff; display: grid; place-items: center; font-size: 10px; font-weight: 600; flex: 0 0 auto; }
+  .ccd-user .pl { color: #a3a09a; }
+
+  .ccd-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+  .ccd-top { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid #f0efed; font-size: 13px; color: #3a3a3a; }
+  .ccd-top svg { width: 15px; height: 15px; color: #8a8a86; flex: 0 0 auto; }
+  .ccd-top .crumb b { color: #1d1d1f; font-weight: 600; }
+  .ccd-top .grow { flex: 1 1 auto; }
+  .ccd-convo { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 16px 16px 8px; font-size: 13px; line-height: 1.55; }
+  .ccd-u { background: #f4f3f1; border-radius: 12px; padding: 9px 12px; margin-bottom: 14px; color: #1d1d1f; }
+  .ccd-tool { margin: 0 0 14px; padding: 9px 11px; border-radius: 10px; background: #f2f7f4; border: 1px solid #d7e6df; color: #2f6b58; font-size: 12px; font-family: var(--font-mono); }
+  .ccd-tool .tn { color: #1f8a6d; }
+  .ccd-tool .ts { display: block; margin-top: 5px; color: #5d7c71; }
+  .ccd-a { color: #2a2a2a; margin-bottom: 14px; }
+  .ccd-a .who { font-weight: 600; color: #c96442; }
+  .ccd-a ul { margin: 8px 0 0; padding-left: 18px; }
+  .ccd-a li { margin-bottom: 5px; }
+  .ccd-a .mem { color: #1f8a6d; border-bottom: 1px dotted rgba(31,138,109,.4); }
+  .ccd-compose { flex: 0 0 auto; padding: 8px 14px 12px; }
+  .ccd-input { display: flex; align-items: center; justify-content: space-between; border: 1px solid #e2e1de; border-radius: 12px; padding: 11px 14px; font-size: 13px; color: #9a9a96; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+  .ccd-input .ret { color: #c2bfb9; }
+  .ccd-bar { display: flex; align-items: center; justify-content: space-between; margin-top: 9px; font-size: 12px; color: #76736d; }
+  .ccd-bar .grp { display: flex; align-items: center; gap: 11px; }
+  .ccd-bar .pill { color: #3a3a3a; }
 
   /* ===== responsive ===== */
   @media (max-width: 900px) {
@@ -223,11 +260,57 @@
 <body>
   <div class="desktop">
 
-    <!-- ============ THE ACTIVE MEMORY APP — its own desktop window ============ -->
+    <!-- desktop wallpaper: self-contained SVG, a Napa-style vineyard morning -->
+    <svg class="wallpaper" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c7cdca"/><stop offset=".45" stop-color="#d9d3c4"/><stop offset="1" stop-color="#e8dcc2"/></linearGradient>
+        <linearGradient id="mtn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8d9aa0"/><stop offset="1" stop-color="#aeb4ad"/></linearGradient>
+        <linearGradient id="field" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9aa256"/><stop offset=".5" stop-color="#7e7d3e"/><stop offset="1" stop-color="#6a5a2e"/></linearGradient>
+        <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="16"/></filter>
+      </defs>
+      <rect width="1600" height="1000" fill="url(#sky)"/>
+      <path d="M0,430 C260,360 520,470 820,410 1080,360 1360,420 1600,400 L1600,620 L0,620 Z" fill="url(#mtn)" opacity=".7"/>
+      <ellipse cx="520" cy="432" rx="520" ry="46" fill="#fff" opacity=".55" filter="url(#soft)"/>
+      <ellipse cx="1140" cy="470" rx="430" ry="38" fill="#fff" opacity=".4" filter="url(#soft)"/>
+      <path d="M0,520 C300,455 560,540 900,500 1200,465 1420,520 1600,495 L1600,760 L0,760 Z" fill="#4f6a3c"/>
+      <path d="M0,575 C360,520 700,600 1080,545 1340,510 1500,560 1600,545 L1600,800 L0,800 Z" fill="#3f5a32"/>
+      <path d="M0,650 C420,600 1080,720 1600,640 L1600,1000 L0,1000 Z" fill="url(#field)"/>
+      <g stroke="#5a4d28" stroke-width="2.5" fill="none" opacity=".33">
+        <path d="M-20,720 C500,675 1100,775 1640,700"/>
+        <path d="M-20,765 C500,720 1100,820 1640,748"/>
+        <path d="M-20,815 C500,770 1100,872 1640,800"/>
+        <path d="M-20,872 C500,825 1100,930 1640,858"/>
+        <path d="M-20,932 C500,885 1100,992 1640,920"/>
+      </g>
+    </svg>
+
+    <!-- pretend desktop files, down the right edge -->
+    <div class="desktop-icons">
+      <div class="dicon"><svg viewBox="0 0 48 40"><path d="M3 9a3 3 0 0 1 3-3h11l4 4h21a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#4d9fe8"/><path d="M3 14h45v19a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#79bdf9"/></svg><span>projects</span></div>
+      <div class="dicon"><svg viewBox="0 0 48 40"><path d="M3 9a3 3 0 0 1 3-3h11l4 4h21a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#4d9fe8"/><path d="M3 14h45v19a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#79bdf9"/></svg><span>Clients</span></div>
+      <div class="dicon"><svg viewBox="0 0 48 40"><path d="M3 9a3 3 0 0 1 3-3h11l4 4h21a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#4d9fe8"/><path d="M3 14h45v19a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#79bdf9"/></svg><span>Blue Inbox</span></div>
+      <div class="dicon"><div class="thumb"></div><span>Screenshot 2026-0…24 PM</span></div>
+    </div>
+
+    <!-- ============ ZOUTCOMES — a WEB APP, open in Chrome ============ -->
     <section class="win app-win">
-      <div class="win-bar">
-        <div class="win-dots"><i></i><i></i><i></i></div>
-        <span class="win-title">Zoutcomes</span>
+      <div class="chrome-tabs">
+        <div class="chrome-dots"><i></i><i></i><i></i></div>
+        <div class="chrome-tab"><span class="fav">◧</span><span class="tname">Zoutcomes — Memory</span><span class="x">×</span></div>
+        <span class="chrome-newtab">+</span>
+      </div>
+      <div class="chrome-toolbar">
+        <div class="chrome-nav">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".5"><path d="M9 5l7 7-7 7"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10a8 8 0 0 1 13.7-4.2L20 8M20 4v4h-4"/></svg>
+        </div>
+        <div class="chrome-omni">
+          <span class="lock"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 10V8a6 6 0 1 1 12 0v2h1a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2zm2 0h8V8a4 4 0 1 0-8 0z"/></svg></span>
+          app.zoutcomes.com/reyes-law-firm
+        </div>
+        <span class="chrome-avatar">D</span>
+        <span class="chrome-menu">⋮</span>
       </div>
       <div class="app-scroll">
       <header class="topbar">
@@ -363,32 +446,59 @@
       </div><!-- /.app-scroll -->
     </section><!-- /.app-win -->
 
-    <!-- ============ CLAUDE CODE — its own desktop window, running alongside ============ -->
-    <aside class="win cc-win" aria-label="Claude Code, a separate app running alongside">
-      <div class="cc-head">
-        <div class="cc-dots"><i></i><i></i><i></i></div>
-        <span class="cc-title">Claude Code — reyes-law-firm</span>
-        <span class="cc-conn"><span class="d"></span> Zoutcomes</span>
-      </div>
-      <div class="cc-body">
-        <div class="cc-user"><span class="caret">▸</span>Add a new service page for probate administration.</div>
-        <div class="cc-tool">
-          <span class="t-name">get_business_context</span>("probate service page")
-          <span class="t-src">↳ Zoutcomes — pulled 3 facts, 4 guardrails for the Reyes Law Firm site</span>
+    <!-- ============ CLAUDE CODE — the real desktop app (Code tab) ============ -->
+    <aside class="win cc-win" aria-label="Claude Code desktop app, running alongside">
+      <div class="ccd">
+        <!-- session sidebar -->
+        <div class="ccd-side">
+          <div class="ccd-traffic"><i></i><i></i><i></i></div>
+          <div class="ccd-tabs">
+            <span class="ccd-tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 4z"/></svg></span>
+            <span class="ccd-tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11M4 5.5l1 1 2-2M4 11.5l1 1 2-2M4 17.5l1 1 2-2"/></svg></span>
+            <span class="ccd-tab active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4"/></svg></span>
+          </div>
+          <div class="ccd-nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>New session</div>
+          <div class="ccd-nav"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg>Routines</div>
+          <div class="ccd-nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Customize</div>
+          <div class="ccd-seclabel">Recents</div>
+          <div class="ccd-rec active"><span class="rdot"></span><span class="rname">Reyes Law Firm site</span></div>
+          <div class="ccd-rec"><span class="rdot"></span><span class="rname">Homepage refresh</span></div>
+          <div class="ccd-rec"><span class="rdot"></span><span class="rname">Intake form copy</span></div>
+          <div class="ccd-spacer"></div>
+          <div class="ccd-user"><span class="av">DZ</span>Dave<span class="pl">· Max</span></div>
         </div>
-        <div class="cc-assistant">
-          <span class="who">Claude</span> Done — drafted a <b>Probate Administration</b> page. Going by how your site runs:
-          <ul>
-            <li>Saved it as a <span class="cc-mem">draft for you to approve</span> — nothing went live.</li>
-            <li>Put the <span class="cc-mem">“Book a free 15-minute consult” button</span> at the bottom, like every page.</li>
-            <li>Kept it estate &amp; probate only — <span class="cc-mem">no DIY wills, nothing hourly</span>.</li>
-            <li>Wrote it warm and plain, and steered clear of <span class="cc-mem">“guarantee” and “cheap.”</span></li>
-          </ul>
+
+        <!-- session main -->
+        <div class="ccd-main">
+          <div class="ccd-top">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="11" rx="1"/><path d="M2 20h20"/></svg>
+            <span class="crumb">reyes-law-firm / <b>Reyes Law Firm site</b></span>
+            <span class="grow"></span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>
+          </div>
+          <div class="ccd-convo">
+            <div class="ccd-u">Add a new service page for probate administration.</div>
+            <div class="ccd-tool"><span class="tn">get_business_context</span>("probate service page")<span class="ts">↳ Zoutcomes — pulled 3 facts, 4 guardrails for the Reyes Law Firm site</span></div>
+            <div class="ccd-a">
+              <span class="who">Claude</span> Done — drafted a <b>Probate Administration</b> page. Going by how your site runs:
+              <ul>
+                <li>Saved it as a <span class="mem">draft for you to approve</span> — nothing went live.</li>
+                <li>Added the <span class="mem">“Book a free 15-minute consult” button</span>, like every page.</li>
+                <li>Kept it estate &amp; probate only — <span class="mem">no DIY wills, nothing hourly</span>.</li>
+                <li>Wrote it warm and plain, and avoided <span class="mem">“guarantee” and “cheap.”</span></li>
+              </ul>
+            </div>
+            <div class="ccd-u">perfect</div>
+          </div>
+          <div class="ccd-compose">
+            <div class="ccd-input"><span>Type / for commands</span><span class="ret">⏎</span></div>
+            <div class="ccd-bar">
+              <span class="grp">Accept edits &nbsp;·&nbsp; +</span>
+              <span class="grp"><span class="pill">Opus 4.8 1M</span> Medium</span>
+            </div>
+          </div>
         </div>
-        <div class="cc-user"><span class="caret">▸</span>perfect</div>
       </div>
-      <div class="cc-input"><span>Type / for commands</span><span class="cur">▍</span></div>
-      <div class="cc-foot">You never re-explained any of this. <b>Zoutcomes</b> already told Claude how the firm runs, so it got your setup right instead of guessing.</div>
     </aside>
 
   </div>
