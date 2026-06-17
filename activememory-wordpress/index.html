@@ -48,12 +48,30 @@
   }
   h1, h2, h3, .display, .brand, .scope-title, .tree-label, .legend { font-family: var(--font-display); }
 
-  /* ===== the split: Active Memory app (left) + a peek at Claude Code (right) ===== */
-  .workspace { display: flex; min-height: 100vh; }
-  .app-pane { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; max-height: 100vh; overflow-y: auto; }
+  /* ===== the desktop: two SEPARATE app windows running side by side ===== */
+  .desktop {
+    height: 100vh; box-sizing: border-box; padding: 26px; display: flex; gap: 24px;
+    background:
+      radial-gradient(1100px 720px at 72% -12%, rgb(var(--secondary) / 0.12), transparent 60%),
+      linear-gradient(152deg, #46371f 0%, #6b5532 46%, #9a8052 100%);
+  }
+  /* shared macOS-window chrome: rounded all corners + a real drop shadow */
+  .win { display: flex; flex-direction: column; min-height: 0; overflow: hidden; border-radius: 14px;
+    box-shadow: 0 26px 70px rgba(34,20,6,.46), 0 2px 10px rgba(0,0,0,.18); }
+  .app-win { flex: 1 1 auto; min-width: 0; background: rgb(var(--surface)); }
+  .app-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; background: rgb(var(--bg)); }
+  /* macOS title bar (the app window) */
+  .win-bar { flex: 0 0 auto; display: flex; align-items: center; gap: 11px; height: 38px; padding: 0 14px;
+    background: #f3ebdd; border-bottom: 1px solid rgb(var(--sand)); }
+  .win-dots { display: flex; gap: 7px; }
+  .win-dots i { width: 11px; height: 11px; border-radius: 50%; display: block; }
+  .win-dots i:nth-child(1) { background: #ff5f57; }
+  .win-dots i:nth-child(2) { background: #febc2e; }
+  .win-dots i:nth-child(3) { background: #28c840; }
+  .win-title { font-family: var(--font-display); font-size: 12.5px; font-weight: 600; color: rgb(var(--ink-muted)); letter-spacing: -.01em; }
 
   /* ===== topbar ===== */
-  .topbar { flex: 0 0 auto; border-bottom: 1px solid rgb(var(--sand)); background: rgb(var(--surface)); }
+  .topbar { flex: 0 0 auto; position: sticky; top: 0; z-index: 2; border-bottom: 1px solid rgb(var(--sand)); background: rgb(var(--surface)); }
   .topbar-inner { max-width: 1100px; margin: 0 auto; padding: 16px 28px; display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
   .brand { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; color: rgb(var(--heading)); }
   .brand .mark { color: rgb(var(--heading)); margin-right: 7px; }
@@ -160,9 +178,8 @@
   .panel.active { display: block; }
 
   /* ===== a peek at Claude Code, running alongside ===== */
-  .cc-pane {
-    flex: 0 0 clamp(340px, 35%, 540px);
-    display: flex; flex-direction: column; max-height: 100vh;
+  .cc-win {
+    flex: 0 0 clamp(340px, 34%, 520px);
     background: #20160c; color: #ece3d4;
     font-family: var(--font-mono);
   }
@@ -193,19 +210,26 @@
 
   /* ===== responsive ===== */
   @media (max-width: 900px) {
-    .cc-pane { display: none; }       /* the peek needs width; drop it, the app stands alone */
+    .cc-win { display: none; }         /* the second window needs room; drop it, the app stands alone */
   }
   @media (max-width: 680px) {
+    .desktop { padding: 0; gap: 0; height: auto; min-height: 100vh; display: block; }
+    .win { border-radius: 0; box-shadow: none; min-height: 100vh; }
     .layout { grid-template-columns: 1fr; }
     .sidebar { border-right: none; border-bottom: 1px solid rgb(var(--sand)); min-height: 0; padding-bottom: 18px; }
   }
 </style>
 </head>
 <body>
-  <div class="workspace">
+  <div class="desktop">
 
-    <!-- ============ THE ACTIVE MEMORY APP (mirrors web/) ============ -->
-    <div class="app-pane">
+    <!-- ============ THE ACTIVE MEMORY APP — its own desktop window ============ -->
+    <section class="win app-win">
+      <div class="win-bar">
+        <div class="win-dots"><i></i><i></i><i></i></div>
+        <span class="win-title">Zoutcomes</span>
+      </div>
+      <div class="app-scroll">
       <header class="topbar">
         <div class="topbar-inner">
           <div>
@@ -336,10 +360,11 @@
           </section>
         </main>
       </div>
-    </div>
+      </div><!-- /.app-scroll -->
+    </section><!-- /.app-win -->
 
-    <!-- ============ A PEEK AT CLAUDE CODE, RUNNING ALONGSIDE ============ -->
-    <aside class="cc-pane" aria-label="A peek at Claude Code, running alongside">
+    <!-- ============ CLAUDE CODE — its own desktop window, running alongside ============ -->
+    <aside class="win cc-win" aria-label="Claude Code, a separate app running alongside">
       <div class="cc-head">
         <div class="cc-dots"><i></i><i></i><i></i></div>
         <span class="cc-title">Claude Code — reyes-law-firm</span>
