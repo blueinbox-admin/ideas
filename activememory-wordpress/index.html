@@ -266,10 +266,11 @@
   @keyframes fresh-in { 0% { background: rgb(var(--sand-light)); border-color: rgb(var(--secondary) / .55); } 100% { background: rgb(var(--surface)); border-color: rgb(var(--sand)); } }
   .card.leaving { position: relative; overflow: hidden; border-color: rgb(var(--secondary) / .4);
     transition: height .24s linear, opacity .24s linear, margin .24s linear, padding .24s linear, border-width .24s linear; }
-  .skip-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 7px;
-    background: rgb(var(--sand-light)); color: rgb(var(--secondary-hover)); font-weight: 600; font-size: 13.5px; border-radius: 12px; }
+  .skip-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: rgb(var(--sand-light)); border-radius: 12px; }
   .card.collapsing { height: 0 !important; opacity: 0; margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; border-width: 0; }
-  .skip-overlay .tick { color: rgb(var(--secondary-hover)); }
+  .leave-icon { font-size: 34px; line-height: 1; font-weight: 700; color: rgb(var(--secondary-hover)); }   /* teal ✓ for save/confirm */
+  .leave-icon.skip { color: rgb(var(--ink-muted)); }                                                       /* muted ✕ for skip */
   .card.hl { animation: guard-hl 2.8s ease; }
   @keyframes guard-hl { 0%, 100% { box-shadow: 0 0 0 0 rgb(var(--secondary) / 0); } 22%, 62% { box-shadow: 0 0 0 3px rgb(var(--secondary) / .5); border-color: rgb(var(--secondary)); } }
   .btn.added { background: rgb(var(--secondary)); border-color: rgb(var(--secondary)); color: rgb(var(--on-primary)); }
@@ -581,10 +582,14 @@
     card.classList.add('leaving');
     card.style.height = startH + 'px';          // lock height so the fold transitions from a real value
     if (flashText) {
-      // overlay a full-card tinted confirmation (keeps the card's shape — no hollow void)
+      // overlay a full-card tinted panel with a single big glyph (recognized instantly —
+      // no time to read a word as the card folds away in ~⅓s)
       var f = document.createElement('div'); f.className = 'skip-overlay';
-      var t = document.createElement('span'); t.className = 'tick'; t.textContent = '✓';
-      f.appendChild(t); f.appendChild(document.createTextNode(' ' + flashText));
+      var isSkip = (flashText === 'Skipped');
+      var ic = document.createElement('span');
+      ic.className = 'leave-icon' + (isSkip ? ' skip' : '');
+      ic.textContent = isSkip ? '✕' : '✓';   // muted ✕ for skip, teal ✓ for save/confirm
+      f.appendChild(ic);
       card.appendChild(f);
     }
     updateBadges();
