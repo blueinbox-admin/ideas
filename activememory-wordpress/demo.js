@@ -58,6 +58,10 @@
       after: function () { dropItem({ id: 'am-q-leads', tab: 'review', content: 'When a contact form comes in, what makes a lead worth your time versus one you would turn away? Claude can pre-screen on the form so you only hear from good fits.', why: 'Claude just added intake forms across the site, and can filter them if it knows your ideal client.' }); } }
   ];
 
+  // While the demo is presenting (first pass, before the user explores), it brings
+  // the tab each item lands on into view so you watch it arrive. Flips off the moment
+  // the user clicks a tab or a field, so it never fights them during free play.
+  var driving = true;
   // what Active Memory saved from the chat: a confirmed fact (Facts tab) or a question
   // to answer (Review tab). Injected once each (tracked by id) so the loop never repeats.
   var injected = {};
@@ -66,6 +70,7 @@
     injected[o.id] = 1;
     var panel = o.tab === 'facts' ? AM.factsPanel : o.tab === 'guardrails' ? AM.guardPanel : reviewPanel;
     if (!panel) return;
+    if (driving && AM.showTab) AM.showTab(o.tab);   // follow the action to where it lands
     var card = document.createElement('div');
     card.id = o.id;
     if (o.tab === 'facts' || o.tab === 'guardrails') {
@@ -103,7 +108,7 @@
   }
 
   async function playConversation() {
-    clearTimers(); paused = false; flushResume(); convPlaying = true; var token = ++convToken; updateCtrl();
+    clearTimers(); paused = false; flushResume(); convPlaying = true; driving = true; var token = ++convToken; updateCtrl();
     var alive = function () { return token === convToken && convPlaying; };
     var sleep = function (ms) { return new Promise(function (r) { timers.push(setTimeout(function () { if (paused) resumeResolvers.push(r); else r(); }, ms)); }); };
     var type = async function (text) { var el = byId('ccPrompt'); el.classList.add('typed'); el.textContent = ''; for (var i = 0; i < text.length && alive(); i++) { el.textContent += text.charAt(i); await sleep(52); } };
@@ -141,11 +146,11 @@
   function playOnboarding() {
     clearObTimers(); clearChalk(true);
     obTimers.push(setTimeout(function () {
-      chalkAnnotate('.cc-win', 'This is Claude Code. Tell it what you want in plain English, and it builds and updates your website for you. This is a demo, so just watch it work.', { corner: 'top-right' });
+      chalkAnnotate('.cc-win', 'Claude Code. Ask in plain English, it builds, updates, and analyzes your websites and apps. (Demo — just watch.)', { corner: 'top-right' });
     }, 900));
     obTimers.push(setTimeout(clearChalk, 7500));
     obTimers.push(setTimeout(function () {
-      chalkAnnotate('.app-win', 'This is us, working right alongside Claude. We remember the details that matter from your chats, so you get better results without repeating yourself. Go ahead, play with it.', { corner: 'top-left' });
+      chalkAnnotate('.app-win', 'This is your side app. It quietly remembers your business in the background, so Claude works like someone who\'s been here for years.', { corner: 'top-left' });
     }, 8600));
     obTimers.push(setTimeout(clearChalk, 16000));
   }
@@ -157,6 +162,14 @@
     else pauseConv();
   });
   byId('restart').addEventListener('click', function () { resetDrips(); playOnboarding(); playConversation(); });
+
+  // the user exploring the app (picking a tab, or typing somewhere) takes the wheel:
+  // stop auto-navigating so the demo never pulls them off the tab they chose.
+  var tabsNav = byId('tabs');
+  if (tabsNav) tabsNav.addEventListener('click', function () { driving = false; });
+  document.addEventListener('focusin', function (e) {
+    if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') driving = false;
+  });
 
   // ---- surface shared with app.js ----
   AM.stopStory = dismissOnboarding;        // user interaction clears the intro, not the convo

@@ -64,12 +64,17 @@
   // What Active Memory kept from the chat: a confirmed fact/mapping (Facts), a
   // guardrail (Guardrails), or a question to answer (Review). Injected once each
   // (tracked by id) so the loop never repeats.
+  // While the demo is presenting (first pass, before the user explores), it brings
+  // the tab each item lands on into view so you watch it arrive. Flips off the moment
+  // the user clicks a tab or a field, so it never fights them during free play.
+  var driving = true;
   var injected = {};
   function dropItem(o) {
     if (injected[o.id]) return;
     injected[o.id] = 1;
     var panel = o.tab === 'facts' ? AM.factsPanel : o.tab === 'guardrails' ? AM.guardPanel : reviewPanel;
     if (!panel) return;
+    if (driving && AM.showTab) AM.showTab(o.tab);   // follow the action to where it lands
     var card = document.createElement('div');
     card.id = o.id;
     if (o.tab === 'facts' || o.tab === 'guardrails') {
@@ -105,7 +110,7 @@
   }
 
   async function playConversation() {
-    clearTimers(); paused = false; flushResume(); convPlaying = true; var token = ++convToken; updateCtrl();
+    clearTimers(); paused = false; flushResume(); convPlaying = true; driving = true; var token = ++convToken; updateCtrl();
     var alive = function () { return token === convToken && convPlaying; };
     var sleep = function (ms) { return new Promise(function (r) { timers.push(setTimeout(function () { if (paused) resumeResolvers.push(r); else r(); }, ms)); }); };
     var type = async function (text) { var el = byId('ccPrompt'); el.classList.add('typed'); el.textContent = ''; for (var i = 0; i < text.length && alive(); i++) { el.textContent += text.charAt(i); await sleep(52); } };
@@ -157,6 +162,14 @@
     else pauseConv();
   });
   byId('restart').addEventListener('click', function () { resetDrips(); playOnboarding(); playConversation(); });
+
+  // the user exploring the app (picking a tab, or typing somewhere) takes the wheel:
+  // stop auto-navigating so the demo never pulls them off the tab they chose.
+  var tabsNav = byId('tabs');
+  if (tabsNav) tabsNav.addEventListener('click', function () { driving = false; });
+  document.addEventListener('focusin', function (e) {
+    if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') driving = false;
+  });
 
   // ---- surface shared with app.js ----
   AM.stopStory = dismissOnboarding;        // user interaction clears the intro, not the convo
