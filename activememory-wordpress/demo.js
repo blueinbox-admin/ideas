@@ -114,12 +114,17 @@
     var type = async function (text) { var el = byId('ccPrompt'); el.classList.add('typed'); el.textContent = ''; for (var i = 0; i < text.length && alive(); i++) { el.textContent += text.charAt(i); await sleep(52); } };
     var send = function () { var p = byId('ccPrompt'), t = p.textContent; p.classList.remove('typed'); p.textContent = 'Type / for commands'; addText(t, 'ccd-u'); };
 
+    var firstPass = true;   // highlighter on the type box only for the very first prompt
     while (alive()) {
       convo.innerHTML = '';
       await sleep(900); if (!alive()) return;
       for (var i = 0; i < CONVO.length && alive(); i++) {
         var turn = CONVO[i];
-        await type(turn.u); if (!alive()) return;
+        var hlInput = (firstPass && i === 0) ? byId('ccInput') : null;
+        if (hlInput) hlInput.classList.add('hl-type');
+        await type(turn.u);
+        if (hlInput) hlInput.classList.remove('hl-type');
+        if (!alive()) return;
         await sleep(450); send();
         for (var s = 0; s < turn.steps.length && alive(); s++) {
           var step = turn.steps[s];
@@ -130,6 +135,7 @@
         if (turn.after) { await sleep(600); if (!alive()) return; turn.after(); }
         await sleep(2200); if (!alive()) return;
       }
+      firstPass = false;
       await sleep(3200); if (!alive()) return;   // hold, then loop from the top
     }
   }
