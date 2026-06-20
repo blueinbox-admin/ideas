@@ -37,8 +37,8 @@
 
   var CONVO = (window.TRANSCRIPT || []).map(function (turn, i) {
     var steps = (turn.steps || []).map(function (step) {
-      if (step.say != null) return { cls: 'ccd-a', wait: 900, hold: holdFor(step.say), html: '<span class="who">Claude</span> ' + fmt(step.say) };
-      return { cls: 'ccd-tool', wait: 1150, hold: step.lines ? 1700 : 1400, html: toolHtml(step) };
+      if (step.say != null) return { cls: 'ccd-a', wait: 600, hold: holdFor(step.say), html: '<span class="who">Claude</span> ' + fmt(step.say) };
+      return { cls: 'ccd-tool', wait: 500, hold: step.lines ? 800 : 600, html: toolHtml(step) };
     });
     var after = null;
     if (turn.memory) {
@@ -146,7 +146,7 @@
   function playOnboarding() {
     clearObTimers(); clearChalk(true);
     obTimers.push(setTimeout(function () {
-      chalkAnnotate('.cc-win', 'This is Claude Code. Tell it what you want done in your books in plain English, and it does the work in QuickBooks. This is a demo, so just watch it work.', { corner: 'top-right' });
+      chalkAnnotate('.cc-win', 'This is Claude Code. Tell it what you want done in your books in plain English, and it does the work in QuickBooks. This is a demo, so just watch it work.', { corner: 'bottom-right' });
     }, 900));
     obTimers.push(setTimeout(clearChalk, 7500));
     obTimers.push(setTimeout(function () {

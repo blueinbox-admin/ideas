@@ -30,30 +30,30 @@
   var CONVO = [
     { u: 'Rewrite the homepage intro. Plainer, friendlier, short sentences, no legal jargon.',
       steps: [
-        { cls: 'ccd-tool', wait: 1000, hold: 1100, html: '<span class="gd"></span><div class="code"><span class="fn">Read</span>(pages/home.php)<span class="sub">⎿ Read 40 lines</span></div>' },
-        { cls: 'ccd-tool', wait: 1300, hold: 1700, html: '<span class="gd"></span><div class="code"><span class="fn">Update</span>(pages/home.php)<div class="diff"><div class="dl del">- We provide comprehensive legal representation across a breadth of practice areas.</div><div class="dl add">+ We help families and small businesses with the legal stuff that matters, in plain English.</div></div></div>' },
-        { cls: 'ccd-a', wait: 900, hold: 1900, html: '<span class="who">Claude</span> Done. Rewrote the homepage intro in a plainer, friendlier voice.' }
+        { cls: 'ccd-tool', wait: 450, hold: 600, html: '<span class="gd"></span><div class="code"><span class="fn">Read</span>(pages/home.php)<span class="sub">⎿ Read 40 lines</span></div>' },
+        { cls: 'ccd-tool', wait: 500, hold: 800, html: '<span class="gd"></span><div class="code"><span class="fn">Update</span>(pages/home.php)<div class="diff"><div class="dl del">- We provide comprehensive legal representation across a breadth of practice areas.</div><div class="dl add">+ We help families and small businesses with the legal stuff that matters, in plain English.</div></div></div>' },
+        { cls: 'ccd-a', wait: 600, hold: 1900, html: '<span class="who">Claude</span> Done. Rewrote the homepage intro in a plainer, friendlier voice.' }
       ],
       after: function () { dropItem({ id: 'am-fact-voice', tab: 'facts', content: 'Preferred voice: plain and friendly, short sentences, no legal jargon. Claude writes new copy this way.' }); } },
     { u: 'Add tracking so I can see which pages lead to consult bookings.',
       steps: [
-        { cls: 'ccd-tool', wait: 1000, hold: 1100, html: '<span class="gd"></span><div class="code"><span class="fn">Read</span>(themes/reyes/footer.php)<span class="sub">⎿ Read 22 lines</span></div>' },
-        { cls: 'ccd-tool', wait: 1300, hold: 1700, html: '<span class="gd"></span><div class="code"><span class="fn">Update</span>(themes/reyes/footer.php)<div class="diff"><div class="dl add">+ &lt;!-- GA4 --&gt;</div><div class="dl add">+ gtag("event", "consult_click", { page: location.pathname });</div></div></div>' },
-        { cls: 'ccd-a', wait: 900, hold: 1900, html: '<span class="who">Claude</span> Tracking is in. Every consult button now fires a <span class="mem">consult_click</span> event, so you can see which pages drive bookings.' }
+        { cls: 'ccd-tool', wait: 450, hold: 600, html: '<span class="gd"></span><div class="code"><span class="fn">Read</span>(themes/reyes/footer.php)<span class="sub">⎿ Read 22 lines</span></div>' },
+        { cls: 'ccd-tool', wait: 500, hold: 800, html: '<span class="gd"></span><div class="code"><span class="fn">Update</span>(themes/reyes/footer.php)<div class="diff"><div class="dl add">+ &lt;!-- GA4 --&gt;</div><div class="dl add">+ gtag("event", "consult_click", { page: location.pathname });</div></div></div>' },
+        { cls: 'ccd-a', wait: 600, hold: 1900, html: '<span class="who">Claude</span> Tracking is in. Every consult button now fires a <span class="mem">consult_click</span> event, so you can see which pages drive bookings.' }
       ],
       after: function () { dropItem({ id: 'am-fact-kpi', tab: 'facts', content: 'Success means consult bookings. Claude tracks which pages drive them and treats consult conversions as the goal when suggesting changes.' }); } },
     { u: 'The About page still reads stiff. Same plain voice as the homepage.',
       steps: [
-        { cls: 'ccd-tool', wait: 1000, hold: 1100, html: '<span class="gd"></span><div class="code"><span class="fn">Read</span>(pages/about.php)<span class="sub">⎿ Read 35 lines</span></div>' },
-        { cls: 'ccd-tool', wait: 1300, hold: 1700, html: '<span class="gd"></span><div class="code"><span class="fn">Update</span>(pages/about.php)<div class="diff"><div class="dl del">- Our firm is committed to the diligent pursuit of our clients’ legal objectives.</div><div class="dl add">+ When life gets legal, we make it simple and we stay in your corner.</div></div></div>' },
-        { cls: 'ccd-a', wait: 900, hold: 1900, html: '<span class="who">Claude</span> Done. Reworked the About page in the same plain voice.' }
+        { cls: 'ccd-tool', wait: 450, hold: 600, html: '<span class="gd"></span><div class="code"><span class="fn">Read</span>(pages/about.php)<span class="sub">⎿ Read 35 lines</span></div>' },
+        { cls: 'ccd-tool', wait: 500, hold: 800, html: '<span class="gd"></span><div class="code"><span class="fn">Update</span>(pages/about.php)<div class="diff"><div class="dl del">- Our firm is committed to the diligent pursuit of our clients’ legal objectives.</div><div class="dl add">+ When life gets legal, we make it simple and we stay in your corner.</div></div></div>' },
+        { cls: 'ccd-a', wait: 600, hold: 1900, html: '<span class="who">Claude</span> Done. Reworked the About page in the same plain voice.' }
       ],
       after: function () { dropItem({ id: 'am-guard-voice', tab: 'guardrails', content: 'Always write in plain, friendly language, never stiff legal phrasing. You asked for this twice, so Claude saved it as a standing rule.' }); } },
     { u: 'Add a contact form to every service page.',
       steps: [
-        { cls: 'ccd-tool', wait: 1000, hold: 1100, html: '<span class="gd"></span><div class="code"><span class="fn">Read</span>(themes/reyes/template-service.php)<span class="sub">⎿ Read 48 lines</span></div>' },
-        { cls: 'ccd-tool', wait: 1300, hold: 1700, html: '<span class="gd"></span><div class="code"><span class="fn">Update</span>(themes/reyes/template-service.php)<div class="diff"><div class="dl add">+ &lt;form class="intake" action="/inbox"&gt;</div><div class="dl add">+   &lt;input name="name" placeholder="Your name"&gt;</div><div class="dl add">+ &lt;/form&gt;</div></div></div>' },
-        { cls: 'ccd-a', wait: 900, hold: 1900, html: '<span class="who">Claude</span> Added the form to every service page. Routed to your main inbox for now, tell me if it should go somewhere else.' }
+        { cls: 'ccd-tool', wait: 450, hold: 600, html: '<span class="gd"></span><div class="code"><span class="fn">Read</span>(themes/reyes/template-service.php)<span class="sub">⎿ Read 48 lines</span></div>' },
+        { cls: 'ccd-tool', wait: 500, hold: 800, html: '<span class="gd"></span><div class="code"><span class="fn">Update</span>(themes/reyes/template-service.php)<div class="diff"><div class="dl add">+ &lt;form class="intake" action="/inbox"&gt;</div><div class="dl add">+   &lt;input name="name" placeholder="Your name"&gt;</div><div class="dl add">+ &lt;/form&gt;</div></div></div>' },
+        { cls: 'ccd-a', wait: 600, hold: 1900, html: '<span class="who">Claude</span> Added the form to every service page. Routed to your main inbox for now, tell me if it should go somewhere else.' }
       ],
       after: function () { dropItem({ id: 'am-q-leads', tab: 'review', content: 'When a contact form comes in, what makes a lead worth your time versus one you would turn away? Claude can pre-screen on the form so you only hear from good fits.', why: 'Claude just added intake forms across the site, and can filter them if it knows your ideal client.' }); } }
   ];
@@ -146,7 +146,7 @@
   function playOnboarding() {
     clearObTimers(); clearChalk(true);
     obTimers.push(setTimeout(function () {
-      chalkAnnotate('.cc-win', 'Claude Code. Ask in plain English, it builds, updates, and analyzes your websites and apps. (Demo — just watch.)', { corner: 'top-right' });
+      chalkAnnotate('.cc-win', 'Claude Code. Ask in plain English, it builds, updates, and analyzes your websites and apps. (Demo — just watch.)', { corner: 'bottom-right' });
     }, 900));
     obTimers.push(setTimeout(clearChalk, 7500));
     obTimers.push(setTimeout(function () {
