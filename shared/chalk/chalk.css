@@ -1,0 +1,44 @@
+/* chalk.css — onboarding "popup callout" notes for Active Memory prototypes.
+   A hand-drawn note bubble that sits beside any element on screen.
+
+   Shared across business prototypes. Theme it per business by overriding the
+   --chalk-* custom properties (on :root or on the .chalk-layer). The defaults
+   inherit the host page's design tokens (--ink, --surface, --sand, --font-display)
+   when those exist, with hard fallbacks otherwise, so a prototype that defines its
+   own palette gets matching callouts for free. */
+.chalk-layer {
+  position: fixed; inset: 0; z-index: 58; pointer-events: none; overflow: hidden;
+
+  /* ---- theming knobs (override per prototype) ---- */
+  --chalk-note-color: rgb(var(--ink, 92 44 6));        /* note text   */
+  --chalk-note-bg:    rgb(var(--surface, 252 248 242)); /* note fill   */
+  --chalk-note-border: rgb(var(--sand, 210 188 158));   /* note border */
+  --chalk-note-shadow: 0 12px 28px rgba(60, 30, 4, .3);
+  --chalk-font:       var(--font-display, 'Bricolage Grotesque', system-ui, sans-serif);
+  --chalk-note-size:  29px;
+  --chalk-pop:        .3s;   /* fade-IN duration (fade-OUT is Chalk.config({fadeOutMs})) */
+}
+.chalk-note {
+  position: absolute; max-width: 360px; padding: 11px 18px 12px;
+  border-radius: 16px 16px 16px 5px;
+  font-family: var(--chalk-font); font-size: var(--chalk-note-size);
+  font-weight: 700; line-height: 1.16;
+  color: var(--chalk-note-color); background: var(--chalk-note-bg);
+  border: 1.5px solid var(--chalk-note-border);
+  box-shadow: var(--chalk-note-shadow); -webkit-font-smoothing: antialiased;
+  animation: chalk-pop var(--chalk-pop) ease both;
+}
+@keyframes chalk-pop { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .chalk-note { animation: none; } }
+
+/* Onboarding spotlight: a full-screen scrim that dims the whole screen except the
+   element a callout is about (a hole is clipped out around it, set inline by JS).
+   pointer-events:none so the dim is purely visual — clicks pass straight through
+   everywhere, so the page stays fully interactive even off-highlight. Tune the
+   dim via --chalk-scrim. */
+.chalk-spotlight {
+  position: fixed; inset: 0; pointer-events: none;
+  background: var(--chalk-scrim, rgba(20, 12, 4, .55));
+  animation: chalk-pop var(--chalk-pop) ease both;
+}
+@media (prefers-reduced-motion: reduce) { .chalk-spotlight { animation: none; } }
