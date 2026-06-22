@@ -1,17 +1,54 @@
-// demo.js — drives the demo: an ambient Claude Code conversation that loops, plus
-// a 2-step onboarding (spotlight Claude Code, then the app) that hands off to free play.
-// Reads app primitives from window.AM (see app.js); exposes stopStory + claudeFollowUp back.
+// demo.js — the engine. It renders and plays window.TRANSCRIPT (see transcript.js),
+// plus a 2-step onboarding that hands off to free play. To change the demo's WORDS,
+// edit transcript.js, never this file. Reads app primitives from window.AM (app.js).
 (function (AM) {
   var byId = AM.byId, convo = AM.convo, reviewPanel = AM.reviewPanel, updateBadges = AM.updateBadges;
 
   // onboarding callouts: shared component (../shared/chalk/chalk.js).
-  // Keep them clear of the floating demo controls at the bottom.
   var chalkAnnotate = Chalk.annotate, clearChalk = Chalk.clear;
   Chalk.config({ bottomKeepout: 150 });
 
+  // ---------- turn the editable transcript into a playable conversation ----------
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function fmt(s) { return esc(s).replace(/\*\*([\s\S]+?)\*\*/g, '<b>$1</b>'); }   // **bold** is the only markup
+  function holdFor(text) { return Math.max(1800, Math.min(3200, text.length * 26)); }  // longer lines linger longer
+
+  function toolHtml(step) {
+    var h = '<span class="gd"></span><div class="code"><span class="fn">' + esc(step.tool) + '</span>';
+    if (step.action) h += ' · ' + fmt(step.action);
+    if (step.lines && step.lines.length) {
+      h += '<div class="diff">' + step.lines.map(function (l) {
+        var c = l.charAt(0) === '+' ? 'dl add' : l.charAt(0) === '-' ? 'dl del' : 'dl';
+        return '<div class="' + c + '">' + esc(l) + '</div>';
+      }).join('') + '</div>';
+    } else if (step.result) {
+      h += '<span class="sub">⎿ ' + fmt(step.result) + '</span>';
+    }
+    return h + '</div>';
+  }
+
+  // memory kind -> where it lands and which pill it wears
+  var MEM = {
+    question:  { tab: 'review' },
+    fact:      { tab: 'facts' },
+    mapping:   { tab: 'facts', pill: 'mapping' },
+    guardrail: { tab: 'guardrails' },
+  };
+
+  var CONVO = (window.TRANSCRIPT || []).map(function (turn, i) {
+    var steps = (turn.steps || []).map(function (step) {
+      if (step.say != null) return { cls: 'ccd-a', wait: 600, hold: holdFor(step.say), html: '<span class="who">Claude</span> ' + fmt(step.say) };
+      return { cls: 'ccd-tool', wait: 500, hold: step.lines ? 800 : 600, html: toolHtml(step) };
+    });
+    var after = null;
+    if (turn.memory) {
+      var m = turn.memory, map = MEM[m.kind] || MEM.fact;
+      after = function () { dropItem({ id: 'mem-' + i, tab: map.tab, pill: map.pill, content: esc(m.text), why: m.why ? esc(m.why) : '' }); };
+    }
+    return { u: turn.you, steps: steps, after: after };
+  });
+
   // ============ Claude Code window: ambient auto-typing conversation (loops) ============
-  // Pure Claude Code motion — it never touches the app, so the user can play freely
-  // while it keeps going. The play/pause/restart controls drive this.
   var timers = [], convPlaying = false, paused = false, convToken = 0, resumeResolvers = [];
   function clearTimers() { timers.forEach(clearTimeout); timers = []; }
   function flushResume() { var rs = resumeResolvers; resumeResolvers = []; rs.forEach(function (f) { f(); }); }
@@ -24,46 +61,13 @@
   function addText(text, cls) { var d = document.createElement('div'); d.className = cls; d.textContent = text; convo.appendChild(d); convo.scrollTop = convo.scrollHeight; return d; }
   function working() { return addMsg('<span class="sp"></span> Working…', 'ccd-working'); }
 
-  // Each turn = your typed prompt, then Claude's real working steps (read context,
-  // read files, write/edit with diffs, then a summary). `after` is what Active Memory
-  // saves as a result: a fact (Facts) or a question to answer once (Review).
-  var CONVO = [
-    { u: 'Rewrite the homepage intro. Plainer, friendlier, short sentences, no legal jargon.',
-      steps: [
-        { cls: 'ccd-tool', wait: 450, hold: 600, html: '<span class="gd"></span><div class="code"><span class="fn">Read</span>(pages/home.php)<span class="sub">⎿ Read 40 lines</span></div>' },
-        { cls: 'ccd-tool', wait: 500, hold: 800, html: '<span class="gd"></span><div class="code"><span class="fn">Update</span>(pages/home.php)<div class="diff"><div class="dl del">- We provide comprehensive legal representation across a breadth of practice areas.</div><div class="dl add">+ We help families and small businesses with the legal stuff that matters, in plain English.</div></div></div>' },
-        { cls: 'ccd-a', wait: 600, hold: 1900, html: '<span class="who">Claude</span> Done. Rewrote the homepage intro in a plainer, friendlier voice.' }
-      ],
-      after: function () { dropItem({ id: 'am-fact-voice', tab: 'facts', content: 'Preferred voice: plain and friendly, short sentences, no legal jargon. Claude writes new copy this way.' }); } },
-    { u: 'Add tracking so I can see which pages lead to consult bookings.',
-      steps: [
-        { cls: 'ccd-tool', wait: 450, hold: 600, html: '<span class="gd"></span><div class="code"><span class="fn">Read</span>(themes/reyes/footer.php)<span class="sub">⎿ Read 22 lines</span></div>' },
-        { cls: 'ccd-tool', wait: 500, hold: 800, html: '<span class="gd"></span><div class="code"><span class="fn">Update</span>(themes/reyes/footer.php)<div class="diff"><div class="dl add">+ &lt;!-- GA4 --&gt;</div><div class="dl add">+ gtag("event", "consult_click", { page: location.pathname });</div></div></div>' },
-        { cls: 'ccd-a', wait: 600, hold: 1900, html: '<span class="who">Claude</span> Tracking is in. Every consult button now fires a <span class="mem">consult_click</span> event, so you can see which pages drive bookings.' }
-      ],
-      after: function () { dropItem({ id: 'am-fact-kpi', tab: 'facts', content: 'Success means consult bookings. Claude tracks which pages drive them and treats consult conversions as the goal when suggesting changes.' }); } },
-    { u: 'The About page still reads stiff. Same plain voice as the homepage.',
-      steps: [
-        { cls: 'ccd-tool', wait: 450, hold: 600, html: '<span class="gd"></span><div class="code"><span class="fn">Read</span>(pages/about.php)<span class="sub">⎿ Read 35 lines</span></div>' },
-        { cls: 'ccd-tool', wait: 500, hold: 800, html: '<span class="gd"></span><div class="code"><span class="fn">Update</span>(pages/about.php)<div class="diff"><div class="dl del">- Our firm is committed to the diligent pursuit of our clients’ legal objectives.</div><div class="dl add">+ When life gets legal, we make it simple and we stay in your corner.</div></div></div>' },
-        { cls: 'ccd-a', wait: 600, hold: 1900, html: '<span class="who">Claude</span> Done. Reworked the About page in the same plain voice.' }
-      ],
-      after: function () { dropItem({ id: 'am-guard-voice', tab: 'guardrails', content: 'Always write in plain, friendly language, never stiff legal phrasing. You asked for this twice, so Claude saved it as a standing rule.' }); } },
-    { u: 'Add a contact form to every service page.',
-      steps: [
-        { cls: 'ccd-tool', wait: 450, hold: 600, html: '<span class="gd"></span><div class="code"><span class="fn">Read</span>(themes/reyes/template-service.php)<span class="sub">⎿ Read 48 lines</span></div>' },
-        { cls: 'ccd-tool', wait: 500, hold: 800, html: '<span class="gd"></span><div class="code"><span class="fn">Update</span>(themes/reyes/template-service.php)<div class="diff"><div class="dl add">+ &lt;form class="intake" action="/inbox"&gt;</div><div class="dl add">+   &lt;input name="name" placeholder="Your name"&gt;</div><div class="dl add">+ &lt;/form&gt;</div></div></div>' },
-        { cls: 'ccd-a', wait: 600, hold: 1900, html: '<span class="who">Claude</span> Added the form to every service page. Routed to your main inbox for now, tell me if it should go somewhere else.' }
-      ],
-      after: function () { dropItem({ id: 'am-q-leads', tab: 'review', content: 'When a contact form comes in, what makes a lead worth your time versus one you would turn away? Claude can pre-screen on the form so you only hear from good fits.', why: 'Claude just added intake forms across the site, and can filter them if it knows your ideal client.' }); } }
-  ];
-
+  // What Active Memory kept from the chat: a confirmed fact/mapping (Facts), a
+  // guardrail (Guardrails), or a question to answer (Review). Injected once each
+  // (tracked by id) so the loop never repeats.
   // While the demo is presenting (first pass, before the user explores), it brings
   // the tab each item lands on into view so you watch it arrive. Flips off the moment
   // the user clicks a tab or a field, so it never fights them during free play.
   var driving = true;
-  // what Active Memory saved from the chat: a confirmed fact (Facts tab) or a question
-  // to answer (Review tab). Injected once each (tracked by id) so the loop never repeats.
   var injected = {};
   function dropItem(o) {
     if (injected[o.id]) return;
@@ -74,14 +78,14 @@
     var card = document.createElement('div');
     card.id = o.id;
     if (o.tab === 'facts' || o.tab === 'guardrails') {
-      // auto-confirmed and editable like the rest. Guardrails carry their own pill
-      // (matches memoryapp, where an observed rule is saved, not asked).
+      // auto-confirmed and editable like the rest. The pill marks fact / mapping /
+      // guardrail (matches memoryapp, where an observed record is saved, not asked).
       card.className = 'card is-new';
-      var pillCls = o.tab === 'guardrails' ? 'type-pill guardrail' : 'type-pill';
-      var pillLabel = o.tab === 'guardrails' ? 'guardrail' : 'fact';
+      var pill = o.tab === 'guardrails' ? 'guardrail' : (o.pill || 'fact');
+      var pillCls = 'type-pill' + (pill === 'guardrail' ? ' guardrail' : pill === 'mapping' ? ' mapping' : '');
       card.innerHTML =
         '<span class="tick">✓</span>' +
-        '<div class="body"><div class="content editable"><span class="' + pillCls + '">' + pillLabel + '</span>' + o.content + '</div></div>' +
+        '<div class="body"><div class="content editable"><span class="' + pillCls + '">' + pill + '</span>' + o.content + '</div></div>' +
         '<div class="actions"><button class="btn ghost" type="button">Remove</button></div>';
     } else {
       card.className = 'card qcard is-new';
@@ -95,8 +99,6 @@
     panel.insertBefore(card, panel.querySelector('.card'));   // newest at the top
     updateBadges();
     setTimeout(function () { card.classList.remove('is-new'); }, 7200);   // after the 7s fade, don't replay
-    // if you're looking at that tab, glide it into view; otherwise the tab breath
-    // + title badge surface it instead.
     var watching = !document.hidden && document.querySelector('.tab[data-tab="' + o.tab + '"]').classList.contains('active');
     if (watching) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
     if (AM.flashTab) AM.flashTab(o.tab);
@@ -143,18 +145,16 @@
   // ============ onboarding: two callouts, then free play ============
   var obTimers = [];
   function clearObTimers() { obTimers.forEach(clearTimeout); obTimers = []; }
-  // app.js calls this on any user interaction: dismiss the intro callouts, but
-  // leave the Claude Code conversation running so it keeps going during free play.
   function dismissOnboarding() { clearObTimers(); clearChalk(); }
 
   function playOnboarding() {
     clearObTimers(); clearChalk(true);
     obTimers.push(setTimeout(function () {
-      chalkAnnotate('.cc-win', 'Claude Code. Ask in plain English, it builds, updates, and analyzes your websites and apps. (Demo — just watch.)', { corner: 'bottom-right' });
+      chalkAnnotate('.cc-win', 'This is Claude Code. Tell it what you want done in plain English, and it works across your Shopify store, QuickBooks, and HubSpot. This is a demo, so just watch it work.', { corner: 'bottom-right' });
     }, 900));
     obTimers.push(setTimeout(clearChalk, 7500));
     obTimers.push(setTimeout(function () {
-      chalkAnnotate('.app-win', 'This is your side app. It quietly learns the ins and outs of your business, so Claude works like your most senior employee.', { corner: 'top-left' });
+      chalkAnnotate('.app-win', 'This is us, working right alongside Claude. We remember how your tools connect, so Claude keeps Shopify, QuickBooks, and HubSpot in sync without you repeating yourself. Go ahead, play with it.', { corner: 'top-left' });
     }, 8600));
     obTimers.push(setTimeout(clearChalk, 16000));
   }

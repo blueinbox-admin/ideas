@@ -13,6 +13,13 @@
 //   hidden     optional; true keeps it in this file but off the launcher
 window.PROTOTYPES = [
   {
+    slug: 'activememory-sporttek',
+    connector: 'Shopify + QuickBooks + HubSpot',
+    persona: 'SportTek USA',
+    blurb: 'An apparel ecommerce company on three tools. One Active Memory brain across Shopify, QuickBooks, and HubSpot — Claude works in all three while the memory learns how records map between them.',
+    status: 'live',
+  },
+  {
     slug: 'activememory-wordpress',
     connector: 'WordPress',
     persona: 'Reyes Law Firm',
