@@ -1,126 +1,112 @@
 // transcript.js — the demo story. THIS is the only file you edit to change the demo.
 //
-// Each turn has three parts:
-//   you     what the ops manager types into Claude Code (one line of plain text)
-//   steps   what Claude does, in order. Each step is either:
-//             { say: "..." }                                  Claude's reply (plain text)
-//             { tool: "Shopify", action: "...", result: "..." }   a tool line (Shopify / QuickBooks / HubSpot)
-//             { tool: "QuickBooks", action: "value inventory", lines: [ "...", ... ] }
-//   memory  the one thing Active Memory keeps from this turn:
-//             { kind: "question", text: "...", why: "..." }   -> Review tab
-//             { kind: "fact",     text: "..." }               -> Facts tab
-//             { kind: "mapping",  text: "..." }               -> Facts tab (mapping pill)
-//             { kind: "guardrail",text: "..." }               -> Guardrails tab
+// SportTek Intelligence Hub: a product-knowledge brain for the SALES TEAM. Reps ask
+// Claude about fabrics, garments, decoration methods, fits, and what to recommend.
+// The catalog (Shopify) has the specs; the Hub holds the tribal knowledge the best reps
+// carry — which fabric takes which decoration, fit quirks, safe substitutes, what to lead
+// with. Claude answers reps using it; gaps become questions; new knowledge is saved.
 //
-// SportTek USA: customizable team & sports apparel, hybrid wholesale + D2C, on Shopify +
-// QuickBooks + HubSpot. The ops manager uses Claude to ANALYZE and run the operation —
-// inventory, margin, sales, accounts. Active Memory's questions are the business knowledge
-// Claude needs to analyze well, and most of them pull across the three platforms.
+// Each turn:
+//   you     what a sales rep types into Claude Code (one line)
+//   steps   { say: "..." }  Claude's reply, or { tool: "Catalog", action: "...", result: "..." }
+//   memory  { kind: "question"|"fact"|"mapping"|"guardrail", text, why? }
+//             question -> Review, fact/mapping -> Facts, guardrail -> Guardrails
 //
-// Formatting: wrap **like this** for bold. Use a curly apostrophe (’) inside words so the
+// Formatting: **bold** is the only markup. Use a curly apostrophe (’) inside words so the
 // single-quoted strings don’t break. No em/en dashes. Timing is automatic.
 
 window.TRANSCRIPT = [
   {
-    you: 'What do we need to reorder before the fall rush?',
+    you: 'Customer wants moisture-wicking polos for a golf team, screen printed. What do you recommend?',
     steps: [
-      { tool: 'Shopify', action: 'sell-through + stock on hand', result: 'Navy Varsity Hoodie and team polos trending fast' },
-      { tool: 'QuickBooks', action: 'check open purchase orders', result: 'nothing on order' },
-      { say: 'At the current pace, the Navy Varsity Hoodie (size L) runs out in about 9 days and the team polos two weeks after. Nothing is on order. I don’t have your reorder points or supplier lead times, so I can’t tell you when to actually place the orders.' },
+      { tool: 'Catalog', action: 'moisture-wicking polos', result: 'PosiCharge line, micropique polos' },
+      { say: 'For moisture-wicking the go-to is the PosiCharge line, but those don’t hold screen-print ink well, they’re built for heat transfer or sublimation. If the customer is set on screen print, they’ll want a cotton-rich polo instead. I don’t have a screen-print-friendly polo flagged in the catalog yet.' },
     ],
     memory: {
       kind: 'question',
-      text: 'What reorder point and supplier lead time should Claude use per product, so it can flag restocks before you stock out?',
-      why: 'Stock levels live in Shopify, but reorder points and lead times live in your head. Claude needs both to call a reorder in time.',
+      text: 'Which polos are screen-print friendly versus performance-only, so Claude recommends the right one for each decoration method?',
+      why: 'The catalog lists the fabric but not which decoration method each one actually holds up to.',
     },
   },
 
   {
-    you: 'What’s our actual margin on the Varsity Hoodie?',
+    you: 'Can we embroider the PosiCharge tees?',
     steps: [
-      { tool: 'Shopify', action: 'retail price', result: '$42.00' },
-      { tool: 'QuickBooks', action: 'item cost', result: 'blank $14.00, plus uncategorized freight' },
-      { say: 'It sells for $42 and the blank is $14 in QuickBooks, but I can’t see whether decoration and freight are folded into the cost. Depending on that, the margin is anywhere from 40% to 67%.' },
+      { say: 'Not recommended. Embroidery on a 3.8 oz performance tee tends to pucker, so it doesn’t hold on lightweight wicking knits. For the PosiCharge tees, heat transfer or sublimation looks better. Save embroidery for the fleece, twill, and heavier polos.' },
     ],
     memory: {
-      kind: 'question',
-      text: 'Which costs make up landed cost for margin: just the blank, or blank plus decoration plus freight? And which QuickBooks account holds each?',
-      why: 'Margin per product is only right if Claude knows everything that goes into COGS, and those costs sit in different QuickBooks accounts.',
+      kind: 'mapping',
+      text: 'Embroidery is not recommended on lightweight performance knits (PosiCharge tees); use heat transfer or sublimation. Embroidery suits fleece, twill, and heavier polos.',
     },
   },
 
   {
-    you: 'What are our best sellers this month?',
+    you: 'The ST650 polo is out of stock in navy. What’s a good substitute?',
     steps: [
-      { tool: 'Shopify', action: 'units + revenue by product, both channels', result: 'polos lead on units, jerseys on revenue' },
-      { say: 'By units it’s the team polos. By revenue it’s the custom jerseys. That’s D2C and wholesale blended together, which can flip the ranking.' },
+      { tool: 'Catalog', action: 'check ST650 navy', result: 'out of stock' },
+      { say: 'Closest match is the ST550 in navy, same micropique feel and a similar fit, and it also embroiders cleanly. One caveat: the ST550 runs about a half size smaller, so size up for bigger players.' },
     ],
     memory: {
       kind: 'question',
-      text: 'When you ask for best sellers, do you want them ranked by units or by revenue, and D2C and wholesale combined or split?',
-      why: 'The ranking changes with each choice, so Claude needs your default before it answers.',
+      text: 'Which products are approved substitutes for each other when something is out of stock, matched on feel, fit, and decoration?',
+      why: 'Reps need safe swaps they can offer with confidence, not just a similar-looking item.',
     },
   },
 
   {
-    you: 'Which wholesale accounts are slipping?',
+    you: 'Does the ladies’ Competitor tee run true to size?',
     steps: [
-      { tool: 'HubSpot', action: 'last activity by account', result: '8 accounts quiet 90+ days' },
-      { tool: 'Shopify', action: 'last order date', result: 'matches the 8' },
-      { say: 'Eight wholesale accounts haven’t ordered in over 90 days, including Lincoln High. But a 90-day gap means something different for a fall-sports team than a year-round league, so some of these may be perfectly fine.' },
-    ],
-    memory: {
-      kind: 'question',
-      text: 'What makes a wholesale account "at risk": how many days since its last order, and does that window change by sport season?',
-      why: 'So Claude flags the accounts actually slipping instead of seasonal teams sitting in their off-season.',
-    },
-  },
-
-  {
-    you: 'How much cash is tied up in inventory right now?',
-    steps: [
-      { tool: 'Shopify', action: 'units on hand by SKU', result: '~1,200 SKUs' },
-      { tool: 'QuickBooks', action: 'unit cost', result: 'valued at cost' },
-      { say: 'About $86K at cost across 1,200 SKUs. Roughly a fifth of that is last season’s colors that are barely moving.' },
+      { say: 'It runs small. Ladies’ performance styles are about one size smaller than unisex, and the Competitor is a fitted cut. Tell her to size up if she wants a relaxed fit.' },
     ],
     memory: {
       kind: 'fact',
-      text: 'Inventory cash is reported at landed cost: Shopify quantities valued against QuickBooks unit cost. Claude calls out slow movers as part of the number.',
+      text: 'Ladies’ performance styles run about one size smaller than unisex, and the Competitor tee is a fitted cut. Reps should advise sizing up for a relaxed fit.',
     },
   },
 
   {
-    you: 'Anything we should stop carrying?',
+    you: 'Customer wants a full-color photo logo on tees. Best option?',
     steps: [
-      { tool: 'Shopify', action: 'units sold, last 120 days', result: '3 styles at zero' },
-      { say: 'Three styles haven’t sold a single unit in 120 days, tying up about $9K. Two are last year’s team colors, one is a summer tee that’s just out of season.' },
+      { say: 'Full-color photo work means sublimation, and sublimation only reproduces on white or light **polyester**. It won’t work on dark fabric or on cotton. I’d put them on a white PosiCharge tee so the logo comes out clean.' },
+    ],
+    memory: {
+      kind: 'mapping',
+      text: 'Full-color and photo logos require sublimation on white or light polyester. They will not reproduce on dark fabric or on cotton.',
+    },
+  },
+
+  {
+    you: 'What should I lead with for a youth soccer league?',
+    steps: [
+      { tool: 'Catalog', action: 'youth performance tops', result: 'youth wicking tees, youth jerseys' },
+      { say: 'For youth soccer I’d lead with a lightweight wicking tee or a youth jersey, in youth sizing. One thing to confirm before quoting: youth apparel for younger kids can fall under CPSIA depending on age and decoration.' },
     ],
     memory: {
       kind: 'question',
-      text: 'At what point is a product "dead stock" for you: no sales in 90 days, 120? And should Claude exclude seasonal items from that?',
-      why: 'So Claude flags true dead stock and doesn’t call out seasonal gear during its off-season.',
+      text: 'For youth and team orders, which products are youth-sized and which decoration methods keep them CPSIA-compliant?',
+      why: 'Youth gear carries safety rules, and reps should never guess at compliance on a quote.',
     },
   },
 
   {
-    you: 'Always base margin on landed cost, never the blank price.',
+    you: 'A customer asked if our performance jackets are waterproof.',
     steps: [
-      { say: 'Got it. I’ll always use landed cost for margin from now on.' },
+      { say: 'They’re water-resistant, not waterproof, so don’t promise waterproof. The right way to describe them is water-resistant and wind-resistant, good for light rain and wind, not a downpour.' },
     ],
     memory: {
       kind: 'guardrail',
-      text: 'Always calculate margin on landed cost (blank plus decoration plus freight), never the blank price alone.',
+      text: 'Never describe performance outerwear as "waterproof." It is water-resistant. Always say water-resistant / wind-resistant.',
     },
   },
 
   {
-    you: 'Where should I put this month’s reorder budget?',
+    you: 'Quick, customer wants performance polos for a golf team, embroidered, true to size.',
     steps: [
-      { say: 'Into the team polos and the Navy Varsity Hoodie. They sell through fastest, and once decoration and freight are in the cost they still carry your best margin. I’d hold off on last season’s colors, that’s the dead stock we flagged. Wholesale demand for these peaks next month with fall sports, so order now.' },
+      { say: 'Lead with the **ST650** micropique polo. It embroiders cleanly because it’s a heavier knit than the tees, it’s moisture-wicking, and it runs true to size, so no sizing caveat to give. Skip the PosiCharge tees for embroidery. Want me to pull the available colors and the quantity price breaks?' },
     ],
     memory: {
       kind: 'fact',
-      text: 'Reorder priority is driven by sell-through rate and landed margin together, weighted toward the upcoming season, not by raw units sold.',
+      text: 'For embroidered performance polos, the ST650 is the lead recommendation: it embroiders cleanly, is moisture-wicking, and runs true to size.',
     },
   },
 ];

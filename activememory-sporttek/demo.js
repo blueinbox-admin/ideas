@@ -150,11 +150,11 @@
   function playOnboarding() {
     clearObTimers(); clearChalk(true);
     obTimers.push(setTimeout(function () {
-      chalkAnnotate('.cc-win', 'This is Claude Code. Tell it what you want done in plain English, and it works across your Shopify store, QuickBooks, and HubSpot. This is a demo, so just watch it work.', { corner: 'bottom-right' });
+      chalkAnnotate('.cc-win', 'This is Claude Code. Ask it any product question in plain English, fabrics, fits, decoration, what to recommend, and it answers from your product knowledge. This is a demo, so just watch it work.', { corner: 'bottom-right' });
     }, 900));
     obTimers.push(setTimeout(clearChalk, 7500));
     obTimers.push(setTimeout(function () {
-      chalkAnnotate('.app-win', 'This is us, working right alongside Claude. We remember how your tools connect, so Claude keeps Shopify, QuickBooks, and HubSpot in sync without you repeating yourself. Go ahead, play with it.', { corner: 'top-left' });
+      chalkAnnotate('.app-win', 'This is your Intelligence Hub. It remembers what your best reps know about the products, so Claude gives the whole sales team the same right answer. Go ahead, play with it.', { corner: 'top-left' });
     }, 8600));
     obTimers.push(setTimeout(clearChalk, 16000));
   }

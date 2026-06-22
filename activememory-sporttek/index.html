@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=2">
+<link rel="stylesheet" href="styles.css?v=3">
 <link rel="stylesheet" href="../shared/chalk/chalk.css">
 </head>
 <body>
@@ -18,13 +18,13 @@
 
     <!-- pretend desktop files, down the right edge -->
     <div class="desktop-icons">
-      <div class="dicon"><svg viewBox="0 0 48 40"><path d="M3 9a3 3 0 0 1 3-3h11l4 4h21a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#4d9fe8"/><path d="M3 14h45v19a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#79bdf9"/></svg><span>Storefront</span></div>
       <div class="dicon"><svg viewBox="0 0 48 40"><path d="M3 9a3 3 0 0 1 3-3h11l4 4h21a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#4d9fe8"/><path d="M3 14h45v19a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#79bdf9"/></svg><span>Catalog</span></div>
+      <div class="dicon"><svg viewBox="0 0 48 40"><path d="M3 9a3 3 0 0 1 3-3h11l4 4h21a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#4d9fe8"/><path d="M3 14h45v19a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#79bdf9"/></svg><span>Line Sheets</span></div>
       <div class="dicon"><svg viewBox="0 0 48 40"><path d="M3 9a3 3 0 0 1 3-3h11l4 4h21a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#4d9fe8"/><path d="M3 14h45v19a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#79bdf9"/></svg><span>Blue Inbox</span></div>
       <div class="dicon"><div class="thumb"></div><span>Screenshot 2026-0…24 PM</span></div>
     </div>
 
-    <!-- ============ ACTIVE MEMORY — a WEB APP, open in Chrome ============ -->
+    <!-- ============ SPORTTEK INTELLIGENCE HUB — a WEB APP, open in Chrome ============ -->
     <section class="win app-win">
       <div class="chrome-tabs">
         <div class="chrome-dots"><i></i><i></i><i></i></div>
@@ -49,13 +49,11 @@
         <div class="topbar-inner">
           <div>
             <div class="brand"><span class="mark">◧</span>SportTek Intelligence Hub</div>
-            <div class="tagline">The memory Claude Code reads before it touches your store, books, or CRM, so it stops guessing.</div>
+            <div class="tagline">The product knowledge Claude reads before it answers, so the sales team always has the right call on fabrics, fits, and decoration.</div>
           </div>
           <div class="topbar-right">
             <div class="conn">
-              <span class="conn-item"><span class="conn-dot app"></span>Shopify · read-only</span>
-              <span class="conn-item"><span class="conn-dot app"></span>QuickBooks · read-only</span>
-              <span class="conn-item"><span class="conn-dot app"></span>HubSpot · read-only</span>
+              <span class="conn-item"><span class="conn-dot app"></span>Shopify catalog · read-only</span>
               <span class="conn-item conn-working"><span class="conn-dot pulse"></span>Claude Code · working</span>
             </div>
             <div class="org">SportTek USA</div>
@@ -64,12 +62,12 @@
       </header>
 
       <div class="layout">
-        <!-- single memory scope: one brain across Shopify, QuickBooks, and HubSpot -->
+        <!-- one product-knowledge brain for the sales team -->
         <main class="content">
           <div class="scope-head">
             <h1 class="scope-title">SportTek USA</h1>
           </div>
-          <p class="scope-sub">Memory that applies to everything Claude does across your Shopify store, QuickBooks, and HubSpot: how the business runs, how records line up between tools, and the rules it must never break.</p>
+          <p class="scope-sub">Everything the sales team knows about SportTek products: fabrics, fits, decoration methods, and what to recommend, so Claude gives any rep the right answer fast.</p>
 
           <nav class="tabs" id="tabs">
             <button class="tab active" data-tab="review">Review <span class="badge amber" id="bReview">3</span></button>
@@ -81,12 +79,12 @@
           <!-- REVIEW -->
           <section class="panel active" data-panel="review">
             <div class="legend">Questions to answer</div>
-            <p class="note">Things Claude needs from you to work better. Answer one and it becomes a confirmed fact on the Facts tab. Facts it can confirm on its own are saved straight to Facts.</p>
+            <p class="note">Things Claude needs from your team to advise reps well. Answer one and it becomes a confirmed fact on the Facts tab. Facts it can confirm on its own are saved straight to Facts.</p>
 
             <div class="card qcard">
               <div class="body">
-                <div class="content">How should Claude count inventory for analysis: by variant (size and color), or by style?</div>
-                <div class="qwhy">Why Claude asks: reorder and dead-stock reports come out completely different depending on which level you mean.</div>
+                <div class="content">Which decoration methods does each fabric line support (screen print, embroidery, heat transfer, sublimation), so Claude can match garment to method?</div>
+                <div class="qwhy">Why Claude asks: the catalog lists the fabric, but not which decoration each one actually holds up to.</div>
                 <form class="qform" onsubmit="return false">
                   <textarea></textarea>
                   <div class="actions"><button class="btn primary" type="submit">Save answer</button></div>
@@ -97,8 +95,8 @@
 
             <div class="card qcard">
               <div class="body">
-                <div class="content">What target margin should each product clear, and which products are you OK discounting to move?</div>
-                <div class="qwhy">Why Claude asks: so it can flag underperformers and knows what it can mark down versus what it must hold at full price.</div>
+                <div class="content">For each sport or use case, which garment should Claude lead with (golf, soccer, basketball, corporate)?</div>
+                <div class="qwhy">Why Claude asks: reps want a fast, consistent first recommendation instead of guessing per customer.</div>
                 <form class="qform" onsubmit="return false">
                   <textarea></textarea>
                   <div class="actions"><button class="btn primary" type="submit">Save answer</button></div>
@@ -109,8 +107,8 @@
 
             <div class="card qcard">
               <div class="body">
-                <div class="content">Which states are you registered to collect sales tax in, so Shopify revenue and QuickBooks reports line up?</div>
-                <div class="qwhy">Why Claude asks: it can only report and reconcile tax correctly for the states you're actually registered in.</div>
+                <div class="content">What are the known fit quirks by style (runs small or large, fitted or relaxed), so reps set sizing expectations up front?</div>
+                <div class="qwhy">Why Claude asks: most returns and reorders come from a sizing surprise the rep could have headed off.</div>
                 <form class="qform" onsubmit="return false">
                   <textarea></textarea>
                   <div class="actions"><button class="btn primary" type="submit">Save answer</button></div>
@@ -123,39 +121,39 @@
           <!-- FACTS -->
           <section class="panel" data-panel="facts">
             <div class="legend">Add your own</div>
-            <p class="note">A fact, mapping, or rule about how SportTek runs across its tools, so Claude works better for you.</p>
+            <p class="note">A product fact, a fabric-to-decoration rule, or a recommendation, so Claude gives the sales team the right answer.</p>
             <form class="addform" id="factAdd" onsubmit="return false">
-              <textarea maxlength="280" placeholder="A fact or mapping true across your tools: how you categorize, how records line up between Shopify, QuickBooks, and HubSpot."></textarea>
+              <textarea maxlength="280" placeholder="A product fact or rule (e.g. which fabrics take which decoration, fit quirks, what to recommend for a given sport)."></textarea>
               <button class="btn primary" type="submit">Add</button>
             </form>
             <div class="add-toast" id="factToast" hidden>✓ Saved to Facts</div>
 
             <div class="legend" style="margin-top:24px;">Confirmed facts</div>
-            <p class="note">What Claude actually knows about SportTek: what it learned while working, your answers, and the facts you added. Click any to edit or remove.</p>
+            <p class="note">What Claude actually knows about SportTek products: what it learned while answering, your team's answers, and the facts you added. Click any to edit or remove.</p>
 
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>SportTek USA sells customizable team and sports apparel: tees, polos, caps, outerwear, and bags.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Two sales channels: a D2C storefront and wholesale accounts (teams, schools, organizations).</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill mapping">mapping</span>Shopify is the system of record for products and inventory. QuickBooks holds the financials. HubSpot holds contacts and wholesale deals.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill mapping">mapping</span>A Shopify order maps to QuickBooks revenue, and for wholesale it also maps to a HubSpot deal.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Wholesale orders are invoiced Net 30. D2C orders are paid upfront at checkout.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Busy season is August through October (back-to-school and fall sports).</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>The PosiCharge Competitor Tee (ST350) is 100% polyester, 3.8 oz, moisture-wicking. A go-to for running and training.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill mapping">mapping</span>Moisture-wicking polyester (PosiCharge) takes heat transfer and sublimation well, but does not hold screen-print ink.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill mapping">mapping</span>Embroidery is recommended on fleece, twill, and heavier knit polos, not on lightweight performance tees.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Ladies' performance styles run about one size smaller than unisex, and most are a fitted cut.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Tri-blends feel soft and retail-like but are harder to color-match across dye lots.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill mapping">mapping</span>Full-color and photo logos need sublimation on white or light polyester; they will not reproduce on dark fabric or cotton.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
 
-            <p class="note" style="margin-top:20px;"><span style="color:rgb(var(--ink-muted));">Plus the full product catalog, customer list, and chart of accounts read from Shopify, QuickBooks, and HubSpot, used quietly for exact-name lookups, not shown here because there's nothing to decide about them.</span></p>
+            <p class="note" style="margin-top:20px;"><span style="color:rgb(var(--ink-muted));">Plus the full product catalog, specs, and color availability synced from Shopify, used quietly for exact-name lookups, not shown here because there's nothing to decide about them.</span></p>
           </section>
 
           <!-- GUARDRAILS -->
           <section class="panel" data-panel="guardrails">
-            <div class="legend">Guardrails (account-wide)</div>
-            <p class="note">Hard rules Claude must never violate. These fire on every task, in every tool.</p>
+            <div class="legend">Guardrails (what reps must never say)</div>
+            <p class="note">Hard rules Claude must never break when advising a rep or a customer.</p>
 
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never edit or recategorize a closed QuickBooks period.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never publish a Shopify price change without approval.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Always keep a product's SKU identical across Shopify, QuickBooks, and HubSpot.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never add a customer to a HubSpot marketing list without opt-in.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never email wholesale contacts the D2C marketing campaigns.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never promise an exact color match across dye lots.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never recommend screen printing on moisture-wicking polyester (PosiCharge).</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never quote stock as guaranteed without checking the live catalog.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never describe performance outerwear as "waterproof." It is water-resistant.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Always confirm the decoration method before recommending a fabric.</div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
 
             <form class="addform" id="guardAdd" onsubmit="return false">
-              <textarea maxlength="280" placeholder="A rule Claude must never violate (e.g. &quot;Never refund a wholesale order without a manager's OK.&quot;)."></textarea>
+              <textarea maxlength="280" placeholder="A rule Claude must never break (e.g. &quot;Never recommend cotton for a sublimated order.&quot;)."></textarea>
               <button class="btn primary" type="submit">Add</button>
             </form>
           </section>
@@ -169,14 +167,14 @@
                 <div class="dav-status">Your Intelligence Hub advisor · usually replies same day</div>
               </div>
             </div>
-            <p class="note">Flag anything you'd rather run by a human. David sees your question and your saved memory, and replies right here.</p>
+            <p class="note">Flag anything you'd rather run by a human. David sees your question and the saved product knowledge, and replies right here.</p>
 
             <div class="dav-thread" id="davThread">
-              <div class="dav-row me"><div class="bubble">We're shipping into a lot of new states through Shopify now. Do I need to worry about sales tax in all of them?</div><div class="ts">Mon 9:14 AM</div></div>
-              <div class="dav-row them"><div class="bubble">Real question. Once you cross a state's economic-nexus threshold you have to collect there. Shopify can track it, but QuickBooks has to match, and we shouldn't guess which states you've crossed.</div><div class="ts">Mon 9:36 AM</div></div>
-              <div class="dav-row them"><div class="bubble">Let's set up a quick call with your accountant looped in so we get the nexus states right, 15 minutes should do it.</div><div class="ts">Mon 9:37 AM</div></div>
-              <div class="dav-row me"><div class="bubble">Works for me. Can the Hub remember which states we're registered in so Claude files correctly?</div><div class="ts">Mon 9:44 AM</div></div>
-              <div class="dav-row them"><div class="bubble">Yep, tell Claude once and it'll apply the right rate per state and skip the ones you're not registered in. I'll bring the nexus list to the call.</div><div class="ts">Mon 9:46 AM</div></div>
+              <div class="dav-row me"><div class="bubble">A school wants our youth tees for kids under 12, screen printed. Anything I need to flag before I quote?</div><div class="ts">Mon 9:18 AM</div></div>
+              <div class="dav-row them"><div class="bubble">Good catch to ask. Youth apparel for that age can fall under CPSIA, and the inks and tagless labels matter. Let's not promise compliance off the cuff.</div><div class="ts">Mon 9:39 AM</div></div>
+              <div class="dav-row them"><div class="bubble">Let me confirm which youth styles and decoration methods are CPSIA-certified and get back to you today. If it's easier, 10 minutes on a call.</div><div class="ts">Mon 9:40 AM</div></div>
+              <div class="dav-row me"><div class="bubble">That'd help. Can the Hub remember which youth products are certified so Claude flags it automatically?</div><div class="ts">Mon 9:47 AM</div></div>
+              <div class="dav-row them"><div class="bubble">Yep, tell Claude once and it'll flag youth and CPSIA items on every quote. I'll send the certified list.</div><div class="ts">Mon 9:49 AM</div></div>
             </div>
 
             <form class="dav-compose" id="davCompose" onsubmit="return false">
@@ -207,9 +205,9 @@
           <div class="ccd-seclabel">Recents
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
           </div>
-          <div class="ccd-rec active"><span class="rdot"></span><span class="rname">SportTek ops</span></div>
-          <div class="ccd-rec"><span class="rdot"></span><span class="rname">Fall catalog sync</span></div>
-          <div class="ccd-rec"><span class="rdot"></span><span class="rname">Wholesale orders</span></div>
+          <div class="ccd-rec active"><span class="rdot"></span><span class="rname">Product desk</span></div>
+          <div class="ccd-rec"><span class="rdot"></span><span class="rname">Team order recs</span></div>
+          <div class="ccd-rec"><span class="rdot"></span><span class="rname">Fabric &amp; decoration guide</span></div>
           <div class="ccd-spacer"></div>
           <div class="ccd-user"><span class="av">DZ</span>Dave<span class="pl">· Max</span><span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></div>
         </div>
@@ -218,7 +216,7 @@
         <div class="ccd-main">
           <div class="ccd-top">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="11" rx="1"/><path d="M2 20h20"/></svg>
-            <span class="crumb"><b>SportTek ops</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
+            <span class="crumb"><b>Product desk</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
             <span class="grow"></span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>
           </div>
@@ -252,8 +250,8 @@
 
 
 <script src="../shared/chalk/chalk.js"></script>
-<script src="app.js?v=2"></script>
-<script src="transcript.js?v=2"></script>
-<script src="demo.js?v=2"></script>
+<script src="app.js?v=3"></script>
+<script src="transcript.js?v=3"></script>
+<script src="demo.js?v=3"></script>
 </body>
 </html>
