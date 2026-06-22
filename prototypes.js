@@ -13,7 +13,7 @@
 //   hidden     optional; true keeps it in this file but off the launcher
 window.PROTOTYPES = [
   {
-    slug: 'activememory-sporttek',
+    slug: 'activememory-sportek',
     connector: 'Product knowledge for sales',
     persona: 'Sportek International',
     blurb: 'A sales-enablement brain for a wholesale technical-fabric distributor. Reps ask Claude about fabrics, applications, what prints, and what to quote; the hub remembers what the best reps know so everyone gives the same right answer.',
