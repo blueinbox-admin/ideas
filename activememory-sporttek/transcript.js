@@ -1,10 +1,11 @@
 // transcript.js — the demo story. THIS is the only file you edit to change the demo.
 //
-// SportTek Intelligence Hub: a product-knowledge brain for the SALES TEAM. Reps ask
-// Claude about fabrics, garments, decoration methods, fits, and what to recommend.
-// The catalog (Shopify) has the specs; the Hub holds the tribal knowledge the best reps
-// carry — which fabric takes which decoration, fit quirks, safe substitutes, what to lead
-// with. Claude answers reps using it; gaps become questions; new knowledge is saved.
+// Sportek Intelligence Hub: a product-knowledge brain for the SALES TEAM at a wholesale
+// technical-fabric distributor. Reps ask Claude about fabrics, applications, weights,
+// stretch, print methods, chlorine resistance, substitutes, and what to quote. The catalog
+// (Shopify) has the specs and stock; the Hub holds the tribal knowledge the best reps carry
+// — which fabric suits which end use, what prints, safe substitutes, ordering rules.
+// Claude answers reps using it; gaps become questions; new knowledge is saved.
 //
 // Each turn:
 //   you     what a sales rep types into Claude Code (one line)
@@ -17,96 +18,96 @@
 
 window.TRANSCRIPT = [
   {
-    you: 'Customer wants moisture-wicking polos for a golf team, screen printed. What do you recommend?',
+    you: 'Customer is making competitive swimwear and wants chlorine resistance plus a sublimated print. What fabric do I quote?',
     steps: [
-      { tool: 'Catalog', action: 'moisture-wicking polos', result: 'PosiCharge line, micropique polos' },
-      { say: 'For moisture-wicking the go-to is the PosiCharge line, but those don’t hold screen-print ink well, they’re built for heat transfer or sublimation. If the customer is set on screen print, they’ll want a cotton-rich polo instead. I don’t have a screen-print-friendly polo flagged in the catalog yet.' },
+      { tool: 'Catalog', action: 'chlorine-resistant swim fabric', result: 'F-70L chlorine-resist, UPF50+, yarn-dyed stripe' },
+      { say: 'For chlorine durability our flagship is the F-70L, nylon-LYCRA, UPF50+. But it’s yarn-dyed striped, so it isn’t a print base. Sublimation needs a PFP (prepared-for-print) white polyester base, and most of our high chlorine-resist tricots aren’t PFP. I don’t have a fabric flagged as **both** chlorine-resistant and sublimation-ready in the catalog yet.' },
     ],
     memory: {
       kind: 'question',
-      text: 'Which polos are screen-print friendly versus performance-only, so Claude recommends the right one for each decoration method?',
-      why: 'The catalog lists the fabric but not which decoration method each one actually holds up to.',
+      text: 'Which fabrics are both chlorine-resistant and PFP/sublimation-ready, so Claude can quote competitive swimwear that needs a printed design?',
+      why: 'The catalog lists chlorine resistance and print-readiness separately, but not which fabrics do both.',
     },
   },
 
   {
-    you: 'Can we embroider the PosiCharge tees?',
+    you: 'Can we sublimate on the F-56 shiny tricot?',
     steps: [
-      { say: 'Not recommended. Embroidery on a 3.8 oz performance tee tends to pucker, so it doesn’t hold on lightweight wicking knits. For the PosiCharge tees, heat transfer or sublimation looks better. Save embroidery for the fleece, twill, and heavier polos.' },
+      { say: 'No. Sublimation only bonds to PFP polyester, a prepared-for-print white or light base. The F-56 is a nylon-spandex shiny tricot, so it won’t hold a sublimated print. For a printed design, point them to our PFP poly-spandex styles instead.' },
     ],
     memory: {
       kind: 'mapping',
-      text: 'Embroidery is not recommended on lightweight performance knits (PosiCharge tees); use heat transfer or sublimation. Embroidery suits fleece, twill, and heavier polos.',
+      text: 'Sublimation only works on PFP (prepared-for-print) polyester bases. Nylon-spandex tricots like the F-56 are not PFP and will not take a sublimated print.',
     },
   },
 
   {
-    you: 'The ST650 polo is out of stock in navy. What’s a good substitute?',
+    you: 'The SP-2800 perforated mesh is out of stock. What’s a good substitute?',
     steps: [
-      { tool: 'Catalog', action: 'check ST650 navy', result: 'out of stock' },
-      { say: 'Closest match is the ST550 in navy, same micropique feel and a similar fit, and it also embroiders cleanly. One caveat: the ST550 runs about a half size smaller, so size up for bigger players.' },
+      { tool: 'Catalog', action: 'check SP-2800', result: 'out of stock' },
+      { say: 'Closest in feel is the 0620 performance mesh, same moisture-management mesh family. One caveat: the 0620 runs lighter and isn’t 66" wide like the SP-2800, so confirm the cut width works for their marker before you quote.' },
     ],
     memory: {
       kind: 'question',
-      text: 'Which products are approved substitutes for each other when something is out of stock, matched on feel, fit, and decoration?',
-      why: 'Reps need safe swaps they can offer with confidence, not just a similar-looking item.',
+      text: 'Which fabrics are approved substitutes for each other when a roll is out of stock, matched on weight, width, stretch, and hand?',
+      why: 'Reps need safe swaps a customer can cut and sew without surprises, not just a similar-looking mesh.',
     },
   },
 
   {
-    you: 'Does the ladies’ Competitor tee run true to size?',
+    you: 'Customer wants leggings that are squat-proof. Which weight holds up?',
     steps: [
-      { say: 'It runs small. Ladies’ performance styles are about one size smaller than unisex, and the Competitor is a fitted cut. Tell her to size up if she wants a relaxed fit.' },
+      { say: 'Go heavier and matte. The FM-65 matte tricot at about 8 oz is opaque under stretch, that’s the squat-proof one. The lighter shiny tricots can show through when fully stretched, so steer leggings away from those.' },
     ],
     memory: {
       kind: 'fact',
-      text: 'Ladies’ performance styles run about one size smaller than unisex, and the Competitor tee is a fitted cut. Reps should advise sizing up for a relaxed fit.',
+      text: 'For squat-proof leggings, recommend heavier matte tricots (FM-65, ~8 oz). Lighter shiny tricots can show through under full stretch and should be avoided for leggings.',
     },
   },
 
   {
-    you: 'Customer wants a full-color photo logo on tees. Best option?',
+    you: 'Customer needs a compressive, structured waistband for that same legging.',
     steps: [
-      { say: 'Full-color photo work means sublimation, and sublimation only reproduces on white or light **polyester**. It won’t work on dark fabric or on cotton. I’d put them on a white PosiCharge tee so the logo comes out clean.' },
+      { say: 'That’s a power-mesh job, not a body fabric. The SP-37 nylon-spandex power mesh is built for structure and support, so map it to waistbands, linings, and panels. Keep the FM-65 matte tricot for the main leg.' },
     ],
     memory: {
       kind: 'mapping',
-      text: 'Full-color and photo logos require sublimation on white or light polyester. They will not reproduce on dark fabric or on cotton.',
+      text: 'Power mesh (SP-37) maps to support zones: waistbands, linings, and panels, not the main garment body. Pair it with a body fabric like the FM-65 matte tricot.',
     },
   },
 
   {
-    you: 'What should I lead with for a youth soccer league?',
+    you: 'A customer wants recycled eco fabric for a swim line. What do we have?',
     steps: [
-      { tool: 'Catalog', action: 'youth performance tops', result: 'youth wicking tees, youth jerseys' },
-      { say: 'For youth soccer I’d lead with a lightweight wicking tee or a youth jersey, in youth sizing. One thing to confirm before quoting: youth apparel for younger kids can fall under CPSIA depending on age and decoration.' },
+      { tool: 'Catalog', action: 'eco recycled swim', result: 'recycled poly-spandex styles' },
+      { say: 'We carry recycled poly-spandex in the eco line, and it sublimates like our other PFP poly. One thing to confirm before quoting: which specific styles carry a recycled-content certification the customer can cite, since brands usually need that on paper.' },
     ],
     memory: {
       kind: 'question',
-      text: 'For youth and team orders, which products are youth-sized and which decoration methods keep them CPSIA-compliant?',
-      why: 'Youth gear carries safety rules, and reps should never guess at compliance on a quote.',
+      text: 'Which eco fabrics carry documented recycled-content certification, and at what percentage, so reps can back up sustainability claims on a quote?',
+      why: 'Brands need certifiable recycled content for their own marketing, and reps should never guess at a certification.',
     },
   },
 
   {
-    you: 'A customer asked if our performance jackets are waterproof.',
+    you: 'Customer asked if the F-70L is chlorine-proof for a swim-team contract.',
     steps: [
-      { say: 'They’re water-resistant, not waterproof, so don’t promise waterproof. The right way to describe them is water-resistant and wind-resistant, good for light rain and wind, not a downpour.' },
+      { say: 'Say chlorine-resistant, not chlorine-proof. The F-70L resists chlorine breakdown far longer than standard spandex, but no swim fabric is chlorine-proof, so don’t promise it. The right phrasing is **extended chlorine resistance**.' },
     ],
     memory: {
       kind: 'guardrail',
-      text: 'Never describe performance outerwear as "waterproof." It is water-resistant. Always say water-resistant / wind-resistant.',
+      text: 'Never describe a fabric as "chlorine-proof." Our chlorine-resist styles are chlorine-resistant with extended life. Always say chlorine-resistant.',
     },
   },
 
   {
-    you: 'Quick, customer wants performance polos for a golf team, embroidered, true to size.',
+    you: 'Quick, customer needs competitive swim fabric, sublimation-printable, chlorine-durable, by the roll.',
     steps: [
-      { say: 'Lead with the **ST650** micropique polo. It embroiders cleanly because it’s a heavier knit than the tees, it’s moisture-wicking, and it runs true to size, so no sizing caveat to give. Skip the PosiCharge tees for embroidery. Want me to pull the available colors and the quantity price breaks?' },
+      { say: 'Lead with our **PFP MaxDri poly-spandex** chlorine-resist style. It’s a prepared-for-print white base so it sublimates clean, it’s built for moisture and chlorine durability, and it ships by the roll. Skip the F-70L here since it’s yarn-dyed and can’t be printed. Want me to pull the roll length and price breaks?' },
     ],
     memory: {
       kind: 'fact',
-      text: 'For embroidered performance polos, the ST650 is the lead recommendation: it embroiders cleanly, is moisture-wicking, and runs true to size.',
+      text: 'For printed competitive swimwear, lead with the PFP MaxDri chlorine-resist poly-spandex: it is a prepared-for-print base, sublimates cleanly, and offers chlorine durability. Not the F-70L, which is yarn-dyed and cannot be printed.',
     },
   },
 ];

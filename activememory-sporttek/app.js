@@ -1,4 +1,4 @@
-// app.js — interactive logic for the SportTek USA / Active Memory (Shopify + QuickBooks + HubSpot) demo.
+// app.js — interactive logic for the Sportek Intelligence Hub demo (Shopify catalog, read-only).
 // The auto-play story lives in demo.js. The two share a small window.AM namespace:
 //   app.js  -> AM: byId, showTab, updateBadges, reviewPanel, guardPanel, convo
 //   demo.js -> AM: stopStory, claudeFollowUp

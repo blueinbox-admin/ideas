@@ -150,7 +150,7 @@
   function playOnboarding() {
     clearObTimers(); clearChalk(true);
     obTimers.push(setTimeout(function () {
-      chalkAnnotate('.cc-win', 'This is Claude Code. Ask it any product question in plain English, fabrics, fits, decoration, what to recommend, and it answers from your product knowledge. This is a demo, so just watch it work.', { corner: 'bottom-right' });
+      chalkAnnotate('.cc-win', 'This is Claude Code. Ask it any product question in plain English, fabrics, applications, what prints, what to quote, and it answers from your product knowledge. This is a demo, so just watch it work.', { corner: 'bottom-right' });
     }, 900));
     obTimers.push(setTimeout(clearChalk, 7500));
     obTimers.push(setTimeout(function () {

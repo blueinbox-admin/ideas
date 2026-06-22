@@ -15,8 +15,8 @@ window.PROTOTYPES = [
   {
     slug: 'activememory-sporttek',
     connector: 'Product knowledge for sales',
-    persona: 'SportTek USA',
-    blurb: 'A sales-enablement brain for an apparel company. Reps ask Claude about fabrics, fits, decoration, and what to recommend; the hub remembers what the best reps know so everyone gives the same right answer.',
+    persona: 'Sportek International',
+    blurb: 'A sales-enablement brain for a wholesale technical-fabric distributor. Reps ask Claude about fabrics, applications, what prints, and what to quote; the hub remembers what the best reps know so everyone gives the same right answer.',
     status: 'live',
   },
   {
