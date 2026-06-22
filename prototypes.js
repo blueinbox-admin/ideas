@@ -16,7 +16,7 @@ window.PROTOTYPES = [
     slug: 'activememory-sporttek',
     connector: 'Shopify + QuickBooks + HubSpot',
     persona: 'SportTek USA',
-    blurb: 'An apparel ecommerce company on three tools. One Active Memory brain across Shopify, QuickBooks, and HubSpot — Claude works in all three while the memory learns how records map between them.',
+    blurb: 'An apparel ecommerce company on three tools. One intelligence hub across Shopify, QuickBooks, and HubSpot: Claude works in all three while the hub learns how records map between them.',
     status: 'live',
   },
   {
