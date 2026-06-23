@@ -13,6 +13,13 @@
 //   hidden     optional; true keeps it in this file but off the launcher
 window.PROTOTYPES = [
   {
+    slug: 'activememory-sfmc',
+    connector: 'Salesforce Marketing Cloud',
+    persona: 'Vanta Motors',
+    blurb: 'A marketing-ops brain for an auto brand on SFMC. Claude builds audiences, wires journeys, and schedules sends; the memory files every fact under a project (or Org-wide), so Claude gets the setup right instead of guessing.',
+    status: 'live',
+  },
+  {
     slug: 'activememory-sportek',
     connector: 'Product knowledge for sales',
     persona: 'Sportek International',

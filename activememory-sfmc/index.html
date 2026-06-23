@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vanta Motors · Marketing Memory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=1">
+<link rel="stylesheet" href="../shared/chalk/chalk.css">
+</head>
+<body>
+  <div class="desktop">
+
+    <!-- desktop wallpaper: macOS Ventura -->
+    <img class="wallpaper" src="wallpaper.jpg" alt="">
+
+    <!-- pretend desktop files, down the right edge -->
+    <div class="desktop-icons">
+      <div class="dicon"><svg viewBox="0 0 48 40"><path d="M3 9a3 3 0 0 1 3-3h11l4 4h21a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#4d9fe8"/><path d="M3 14h45v19a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#79bdf9"/></svg><span>Audiences</span></div>
+      <div class="dicon"><svg viewBox="0 0 48 40"><path d="M3 9a3 3 0 0 1 3-3h11l4 4h21a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#4d9fe8"/><path d="M3 14h45v19a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#79bdf9"/></svg><span>Journeys</span></div>
+      <div class="dicon"><svg viewBox="0 0 48 40"><path d="M3 9a3 3 0 0 1 3-3h11l4 4h21a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#4d9fe8"/><path d="M3 14h45v19a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#79bdf9"/></svg><span>Blue Inbox</span></div>
+      <div class="dicon"><div class="thumb"></div><span>Screenshot 2026-0…24 PM</span></div>
+    </div>
+
+    <!-- ============ VANTA MOTORS MARKETING MEMORY — a WEB APP, open in Chrome ============ -->
+    <section class="win app-win">
+      <div class="chrome-tabs">
+        <div class="chrome-dots"><i></i><i></i><i></i></div>
+        <div class="chrome-tab"><span class="fav">◧</span><span class="tname">Vanta Motors · Marketing Memory</span><span class="x">×</span></div>
+        <span class="chrome-newtab">+</span>
+      </div>
+      <div class="chrome-toolbar">
+        <div class="chrome-nav">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".5"><path d="M9 5l7 7-7 7"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10a8 8 0 0 1 13.7-4.2L20 8M20 4v4h-4"/></svg>
+        </div>
+        <div class="chrome-omni">
+          <span class="lock"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 10V8a6 6 0 1 1 12 0v2h1a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2zm2 0h8V8a4 4 0 1 0-8 0z"/></svg></span>
+          memory.vantamotors.com
+        </div>
+        <span class="chrome-avatar">D</span>
+        <span class="chrome-menu">⋮</span>
+      </div>
+      <div class="app-scroll">
+      <header class="topbar">
+        <div class="topbar-inner">
+          <div>
+            <div class="brand"><span class="mark">◧</span>Marketing Memory</div>
+            <div class="tagline">What Claude reads before it touches Marketing Cloud, so your audiences, journeys, and sends are right instead of guessed.</div>
+          </div>
+          <div class="topbar-right">
+            <div class="conn">
+              <span class="conn-item"><span class="conn-dot app"></span>Salesforce Marketing Cloud · read-only</span>
+              <span class="conn-item conn-working"><span class="conn-dot pulse"></span>Claude Code · working</span>
+            </div>
+            <div class="org">Vanta Motors</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="layout">
+        <!-- one marketing-knowledge brain for the whole SFMC org -->
+        <main class="content">
+          <div class="scope-head">
+            <h1 class="scope-title">Vanta Motors</h1>
+          </div>
+          <p class="scope-sub">Everything Claude knows about your Marketing Cloud setup: business units, audiences, journeys, and the rules behind them. Each fact is filed under a project, or marked Org-wide so every project inherits it.</p>
+
+          <!-- PROJECTS rail: the SFMC difference. Filters every tab to one project
+               (org-wide facts are inherited, so they show under any project too). -->
+          <div class="projbar" id="projbar">
+            <span class="projbar-label">Projects</span>
+            <button class="proj-chip active" type="button" data-proj="all">All</button>
+            <button class="proj-chip" type="button" data-proj="org"><span class="pc-dot org"></span>Org-wide <span class="pc-count" data-count="org"></span></button>
+            <button class="proj-chip" type="button" data-proj="new-owner-welcome">new-owner-welcome <span class="pc-count" data-count="new-owner-welcome"></span></button>
+            <button class="proj-chip" type="button" data-proj="service-reminders">service-reminders <span class="pc-count" data-count="service-reminders"></span></button>
+            <button class="proj-chip" type="button" data-proj="lease-end">lease-end <span class="pc-count" data-count="lease-end"></span></button>
+            <button class="proj-chip" type="button" data-proj="win-back">win-back <span class="pc-count" data-count="win-back"></span></button>
+          </div>
+
+          <nav class="tabs" id="tabs">
+            <button class="tab active" data-tab="review">Review <span class="badge amber" id="bReview">3</span></button>
+            <button class="tab" data-tab="facts">Facts <span class="badge" id="bFacts">6</span></button>
+            <button class="tab" data-tab="guardrails">Guardrails <span class="badge amber" id="bGuard">5</span></button>
+            <button class="tab" data-tab="david">David <span class="badge" id="bDavid">1</span></button>
+          </nav>
+
+          <!-- REVIEW -->
+          <section class="panel active" data-panel="review">
+            <div class="legend">Questions to answer</div>
+            <p class="note">Things Claude needs from your team before it can do the work right. Answer one and it becomes a confirmed fact, filed under its project. Facts Claude can confirm on its own are saved straight to Facts.</p>
+
+            <div class="card qcard" data-scope="new-owner-welcome">
+              <div class="body">
+                <div class="content">Which Data Extension is the live new-owner audience, and what populates it (the sales-delivered feed, a CRM sync)?</div>
+                <div class="qwhy">Why Claude asks: a new journey needs its real entry source confirmed before it can send to anyone.</div>
+                <div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip">new-owner-welcome</span></div>
+                <form class="qform" onsubmit="return false">
+                  <textarea></textarea>
+                  <div class="actions"><button class="btn primary" type="submit">Save answer</button></div>
+                </form>
+              </div>
+              <div class="qskip"><button class="btn ghost" type="button">Skip</button></div>
+            </div>
+
+            <div class="card qcard" data-scope="win-back">
+              <div class="body">
+                <div class="content">What defines a "lapsed" owner for win-back (months since last service or purchase), and who signs off on the offer?</div>
+                <div class="qwhy">Why Claude asks: the segment logic and any incentive both need a human's sign-off, not a guess.</div>
+                <div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip">win-back</span></div>
+                <form class="qform" onsubmit="return false">
+                  <textarea></textarea>
+                  <div class="actions"><button class="btn primary" type="submit">Save answer</button></div>
+                </form>
+              </div>
+              <div class="qskip"><button class="btn ghost" type="button">Skip</button></div>
+            </div>
+
+            <div class="card qcard" data-scope="org">
+              <div class="body">
+                <div class="content">Which time zone and quiet hours apply to every send, and is there an org-wide daily send cap?</div>
+                <div class="qwhy">Why Claude asks: send timing is org policy Claude must not infer, and it applies to every project.</div>
+                <div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip org">Org-wide</span></div>
+                <form class="qform" onsubmit="return false">
+                  <textarea></textarea>
+                  <div class="actions"><button class="btn primary" type="submit">Save answer</button></div>
+                </form>
+              </div>
+              <div class="qskip"><button class="btn ghost" type="button">Skip</button></div>
+            </div>
+          </section>
+
+          <!-- FACTS -->
+          <section class="panel" data-panel="facts">
+            <div class="legend">Add your own</div>
+            <p class="note">A fact, a cross-system mapping, or a convention, filed under a project or Org-wide, so Claude works from it next time.</p>
+            <form class="addform" id="factAdd" onsubmit="return false">
+              <textarea maxlength="280" placeholder="A fact or mapping (e.g. which DE is the real audience, how two objects join, a naming convention)."></textarea>
+              <button class="btn primary" type="submit">Add</button>
+            </form>
+            <div class="add-toast" id="factToast" hidden>✓ Saved to Facts</div>
+
+            <div class="legend" style="margin-top:24px;">Confirmed facts</div>
+            <p class="note">What Claude actually knows about your org: what it learned while working, your team's answers, and the facts you added. Each is filed under a project (or Org-wide). Click any to edit or remove.</p>
+
+            <div class="card" data-scope="org"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Two business units: the Marketing BU runs sends, local DEs, and Query Activities; the Parent BU holds the shared ENT. data extensions and direct data reads.</div><div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip org">Org-wide</span></div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card" data-scope="org"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill mapping">mapping</span>Send and engagement row data lives only in the system data views (_Sent, _Open, _Click, _Bounce), queried in SQL, not in a regular Data Extension.</div><div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip org">Org-wide</span></div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card" data-scope="org"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill mapping">mapping</span>Resolve a campaign to its model line (EV, truck, sedan) with the Campaign_Prefix_Model lookup DE.</div><div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip org">Org-wide</span></div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card" data-scope="new-owner-welcome"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>The new-owner welcome is a 3-email journey that onboards buyers in their first 30 days, entered from the sales-delivered feed.</div><div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip">new-owner-welcome</span></div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card" data-scope="service-reminders"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill mapping">mapping</span>Service reminders join the owner roster to the service-due DE on VIN, not email, since one household can share an email.</div><div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip">service-reminders</span></div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card" data-scope="lease-end"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Lease-end offers are regional: the offer DE is keyed by dealer region, so the audience must carry region to render the right incentive.</div><div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip">lease-end</span></div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+
+            <p class="note" style="margin-top:20px;"><span style="color:rgb(var(--ink-muted));">Plus the full data-extension and field inventory read from your org, used quietly for exact-name lookups, not shown here because there's nothing to decide about them.</span></p>
+          </section>
+
+          <!-- GUARDRAILS -->
+          <section class="panel" data-panel="guardrails">
+            <div class="legend">Guardrails (what Claude must never do)</div>
+            <p class="note">Hard rules Claude must never break, whatever the task. Org-wide rules apply to every project.</p>
+
+            <div class="card" data-scope="org"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never send to real owners while testing. Test to mailinator or test leads with sends off.</div><div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip org">Org-wide</span></div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card" data-scope="org"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never activate a journey or automation without a named human approving go-live.</div><div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip org">Org-wide</span></div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card" data-scope="org"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never query an audience without filtering to the opted-in roster (ENT.All_Owners_Opted_In).</div><div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip org">Org-wide</span></div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card" data-scope="service-reminders"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never send service reminders outside 8am to 8pm in the owner's local time zone.</div><div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip">service-reminders</span></div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card" data-scope="win-back"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill guardrail">guardrail</span>Never include an owner with an open complaint or a pending recall in a win-back promo.</div><div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip">win-back</span></div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+
+            <form class="addform" id="guardAdd" onsubmit="return false">
+              <textarea maxlength="280" placeholder="A rule Claude must never break (e.g. &quot;Never activate any journey named TEST_.&quot;)."></textarea>
+              <button class="btn primary" type="submit">Add</button>
+            </form>
+          </section>
+
+          <!-- DAVID — flag a judgment call to a human; he replies here, with timestamps -->
+          <section class="panel" data-panel="david">
+            <div class="dav-head">
+              <span class="dav-av">D</span>
+              <div>
+                <div class="dav-name">David</div>
+                <div class="dav-status">Your marketing memory advisor · usually replies same day</div>
+              </div>
+            </div>
+            <p class="note">Flag anything you'd rather run by a human. David sees your question and the saved memory, and replies right here.</p>
+
+            <div class="dav-thread" id="davThread">
+              <div class="dav-row me"><div class="bubble">Marketing wants to add a $200 service credit to the win-back email. Can I set that up and schedule it?</div><div class="ts">Mon 9:18 AM</div></div>
+              <div class="dav-row them"><div class="bubble">Hold on the dollar offer. Anything with an incentive needs Lori in brand to approve the amount and the legal line first, so don't schedule it off your own call.</div><div class="ts">Mon 9:39 AM</div></div>
+              <div class="dav-row them"><div class="bubble">Let me get the approved offer and the lapsed definition from her and send them over today. 15 minutes on a call if that's easier.</div><div class="ts">Mon 9:40 AM</div></div>
+              <div class="dav-row me"><div class="bubble">That'd help. Can the memory remember the approved offer so Claude flags it on every win-back send?</div><div class="ts">Mon 9:47 AM</div></div>
+              <div class="dav-row them"><div class="bubble">Yep, tell Claude once and it'll file it under win-back and apply it every time. I'll send the approved language.</div><div class="ts">Mon 9:49 AM</div></div>
+            </div>
+
+            <form class="dav-compose" id="davCompose" onsubmit="return false">
+              <textarea id="davInput" placeholder="Ask David…" rows="1"></textarea>
+              <button class="btn primary" type="submit">Send</button>
+            </form>
+          </section>
+        </main>
+      </div>
+      </div><!-- /.app-scroll -->
+    </section><!-- /.app-win -->
+
+    <!-- ============ CLAUDE CODE — the real desktop app (Code tab) ============ -->
+    <aside class="win cc-win" aria-label="Claude Code desktop app, running alongside">
+      <div class="ccd">
+        <!-- session sidebar -->
+        <div class="ccd-side">
+          <div class="ccd-traffic"><i></i><i></i><i></i></div>
+          <div class="ccd-tabs">
+            <span class="ccd-tab" title="Chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 4z"/></svg></span>
+            <span class="ccd-tab" title="Tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11M4 5.5l1 1 2-2M4 11.5l1 1 2-2M4 17.5l1 1 2-2"/></svg></span>
+            <span class="ccd-tab code active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4"/></svg>Code</span>
+          </div>
+          <div class="ccd-nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>New session</div>
+          <div class="ccd-nav"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg>Routines</div>
+          <div class="ccd-nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Customize</div>
+          <div class="ccd-nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>More</div>
+          <div class="ccd-seclabel">Recents
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+          </div>
+          <div class="ccd-rec active"><span class="rdot"></span><span class="rname">Marketing ops</span></div>
+          <div class="ccd-rec"><span class="rdot"></span><span class="rname">Service reminders</span></div>
+          <div class="ccd-rec"><span class="rdot"></span><span class="rname">Lease-end journey</span></div>
+          <div class="ccd-spacer"></div>
+          <div class="ccd-user"><span class="av">DZ</span>Dave<span class="pl">· Max</span><span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></div>
+        </div>
+
+        <!-- session main -->
+        <div class="ccd-main">
+          <div class="ccd-top">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="11" rx="1"/><path d="M2 20h20"/></svg>
+            <span class="crumb"><b>Marketing ops</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
+            <span class="grow"></span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>
+          </div>
+          <div class="ccd-convo" id="ccConvo"></div>
+          <div class="ccd-compose">
+            <div class="ccd-input" id="ccInput"><span id="ccPrompt">Type / for commands</span><span class="ret">⏎</span></div>
+            <div class="ccd-bar">
+              <span class="grp">Accept edits
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </span>
+              <span class="grp"><span class="pill">Opus 4.8 1M</span> Medium <span class="ccd-spin"></span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- onboarding pointers draw here (over both windows) -->
+  <div class="chalk-layer" id="chalkLayer" aria-hidden="true"></div>
+
+  <!-- floating demo controls -->
+  <div class="demo-ctrl" id="demoCtrl">
+    <button id="playPause" type="button" title="Pause" aria-label="Play / pause demo">⏸</button>
+    <button id="restart" type="button" title="Restart" aria-label="Restart demo">↻</button>
+    <span class="lbl">Demo</span>
+  </div>
+
+
+<script src="../shared/chalk/chalk.js"></script>
+<script src="app.js?v=1"></script>
+<script src="transcript.js?v=1"></script>
+<script src="demo.js?v=1"></script>
+</body>
+</html>
