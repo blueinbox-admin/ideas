@@ -351,15 +351,15 @@
   @media (prefers-reduced-motion: reduce) { .card.fresh, .card.is-new, .card.hl, .ccd-convo > *, .leave-icon, .tab.flash::before { animation: none; } .card.leaving { transition: none; } }
 
   /* ===== floating demo controls (play / pause / restart) ===== */
-  .demo-ctrl { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 60;
-    display: flex; align-items: center; gap: 3px; padding: 4px 12px 4px 6px;
-    background: rgba(22,17,10,.72); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-    border-radius: 999px; box-shadow: 0 6px 20px rgba(0,0,0,.28); opacity: .82; transition: opacity .2s ease; }
+  .demo-ctrl { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 60;
+    display: flex; align-items: center; gap: 6px; padding: 9px 24px 9px 12px;
+    background: rgb(var(--ink) / .9); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    border-radius: 999px; box-shadow: 0 12px 34px rgba(40,20,4,.36); opacity: .92; transition: opacity .2s ease; }
   .demo-ctrl:hover { opacity: 1; }
-  .demo-ctrl button { appearance: none; cursor: pointer; border: none; background: transparent; color: #fff;
-    width: 30px; height: 30px; border-radius: 50%; font-size: 14px; line-height: 1; display: grid; place-items: center; }
-  .demo-ctrl button:hover { background: rgba(255,255,255,.16); }
-  .demo-ctrl .lbl { color: rgba(255,255,255,.7); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; padding: 0 8px 0 6px;
+  .demo-ctrl button { appearance: none; cursor: pointer; border: none; background: transparent; color: rgb(var(--on-primary));
+    width: 60px; height: 60px; border-radius: 50%; font-size: 28px; line-height: 1; display: grid; place-items: center; }
+  .demo-ctrl button:hover { background: rgb(var(--on-primary) / .16); }
+  .demo-ctrl .lbl { color: rgb(var(--on-primary) / .8); font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; padding: 0 16px 0 10px;
     font-family: var(--font-body); }
 
   /* ===== responsive: BOTH windows visible at every viewport (stack on narrow) ===== */
@@ -433,10 +433,10 @@
      overriding them there wouldn't stick. */
   .chalk-layer .chalk-note {
     font-family: var(--font-body);
-    font-size: 15px; font-weight: 500; line-height: 1.45; letter-spacing: 0;
-    padding: 12px 16px; max-width: 300px; border-radius: 14px 14px 14px 4px;
+    font-size: 24px; font-weight: 500; line-height: 1.38; letter-spacing: 0;
+    padding: 22px 28px; max-width: 460px; border-radius: 20px 20px 20px 6px;
     color: rgb(var(--on-primary));
     background: rgb(var(--ink));
     border: 1.5px solid rgb(var(--ink));
-    box-shadow: 0 10px 30px rgba(40, 20, 4, .28);
+    box-shadow: 0 14px 38px rgba(40, 20, 4, .32);
   }
