@@ -37,6 +37,7 @@
 
   var CONVO = (window.TRANSCRIPT || []).map(function (turn, i) {
     var steps = (turn.steps || []).map(function (step) {
+      if (step.u != null) return { user: true, text: step.u };   // the human answering Claude's in-chat question
       if (step.say != null) return { cls: 'ccd-a', wait: 600, hold: holdFor(step.say), html: '<span class="who">Claude</span> ' + fmt(step.say) };
       return { cls: 'ccd-tool', wait: 500, hold: step.lines ? 800 : 600, html: toolHtml(step) };
     });
@@ -143,6 +144,13 @@
         await sleep(450); send();
         for (var s = 0; s < turn.steps.length && alive(); s++) {
           var step = turn.steps[s];
+          if (step.user) {   // the human types an answer back into the chat (becomes a saved fact, not an app question)
+            await sleep(800); if (!alive()) return;
+            await type(step.text); if (!alive()) return;
+            await sleep(450); send();
+            await sleep(800); if (!alive()) return;
+            continue;
+          }
           var w = working(); await sleep(step.wait || 1000); if (!alive()) { w.remove(); return; } w.remove();
           addMsg(step.html, step.cls);
           await sleep(step.hold || 1300); if (!alive()) return;

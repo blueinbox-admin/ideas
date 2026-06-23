@@ -91,26 +91,13 @@
           <!-- REVIEW -->
           <section class="panel active" data-panel="review">
             <div class="legend">Questions to answer</div>
-            <p class="note">Things Claude needs from your team before it can do the work right. Answer one and it becomes a confirmed fact, filed under its project. Facts Claude can confirm on its own are saved straight to Facts.</p>
+            <p class="note">Not the in-the-moment questions Claude asks you in chat. These are higher-level things Claude noticed across your work and wants to understand. Answer one and it becomes a confirmed fact, filed under its project.</p>
 
-            <div class="card qcard" data-scope="new-owner-welcome">
+            <div class="card qcard" data-scope="org">
               <div class="body">
-                <div class="content">Which Data Extension is the live new-owner audience, and what populates it (the sales-delivered feed, a CRM sync)?</div>
-                <div class="qwhy">Why Claude asks: a new journey needs its real entry source confirmed before it can send to anyone.</div>
-                <div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip">new-owner-welcome</span></div>
-                <form class="qform" onsubmit="return false">
-                  <textarea></textarea>
-                  <div class="actions"><button class="btn primary" type="submit">Save answer</button></div>
-                </form>
-              </div>
-              <div class="qskip"><button class="btn ghost" type="button">Skip</button></div>
-            </div>
-
-            <div class="card qcard" data-scope="win-back">
-              <div class="body">
-                <div class="content">What defines a "lapsed" owner for win-back (months since last service or purchase), and who signs off on the offer?</div>
-                <div class="qwhy">Why Claude asks: the segment logic and any incentive both need a human's sign-off, not a guess.</div>
-                <div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip">win-back</span></div>
+                <div class="content">Is there one official definition of an opted-in, emailable owner, or does it genuinely differ by campaign?</div>
+                <div class="qwhy">Why Claude asks: each campaign rebuilds the audience its own way, and the canonical definition is something only your team knows.</div>
+                <div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip org">Org-wide</span></div>
                 <form class="qform" onsubmit="return false">
                   <textarea></textarea>
                   <div class="actions"><button class="btn primary" type="submit">Save answer</button></div>
@@ -121,9 +108,22 @@
 
             <div class="card qcard" data-scope="org">
               <div class="body">
-                <div class="content">Which time zone and quiet hours apply to every send, and is there an org-wide daily send cap?</div>
-                <div class="qwhy">Why Claude asks: send timing is org policy Claude must not infer, and it applies to every project.</div>
+                <div class="content">When an owner qualifies for more than one re-engagement campaign at once (win-back, lapsed), which one takes priority?</div>
+                <div class="qwhy">Why Claude asks: win-back and re-engagement overlap on the same owners, and the tiebreak is a business call Claude can't infer.</div>
                 <div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip org">Org-wide</span></div>
+                <form class="qform" onsubmit="return false">
+                  <textarea></textarea>
+                  <div class="actions"><button class="btn primary" type="submit">Save answer</button></div>
+                </form>
+              </div>
+              <div class="qskip"><button class="btn ghost" type="button">Skip</button></div>
+            </div>
+
+            <div class="card qcard" data-scope="new-owner-welcome">
+              <div class="body">
+                <div class="content">If a sale falls through or a car is returned after the welcome journey starts, how should that owner come out of it, and how does the journey find out?</div>
+                <div class="qwhy">Why Claude asks: the welcome enters from the sales feed, but how a reversed sale flows back out is a business process only your team knows.</div>
+                <div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip">new-owner-welcome</span></div>
                 <form class="qform" onsubmit="return false">
                   <textarea></textarea>
                   <div class="actions"><button class="btn primary" type="submit">Save answer</button></div>
@@ -265,8 +265,8 @@
 
 
 <script src="../shared/chalk/chalk.js"></script>
-<script src="app.js?v=1"></script>
-<script src="transcript.js?v=1"></script>
-<script src="demo.js?v=1"></script>
+<script src="app.js?v=2"></script>
+<script src="transcript.js?v=2"></script>
+<script src="demo.js?v=2"></script>
 </body>
 </html>

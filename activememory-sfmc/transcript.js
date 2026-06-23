@@ -1,68 +1,100 @@
 // transcript.js — the demo story. THIS is the only file you edit to change the demo.
 //
 // Vanta Motors marketing memory: a knowledge layer Claude Code reads BEFORE doing
-// Salesforce Marketing Cloud (SFMC) work for the org. The marketing ops team asks
-// Claude to build audiences, wire journeys, and schedule sends. Claude answers from
-// what it knows about the org; gaps become questions; new knowledge is saved.
+// Salesforce Marketing Cloud (SFMC) work. The app only LEARNS and INFERS how the
+// business runs. It never does work or proposes work.
 //
-// THE SFMC DIFFERENCE: every saved fact is labelled into a PROJECT (a campaign /
-// journey) or marked Org-wide. Org-wide facts are inherited by every project.
+// TWO THINGS THE APP DOES (keep them distinct):
+//   1. SAVE facts. Claude asks its normal, immediate, blocking questions in the CHAT.
+//      When the human answers (or Claude gleans it), the ANSWER is saved as a fact /
+//      mapping / guardrail. The app never re-poses the chat question; it keeps the answer.
+//   2. ASK higher-level questions (Review). Pattern / abstraction gaps the app spots
+//      across the work that Claude would NOT interrupt a task to ask. Every one is
+//      knowledge-seeking and resolves into a fact. NEVER action ("want me to build X?").
 //
 // Each turn:
-//   you     what a marketing-ops person types into Claude Code (one line)
-//   steps   { say: "..." }  Claude's reply, or { tool: "SFMC", action: "...", result: "..." }
-//   memory  { kind: "question"|"fact"|"mapping"|"guardrail", scope, text, why? }
-//             kind:  question -> Review, fact/mapping -> Facts, guardrail -> Guardrails
-//             scope: a project key ('service-reminders', 'lease-end') or 'org' (Org-wide)
+//   you     the marketing-ops person's opening task (one line typed into Claude Code)
+//   steps   ordered: { tool, action, result } | { say } Claude | { u } the human's reply in chat
+//   memory  { kind, scope, text, why? }
+//             kind:  fact/mapping/guardrail -> saved knowledge (from resolved chat Q&A or gleaned)
+//                    question -> a higher-level LEARNING question, lands in Review
+//             scope: a project key ('service-reminders','lease-end') or 'org' (Org-wide, inherited)
 //
-// Formatting: **bold** is the only markup. Use a curly apostrophe (’) inside words so the
-// single-quoted strings don’t break. No em/en dashes. Timing is automatic.
+// Formatting: **bold** is the only markup. Curly apostrophe (’) inside words so single
+// quotes don’t break. No em/en dashes. Timing is automatic.
 
 window.TRANSCRIPT = [
+  // 1) Immediate chat Q&A -> a saved FACT. Claude asks in chat, the human answers,
+  //    the app keeps the ANSWER (not the question).
   {
     you: 'Build the audience query for the 90-day service reminder send.',
     steps: [
       { tool: 'SFMC', action: 'list data extensions · service-reminders', result: 'Service_Due_90d, TEST_Service_Due_90d, Service_Due_Working' },
-      { say: 'I see three lookalike data extensions for this: **Service_Due_90d**, a TEST_ copy, and a _Working table. I don’t have it flagged which one is the real production audience versus a QA twin, and querying off the wrong one would email the wrong owners. Which DE is the source of truth here?' },
+      { say: 'Three lookalike data extensions here. Which one is the real production audience, versus a QA copy?' },
+      { u: 'Service_Due_90d is prod. The TEST_ and _Working ones are QA.' },
+      { say: 'Got it. Querying **Service_Due_90d** and filtering to the opted-in roster.' },
     ],
     memory: {
-      kind: 'question',
+      kind: 'fact',
       scope: 'service-reminders',
-      text: 'Which Data Extension is the real production audience for service reminders versus a TEST_ or _Working QA copy?',
-      why: 'Several lookalike DEs exist, and querying off a QA twin would reach the wrong owners.',
+      text: 'Service_Due_90d is the production audience for service reminders. TEST_Service_Due_90d and Service_Due_Working are QA copies.',
     },
   },
 
+  // 2) Immediate chat Q&A -> a saved MAPPING (cross-system credential rule).
   {
-    you: 'Who are we even allowed to email across these campaigns?',
+    you: 'Reading the shared owner roster is throwing "Invalid object name."',
     steps: [
-      { say: 'Org-wide, the opted-in roster is the source of truth for who can be emailed, and in a Query Activity it has to be referenced with the **ENT.** prefix since it’s a shared Parent BU data extension. I’ll always start audiences from that roster so we never email a non-consented owner.' },
+      { say: 'That error means a shared **ENT.** data extension was read with the Marketing BU keys. Do you have Parent BU credentials I should use for direct reads?' },
+      { u: 'Yeah, the Parent BU creds are in the vault. Use those for any ENT. read.' },
+      { say: 'Using the Parent BU creds for ENT. reads and the Marketing BU for sends. That clears it.' },
     ],
     memory: {
       kind: 'mapping',
       scope: 'org',
-      text: 'All_Owners_Opted_In is the org source of truth for who can be emailed (opt-in only). Reference it as ENT.All_Owners_Opted_In in Query Activities.',
+      text: 'Direct reads of shared ENT. data extensions use the Parent BU credentials. The Marketing BU keys error with "Invalid object name." Sends and local DEs use the Marketing BU.',
     },
   },
 
+  // 3) Immediate chat Q&A -> a saved GUARDRAIL.
   {
-    you: 'Set up the lease-end journey to enter owners 90 days before maturity.',
+    you: 'Activate TEST_lease-end_v3 so we can watch it run.',
     steps: [
-      { tool: 'SFMC', action: 'find journey · lease-end', result: 'TEST_lease-end_v3 (Draft)' },
-      { say: 'The only lease-end journey I can find is **TEST_lease-end_v3**, and it’s a Draft. Before I wire an entry source I need to know who owns and signs off on go-live for this journey, because activating a real send is a human decision, not mine.' },
+      { say: 'That one is a **TEST_** build and still a Draft. I don’t activate real journeys, and TEST_ builds shouldn’t send at all. I’d preview it to a mailinator address with sending off instead. Should that be the rule?' },
+      { u: 'Yes. Never activate the TEST_ ones, and never send to real owners while testing.' },
+      { say: 'Noted as a rule. TEST_ journeys stay off; previews go to mailinator with sends off.' },
+    ],
+    memory: {
+      kind: 'guardrail',
+      scope: 'org',
+      text: 'Never activate a journey whose name starts with TEST_, and never send to real owners while testing. Preview to mailinator with sends off; activating a real journey is a human decision.',
+    },
+  },
+
+  // 4) The app's OWN question. Claude just does the task in chat; separately the
+  //    memory notices a cross-campaign pattern and surfaces a LEARNING question in
+  //    Review. Knowledge-seeking, never an action proposal.
+  {
+    you: 'Build the win-back audience: owners with no service or purchase in 12 months.',
+    steps: [
+      { tool: 'SFMC', action: 'build query · win-back', result: 'built from ENT.All_Owners_Opted_In, 12 months inactive' },
+      { say: 'Done. Win-back audience is built from the opted-in roster, filtered to 12 months inactive.' },
     ],
     memory: {
       kind: 'question',
-      scope: 'lease-end',
-      text: 'For lease-end, who builds and approves the journey go-live, and what must be true before it can be activated?',
-      why: 'Activating a real send is a human sign-off, and Claude must never flip a journey live on its own.',
+      scope: 'org',
+      text: 'Is there a cap on how many emails one owner should get in a week across all campaigns (service, lease-end, win-back)?',
+      why: 'I am now scheduling sends across several campaigns with no shared frequency limit, and the right cap is a policy only your team knows.',
     },
   },
 
+  // 5) A FACT gleaned from the work (no question needed) — Claude reads the build
+  //    notes and keeps the flow.
   {
     you: 'What’s the lease-end journey flow supposed to be?',
     steps: [
-      { say: 'Per the build notes it’s Email 1 at 90 days out, then Email 2 at 45 days, then Email 3 at 15 days, each timed by Einstein STO. I’ll save the flow so it stays consistent if we rebuild it.' },
+      { tool: 'SFMC', action: 'read build notes · lease-end', result: 'Email 1 (90d) -> Email 2 (45d) -> Email 3 (15d), Einstein STO' },
+      { say: 'From the build notes it’s Email 1 at 90 days out, Email 2 at 45, Email 3 at 15, each timed by Einstein STO. I’ll keep that for the rebuild.' },
     ],
     memory: {
       kind: 'fact',
@@ -71,52 +103,16 @@ window.TRANSCRIPT = [
     },
   },
 
+  // 6) Payoff: Claude USES the saved facts to do it right, and keeps the result.
   {
-    you: 'Reading the shared owner roster is throwing "Invalid object name."',
+    you: 'Now rebuild the lease-end production audience the right way.',
     steps: [
-      { say: 'That’s a business-unit mismatch. Direct SOAP reads of the shared **ENT.** data extensions need the **Parent BU** credentials; the Marketing BU keys error with "Invalid object name." For everyday sends and local DEs you stay on the Marketing BU. I’ll map which credentials go with which read.' },
-    ],
-    memory: {
-      kind: 'mapping',
-      scope: 'org',
-      text: 'Direct SOAP/API reads of shared ENT. data extensions use the Parent BU credentials. Marketing BU credentials error "Invalid object name." Everyday sends and local DEs use the Marketing BU.',
-    },
-  },
-
-  {
-    you: 'Anything I should know before I schedule the service reminder blast?',
-    steps: [
-      { say: 'One gap before I schedule: I don’t have your suppression and send-window rules for service reminders, like quiet hours or owners with an open service case we should skip. Are there times or segments we must never send to?' },
-    ],
-    memory: {
-      kind: 'question',
-      scope: 'service-reminders',
-      text: 'For service reminders, what are the suppression and send-window rules: quiet hours, and any segment (e.g. owners with an open service case) we must never send to?',
-      why: 'Send-window and suppression rules are org knowledge Claude cannot infer, and getting them wrong means messaging the wrong owners at the wrong time.',
-    },
-  },
-
-  {
-    you: 'Go ahead and activate TEST_lease-end_v3 so we can watch it run.',
-    steps: [
-      { say: 'I won’t activate that one. Anything with a **TEST_** prefix is a throwaway build and must never send, and I never activate a real journey without a human doing it. I can run it as a test send to a mailinator address with sending off so you can preview it safely instead.' },
-    ],
-    memory: {
-      kind: 'guardrail',
-      scope: 'org',
-      text: 'Never activate a journey whose name starts with TEST_, and never send to real customers while testing. Test to mailinator with sends off; activating a real journey is a human decision.',
-    },
-  },
-
-  {
-    you: 'Quick, rebuild the lease-end audience the right way for a production send.',
-    steps: [
-      { say: 'Starting from **ENT.All_Owners_Opted_In** for consent, filtering to leases 90 days from maturity, reading the shared DE with the **Parent BU** credentials, and pointing at the production audience, not a TEST_ or _Working copy. The journey stays a Draft until someone signs off on go-live. Want me to write the Query Activity?' },
+      { say: 'Using what we’ve saved: starting from **ENT.All_Owners_Opted_In** for consent, reading it with the **Parent BU** creds, filtering to leases 90 days from maturity, and pointing at the production DE, not a TEST_ or _Working copy. Want me to write the Query Activity?' },
     ],
     memory: {
       kind: 'fact',
       scope: 'lease-end',
-      text: 'For a lease-end production audience: start from ENT.All_Owners_Opted_In (consent), filter to leases 90 days from maturity, read shared DEs with Parent BU credentials, and use the production DE, not a TEST_ or _Working copy.',
+      text: 'For a lease-end production audience: start from ENT.All_Owners_Opted_In (consent), read shared DEs with Parent BU credentials, filter to leases 90 days from maturity, and use the production DE, not a TEST_ or _Working copy.',
     },
   },
 ];
