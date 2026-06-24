@@ -55,7 +55,7 @@ window.DEMO = {
       return 'org';
     }
     var scope = scopeOf(), lbl = scope === 'org' ? 'this campaign' : scope;
-    if (/activate|go.?live|publish|launch|turn on/.test(t)) {
+    if (/activate|go.?live|\bpublish\b|turn on|push.*live/.test(t)) {
       if (/test_|\btest\b/.test(t)) return { reply: 'I will not activate that. **TEST_** builds never send, and no journey goes live without a named human approving it. I can run a preview to a mailinator address with sends off so you can see it safely.' };
       return { reply: 'Going live is a human decision, not mine, so I will not flip that on from here. I have put the go-live owner on Review.', memory: { kind: 'question', scope: scope, text: 'Who signs off on go-live for ' + lbl + ', and what has to be true first?', why: 'Activating a real send is a call only your team can own.' } };
     }

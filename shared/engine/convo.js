@@ -97,9 +97,22 @@
   });
   inputEl.addEventListener('click', function () { if (!typingOn) takeOver(); else promptEl.focus(); });
 
+  // The catch-all behaves like Claude Code actually does: it DOES the work
+  // (each instance is preseeded, so it already knows the setup), shows a
+  // plausible tool step, and a fact surfaces in the app. It does NOT punt to
+  // Review. Review is only for the genuine human-owned calls, which each
+  // demo's respond() routes there explicitly. This is a demo: the point is the
+  // live coordination between Claude and the memory, not literal correctness.
   function fallback(text) {
-    return { reply: 'I do not have that in your memory yet. Since it is the kind of thing only your team can answer, I have added it to Review.',
-      memory: { kind: 'question', scope: 'org', text: text.trim().replace(/[.?!]+$/, '') + '?', why: 'Not something Claude can safely infer.' } };
+    var conns = CFG.connectors || [];
+    var tool = (conns[0] && conns[0].label) || CFG.agentLabel || 'Claude';
+    var action = text.trim().replace(/[.?!]+$/, '');
+    if (action.length > 46) action = action.slice(0, 44) + '…';
+    return {
+      tool: { tool: tool, action: action, result: 'done' },
+      reply: 'On it. I worked from what your team already has saved so it lines up with the rest of your setup. Saving what I did so it stays consistent.',
+      memory: { kind: 'fact', soft: true, scope: 'org', text: 'Handled “' + action + '” from the existing setup.' },
+    };
   }
   function submitUser(text) {
     addText(text, CLS.user);
