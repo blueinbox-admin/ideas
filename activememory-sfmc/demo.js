@@ -133,35 +133,37 @@
     var type = async function (text) { var el = byId('ccPrompt'); el.classList.add('typed'); el.textContent = ''; for (var i = 0; i < text.length && alive(); i++) { el.textContent += text.charAt(i); await sleep(82); } };
     var send = function () { var p = byId('ccPrompt'), t = p.textContent; p.classList.remove('typed'); p.textContent = 'Type / for commands'; addText(t, 'ccd-u'); };
 
-    while (alive()) {
-      convo.innerHTML = '';
-      await sleep(900); if (!alive()) return;
-      for (var i = 0; i < CONVO.length && alive(); i++) {
-        var turn = CONVO[i];
-        var hlInput = (i === 0) ? byId('ccInput') : null;   // highlight the type box each time the first prompt is written
-        if (hlInput) hlInput.classList.add('hl-type');
-        await type(turn.u);
-        if (hlInput) hlInput.classList.remove('hl-type');
-        if (!alive()) return;
-        await sleep(450); send();
-        for (var s = 0; s < turn.steps.length && alive(); s++) {
-          var step = turn.steps[s];
-          if (step.user) {   // the human types an answer back into the chat (becomes a saved fact, not an app question)
-            await sleep(800); if (!alive()) return;
-            await type(step.text); if (!alive()) return;
-            await sleep(450); send();
-            await sleep(800); if (!alive()) return;
-            continue;
-          }
-          var w = working(); await sleep(step.wait || 1000); if (!alive()) { w.remove(); return; } w.remove();
-          addMsg(step.html, step.cls);
-          await sleep(step.hold || 1300); if (!alive()) return;
+    // The guided demo plays only the first couple of turns to SHOW how it works,
+    // then stops and hands the keyboard to the user for free typing (no loop).
+    var DEMO_TURNS = 2;
+    convo.innerHTML = '';
+    await sleep(900); if (!alive()) return;
+    for (var i = 0; i < DEMO_TURNS && i < CONVO.length && alive(); i++) {
+      var turn = CONVO[i];
+      var hlInput = (i === 0) ? byId('ccInput') : null;   // highlight the type box on the first prompt
+      if (hlInput) hlInput.classList.add('hl-type');
+      await type(turn.u);
+      if (hlInput) hlInput.classList.remove('hl-type');
+      if (!alive()) return;
+      await sleep(450); send();
+      for (var s = 0; s < turn.steps.length && alive(); s++) {
+        var step = turn.steps[s];
+        if (step.user) {   // the human types an answer back into the chat (becomes a saved fact, not an app question)
+          await sleep(800); if (!alive()) return;
+          await type(step.text); if (!alive()) return;
+          await sleep(450); send();
+          await sleep(800); if (!alive()) return;
+          continue;
         }
-        if (turn.after) { await sleep(600); if (!alive()) return; turn.after(); }
-        await sleep(2200); if (!alive()) return;
+        var w = working(); await sleep(step.wait || 1000); if (!alive()) { w.remove(); return; } w.remove();
+        addMsg(step.html, step.cls);
+        await sleep(step.hold || 1300); if (!alive()) return;
       }
-      await sleep(3200); if (!alive()) return;   // hold, then loop from the top
+      if (turn.after) { await sleep(600); if (!alive()) return; turn.after(); }
+      await sleep(2000); if (!alive()) return;
     }
+    // demo over: hand the keyboard to the user (unless a newer run/takeover replaced us)
+    if (token === convToken) { convPlaying = false; updateCtrl(); enableTyping(); }
   }
   function pauseConv()  { if (!convPlaying || paused) return; paused = true; updateCtrl(); }
   function resumeConv() { if (!convPlaying || !paused) return; paused = false; flushResume(); updateCtrl(); }
@@ -183,13 +185,108 @@
     obTimers.push(setTimeout(clearChalk, 16000));
   }
 
+  // ============ free typing: after the short demo, the user drives Claude Code ============
+  // The replies are FAKE but mimic the real shape: a brief Working…, sometimes a
+  // tool line, a short answer that cites or saves memory. Every reply ends in a
+  // memory beat — a saved fact (silent or soft) or a question — so the model always
+  // shows through, whatever the user types. Nothing persists: a reload reseeds.
+  var promptEl = byId('ccPrompt'), ccInputEl = byId('ccInput');
+  var TYPE_PH = 'Ask Claude anything…';
+  var typingEnabled = false, typedSeq = 0, phShown = false;
+
+  function showPlaceholder() { promptEl.classList.remove('typed'); promptEl.textContent = TYPE_PH; phShown = true; }
+  function clearPlaceholder() { if (phShown) { promptEl.textContent = ''; phShown = false; } promptEl.classList.add('typed'); }
+  function disableTyping() { typingEnabled = false; promptEl.setAttribute('contenteditable', 'false'); }
+  function enableTyping() {
+    if (typingEnabled) return;
+    typingEnabled = true;
+    promptEl.setAttribute('contenteditable', 'true');
+    promptEl.setAttribute('spellcheck', 'false');
+    showPlaceholder();
+    ccInputEl.classList.add('hl-type');
+    obTimers.push(setTimeout(function () { ccInputEl.classList.remove('hl-type'); }, 2200));
+    clearChalk(true);
+    chalkAnnotate('.cc-win', 'Your turn. Ask Claude to build an audience, wire a journey, schedule a send, or anything else, and watch the memory fill in on the left.', { corner: 'bottom-right' });
+    obTimers.push(setTimeout(clearChalk, 9000));
+  }
+  // click the input mid-demo to take over right away
+  function takeOver() { convToken++; convPlaying = false; paused = false; clearTimers(); flushResume(); updateCtrl(); enableTyping(); promptEl.focus(); }
+  function resetForReplay() { disableTyping(); resetDrips(); clearChalk(true); }
+
+  promptEl.addEventListener('focus', function () { if (typingEnabled) clearPlaceholder(); });
+  promptEl.addEventListener('blur', function () { if (typingEnabled && !promptEl.textContent.trim()) showPlaceholder(); });
+  promptEl.addEventListener('keydown', function (e) {
+    if (!typingEnabled) return;
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); var t = promptEl.textContent.trim(); if (!t) return; promptEl.textContent = ''; phShown = false; submitUser(t); }
+  });
+  ccInputEl.addEventListener('click', function () { if (!typingEnabled) takeOver(); else promptEl.focus(); });
+
+  // ---- the faked-but-plausible responder ----
+  function guessScope(t) {
+    if (/lease|maturity/.test(t)) return 'lease-end';
+    if (/win.?back|lapsed|dormant|re.?engage|inactive/.test(t)) return 'win-back';
+    if (/service|reminder|recall|maintenance|oil|tire/.test(t)) return 'service-reminders';
+    if (/welcome|new owner|new buyer|onboard|delivery/.test(t)) return 'new-owner-welcome';
+    return 'org';
+  }
+  function cleanQ(text) {
+    var s = text.trim().replace(/[.?!]+$/, '');
+    s = s.charAt(0).toUpperCase() + s.slice(1);
+    if (s.length > 140) s = s.slice(0, 137) + '…';
+    return s + '?';
+  }
+  function respond(text) {
+    var t = text.toLowerCase(), scope = guessScope(t);
+    var lbl = scope === 'org' ? 'this campaign' : scope;
+    if (/activate|go.?live|publish|launch|turn on/.test(t)) {
+      if (/test_|\btest\b/.test(t)) return { reply: 'I will not activate that. **TEST_** builds never send, and no journey goes live without a named human approving it. I can run a preview to a mailinator address with sends off so you can see it safely.' };
+      return { reply: 'Going live is a human decision, not mine, so I will not flip that on from here. I have put the go-live owner on Review so it is on record.', memory: { kind: 'question', scope: scope, text: 'Who signs off on go-live for ' + lbl + ', and what has to be true first?', why: 'Activating a real send is a call only your team can own.' } };
+    }
+    if (/who |approve|sign.?off|owner|consent|opt.?out|opt.?in|unsubscrib|should we|priorit|decide|allowed/.test(t)) {
+      return { reply: 'That is a call only your team can own, so I will not guess at it. I have added it to Review for you to answer.', memory: { kind: 'question', scope: scope, text: cleanQ(text), why: 'Only your team can own this one.' } };
+    }
+    if (/mailinator|preview|test send/.test(t)) {
+      return { reply: 'I will send that as a preview to a mailinator address with sends off, never to real owners. That follows your testing guardrail.' };
+    }
+    if (/schedule|blast|deploy|\bsend\b|sending|when should/.test(t)) {
+      return { reply: 'Before I schedule for ' + lbl + ', I need your send window. I do not have quiet hours or a weekly frequency cap saved for it, so I have flagged it on Review.', memory: { kind: 'question', scope: scope, text: 'What are the send-window and frequency rules for ' + lbl + ' (quiet hours, weekly cap per owner)?', why: 'Send timing is your policy, not something Claude can infer.' } };
+    }
+    if (/audience|segment|build|query|list|pull|data extension|\bde\b|who gets|recipients/.test(t)) {
+      return { tool: { tool: 'SFMC', action: 'build query · ' + scope, result: 'audience from ENT.All_Owners_Opted_In' }, reply: 'I will build the ' + lbl + ' audience from **ENT.All_Owners_Opted_In** (your Org-wide opt-in rule) and point at the production data extension, not a TEST_ copy. Saving the recipe so it stays consistent.', memory: { kind: 'fact', scope: scope, soft: true, text: 'The ' + lbl + ' audience starts from ENT.All_Owners_Opted_In, filtered to ' + lbl + ' criteria.' } };
+    }
+    if (/report|metric|open rate|click|bounce|stats|performance|results|analytic/.test(t)) {
+      return { reply: 'Engagement data lives in the system data views (_Open, _Click, _Bounce), queried in SQL, not in a regular data extension. I will pull the ' + lbl + ' results from there.' };
+    }
+    return { reply: 'I do not have that in your memory yet. Since it is the kind of thing only your team can answer, I have added it to Review.', memory: { kind: 'question', scope: scope, text: cleanQ(text), why: 'Not something Claude can safely infer.' } };
+  }
+  function submitUser(text) {
+    driving = false;
+    addText(text, 'ccd-u');
+    var r = respond(text);
+    var w = working();
+    timers.push(setTimeout(function () {
+      w.remove();
+      var afterTool = function () {
+        addMsg('<span class="who">Claude</span> ' + fmt(r.reply), 'ccd-a');
+        if (r.memory) timers.push(setTimeout(function () { dropTyped(r.memory); }, 650));
+      };
+      if (r.tool) { addMsg(toolHtml(r.tool), 'ccd-tool'); timers.push(setTimeout(afterTool, 650)); }
+      else afterTool();
+    }, 780));
+  }
+  function dropTyped(m) {
+    var map = MEM[m.kind] || MEM.fact;
+    dropItem({ id: 'typed-' + (typedSeq++), tab: map.tab, pill: map.pill, scope: m.scope || 'org', soft: !!m.soft, content: esc(m.text), why: m.why ? esc(m.why) : '' });
+    if (AM.showTab) AM.showTab(map.tab);   // bring the tab it landed on into view so the user watches memory fill in
+  }
+
   // floating demo controls drive the conversation
   byId('playPause').addEventListener('click', function () {
-    if (!convPlaying) playConversation();
+    if (!convPlaying) { resetForReplay(); playConversation(); }
     else if (paused) resumeConv();
     else pauseConv();
   });
-  byId('restart').addEventListener('click', function () { resetDrips(); playOnboarding(); playConversation(); });
+  byId('restart').addEventListener('click', function () { resetForReplay(); playOnboarding(); playConversation(); });
 
   // the user exploring the app (picking a tab, or typing somewhere) takes the wheel:
   // stop auto-navigating so the demo never pulls them off the tab they chose.

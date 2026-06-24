@@ -318,6 +318,9 @@
   .add-toast { font-size: 12.5px; font-weight: 600; color: rgb(var(--secondary-hover)); margin: -4px 0 6px; }
   /* claude code: typed prompt + streamed messages */
   #ccPrompt.typed { color: #1d1d1f; }
+  /* free-typing: the prompt becomes a contenteditable field after the demo */
+  #ccPrompt { flex: 1 1 auto; min-width: 0; outline: none; cursor: text; word-break: break-word; }
+  #ccPrompt[contenteditable="true"] { caret-color: #1d1d1f; }
   .ccd-convo > * { animation: msg-in .32s ease; }
   @keyframes msg-in { 0% { opacity: 0; transform: translateY(5px); } 100% { opacity: 1; transform: none; } }
   .ccd-working { display: flex; align-items: center; gap: 8px; color: #8a8a86; font-size: 12.5px; margin-bottom: 14px; }
