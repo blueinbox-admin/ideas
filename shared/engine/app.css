@@ -1,0 +1,474 @@
+/* app.css — VERBATIM copy of memoryapp/web/app/globals.css (the live app's styles).
+   To re-sync when the live app restyles: re-copy globals.css over this file.
+   The only addition is the two font vars below, which the Next app injects via
+   next/font at runtime and a static page must declare itself. */
+:root {
+  --font-display: 'Bricolage Grotesque', 'Source Sans 3', system-ui, sans-serif;
+  --font-body: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+/* palette15 (from roxbury): café-quirky warm brown identity.
+   Brown (--primary/--ink) leads: buttons, logo, badges, card headers, active
+   states. Teal/green (--secondary/--link) is a SPARING accent -- not banned,
+   just deliberate: links, focus rings, small live/status dots, outline
+   secondary buttons, tiny contextual recommendation labels, and the green
+   fade-in highlight when a new item appears. Never green as a fill on primary
+   chrome. Page = sandy --bg, cards = cream --surface floating on it. */
+:root {
+  --bg: 240 230 216;          /* warm cream page */
+  --surface: 252 248 242;     /* near-white card */
+  --ink: 92 44 6;             /* chocolate brown text */
+  --ink-muted: 140 100 70;
+  --ink-soft: 185 160 138;
+  --heading: 92 44 6;
+  --link: 0 168 142;          /* teal */
+  --link-hover: 0 132 112;
+  --primary: 92 44 6;         /* chocolate */
+  --primary-hover: 62 28 0;
+  --on-primary: 250 244 232;
+  --secondary: 0 168 142;     /* teal */
+  --secondary-hover: 0 132 112;
+  --success: 76 128 119;
+  --on-success: 196 252 240;
+  --sand: 210 188 158;        /* borders */
+  --sand-light: 215 238 228;
+  --amber: 176 124 52;
+  --amber-bg: 245 234 214;
+  --focus: 0 168 142;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-body), -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  color: rgb(var(--ink));
+  background: rgb(var(--bg));
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+h1, h2, h3, .display { font-family: var(--font-display), var(--font-body), sans-serif; }
+
+/* header */
+.topbar { border-bottom: 1px solid rgb(var(--sand)); background: rgb(var(--surface)); }
+.topbar-inner { max-width: 1100px; margin: 0 auto; padding: 16px 28px; display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
+.brand { font-family: var(--font-display); font-size: 19px; font-weight: 700; letter-spacing: -0.02em; color: rgb(var(--heading)); }
+.brand .mark { color: rgb(var(--heading)); margin-right: 7px; }
+.topbar-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.org { font-size: 13px; color: rgb(var(--ink-muted)); }
+.tagline { font-size: 12.5px; color: rgb(var(--ink-soft)); margin-top: 3px; }
+
+/* connection indicator: two dots — this app + Claude Code (from the heartbeat) */
+.conn { display: flex; align-items: center; gap: 14px; font-size: 12px; }
+.conn-item { display: inline-flex; align-items: center; gap: 6px; color: rgb(var(--ink-soft)); white-space: nowrap; }
+.conn-dot { width: 8px; height: 8px; border-radius: 50%; background: rgb(var(--ink-soft)); flex: 0 0 auto; }
+/* this app is live whenever it renders */
+.conn-dot.app { background: rgb(var(--secondary)); }
+/* Claude Code states */
+.conn-connected { color: rgb(var(--ink-muted)); }
+.conn-connected .conn-dot { background: rgb(var(--secondary)); }
+.conn-working { color: rgb(var(--secondary-hover)); font-weight: 600; }
+.conn-working .conn-dot { background: rgb(var(--secondary)); }
+.conn-offline { color: rgb(var(--ink-soft)); }
+.conn-offline .conn-dot { background: rgb(var(--ink-soft)); }
+/* the working dot pulses to signal live activity */
+.conn-dot.pulse { animation: conn-pulse 1.6s ease-in-out infinite; }
+@keyframes conn-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(var(--secondary) / 0.5); }
+  50%      { box-shadow: 0 0 0 5px rgb(var(--secondary) / 0); }
+}
+@media (prefers-reduced-motion: reduce) { .conn-dot.pulse { animation: none; } }
+
+/* single-column layout: scope filter lives under the tabs, no left rail. The
+   layout matches the header width so the content's left edge aligns with the
+   brand; the reading column is capped and left-aligned within it. */
+.layout { max-width: 1100px; margin: 0 auto; }
+.content { padding: 24px 28px 90px; max-width: 916px; min-width: 0; }
+
+/* Scope-change loading: a cream veil + spinner over the content sections while
+   the new server data loads, so a pill click feels instant (the pill + header
+   react immediately; only the data area waits). */
+.scope-sections { position: relative; min-height: 140px; }
+.loading-veil { position: absolute; inset: -6px 0 0; z-index: 4; display: flex; justify-content: center; padding-top: 40px; background: rgb(var(--bg) / 0.6); }
+.spinner { width: 26px; height: 26px; border: 2.5px solid rgb(var(--sand) / 0.55); border-top-color: rgb(var(--primary)); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2.4s; } }
+
+/* sidebar / folder tree */
+.tree-label { font-family: var(--font-display); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: rgb(var(--ink-soft)); padding: 0 10px; margin: 4px 0 8px; }
+.tree-item {
+  display: flex; align-items: center; gap: 9px; width: 100%; text-align: left;
+  padding: 8px 10px; border-radius: 9px; border: 1px solid transparent;
+  color: rgb(var(--ink-muted)); text-decoration: none; font-size: 14px; cursor: pointer; background: none;
+}
+.tree-item:hover { background: rgb(var(--sand-light) / 0.6); color: rgb(var(--ink)); }
+.tree-item.active { background: rgb(var(--surface)); border-color: rgb(var(--sand)); color: rgb(var(--ink)); font-weight: 600; }
+.tree-item.root { font-weight: 600; color: rgb(var(--ink)); }
+/* a project gained a question or a fact while you were elsewhere: a slow,
+   unmissable teal breath on the row — fades in and back out symmetrically. */
+.tree-item.flash { animation: tree-flash 3.2s ease-in-out; }
+@keyframes tree-flash {
+  0%   { background: rgb(var(--secondary) / 0); }
+  50%  { background: rgb(var(--secondary) / 0.20); }
+  100% { background: rgb(var(--secondary) / 0); }
+}
+@media (prefers-reduced-motion: reduce) { .tree-item.flash { animation: none; } }
+.tree-ico { width: 16px; flex: 0 0 auto; opacity: 0.85; }
+.tree-name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tree-count {
+  font-size: 11px; font-weight: 600; min-width: 19px; height: 18px; padding: 0 6px;
+  display: inline-grid; place-items: center; border-radius: 9px;
+  background: rgb(var(--amber-bg)); color: rgb(var(--amber));
+}
+.tree-count.zero { background: rgb(var(--sand-light)); color: rgb(var(--ink-soft)); }
+.tree-divider { height: 1px; background: rgb(var(--sand)); margin: 12px 8px; }
+
+/* create-project folder control */
+.new-project { display: flex; gap: 6px; margin: 14px 10px 0; }
+.new-project input {
+  flex: 1 1 auto; min-width: 0; font: inherit; font-size: 13px;
+  border: 1px solid rgb(var(--sand)); border-radius: 8px; padding: 6px 9px;
+  background: rgb(var(--surface)); color: rgb(var(--ink));
+}
+.new-project input::placeholder { color: rgb(var(--ink-soft)); }
+.new-project input:focus { outline: 2px solid rgb(var(--focus) / 0.35); border-color: rgb(var(--focus)); }
+.new-project button {
+  flex: 0 0 auto; width: 30px; cursor: pointer; font: inherit; font-size: 17px; line-height: 1;
+  border: 1px solid rgb(var(--sand)); border-radius: 8px; background: rgb(var(--surface)); color: rgb(var(--ink-muted));
+}
+.new-project button:hover { border-color: rgb(var(--primary)); color: rgb(var(--primary)); }
+
+/* content header */
+.scope-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+.scope-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: rgb(var(--heading)); }
+.scope-kind { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgb(var(--ink-muted)); }
+.scope-sub { font-size: 13px; color: rgb(var(--ink-muted)); margin: 0 0 18px; }
+
+/* tabs */
+.tabs { display: flex; gap: 26px; border-bottom: 1px solid rgb(var(--sand)); margin: 6px 0 22px; }
+.tab {
+  appearance: none; background: none; border: none; cursor: pointer; font: inherit; font-size: 14px;
+  padding: 9px 2px; color: rgb(var(--ink-muted)); border-bottom: 2px solid transparent; display: flex; align-items: center; gap: 8px;
+  position: relative;
+}
+.tab > * { position: relative; z-index: 1; }
+/* this tab gained a new item while you were on the other tab: a slow teal breath
+   behind the label. A pseudo-element (not the tab's own bg) so nothing reflows. */
+.tab.flash::before {
+  content: ''; position: absolute; inset: 1px -8px; z-index: 0; border-radius: 8px;
+  background: rgb(var(--secondary) / 0.18); pointer-events: none;
+  animation: bg-flash 3.2s ease-in-out;
+}
+@keyframes bg-flash { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .tab.flash::before { animation: none; opacity: 0; } }
+.tab:hover { color: rgb(var(--ink)); }
+.tab.active { color: rgb(var(--heading)); border-bottom-color: rgb(var(--primary)); }
+.tab.active .tab-label { font-weight: 600; }
+/* reserve the bold width so switching weight doesn't shift labels sideways */
+.tab-label { display: inline-flex; flex-direction: column; }
+.tab-label::after { content: attr(data-label); font-weight: 600; height: 0; overflow: hidden; visibility: hidden; pointer-events: none; }
+.badge { display: inline-grid; place-items: center; min-width: 20px; height: 18px; padding: 0 6px; font-size: 11px; font-weight: 600; border-radius: 9px; background: rgb(var(--sand) / 0.35); color: rgb(var(--ink-muted)); }
+.badge.amber { background: rgb(var(--amber-bg)); color: rgb(var(--amber)); }
+
+/* sections */
+.legend { font-family: var(--font-display); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgb(var(--heading)); margin: 26px 0 6px; }
+.note { font-size: 13px; color: rgb(var(--ink-muted)); margin: 0 0 14px; max-width: 640px; }
+
+
+/* memory cards */
+.card { display: flex; align-items: flex-start; gap: 12px; padding: 13px 15px; background: rgb(var(--surface)); border: 1px solid rgb(var(--sand)); border-radius: 12px; margin-bottom: 9px; }
+.card .body { flex: 1 1 auto; min-width: 0; }
+.card .content { color: rgb(var(--ink)); white-space: pre-line; }
+.card .meta { font-size: 11px; color: rgb(var(--ink-soft)); margin-top: 5px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.type-pill { display: inline-block; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; padding: 1px 6px; border-radius: 5px; background: rgb(var(--sand-light)); color: rgb(var(--success)); margin-right: 7px; }
+.type-pill.guardrail { background: rgb(var(--amber-bg)); color: rgb(var(--amber)); }
+/* Scope label on cards — dark-brown outline on transparent. Green is reserved
+   for state-change cues, so it's deliberately NOT used here. */
+.proj-tag { font-size: 10.5px; font-weight: 600; padding: 1px 7px; border-radius: 5px; background: transparent; color: rgb(var(--primary)); border: 1px solid rgb(var(--primary) / 0.45); }
+.proj-tag.root { color: rgb(var(--ink-muted)); border-color: rgb(var(--ink-muted) / 0.45); }
+
+.actions { display: flex; gap: 6px; flex: 0 0 auto; }
+/* confirmed cards swap Remove (view) for Save+Cancel (edit); reserve the wider
+   footprint in both states so the body never reflows when toggling edit. */
+.card-actions { min-width: 132px; justify-content: flex-end; }
+.btn { appearance: none; cursor: pointer; font: inherit; font-size: 12.5px; font-weight: 600; padding: 6px 13px; border-radius: 8px; border: 1px solid rgb(var(--sand)); background: rgb(var(--surface)); color: rgb(var(--ink)); }
+.btn:hover { border-color: rgb(var(--ink-soft)); }
+.btn.primary { background: rgb(var(--primary)); border-color: rgb(var(--primary)); color: rgb(var(--on-primary)); }
+.btn.primary:hover { background: rgb(var(--primary-hover)); border-color: rgb(var(--primary-hover)); }
+.btn.ghost { color: rgb(var(--ink-muted)); }
+.tick { color: rgb(var(--success)); font-weight: 700; flex: 0 0 auto; margin-top: 1px; }
+
+/* Soft (inferred) facts — Claude assumed it, didn't directly observe it. Muted
+   and slightly tentative: dashed border + neutral "assumed" tag + faded tick.
+   Deliberately NOT green/teal (those signal a confirmed state-change); this is
+   "unverified — fix if wrong". Clearing it ("Looks right") returns it to normal. */
+.card.assumed { border-style: dashed; border-color: rgb(var(--ink-muted) / 0.45); }
+.card.assumed .tick { color: rgb(var(--ink-soft)); font-weight: 600; }
+.assumed-tag {
+  display: inline-block; font-size: 10px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.03em; padding: 1px 6px; border-radius: 5px; margin-top: 3px;
+  background: rgb(var(--sand-light)); color: rgb(var(--ink-muted));
+  border: 1px dashed rgb(var(--ink-muted) / 0.5);
+}
+
+/* Confirmed cards are click-to-edit. View and edit share ONE geometry: a flex
+   row of [pill · body], where the body box (text div ↔ textarea) has identical
+   width, padding, border and line-height in both states — so clicking in only
+   swaps the element type and the card never resizes. The 1px border is reserved
+   as transparent in view, so the edit border adds zero height. */
+.field-row { display: flex; align-items: flex-start; gap: 6px; }
+.field-row .type-pill { margin-right: 0; margin-top: 3px; }
+.field {
+  font: inherit; line-height: 1.55; white-space: pre-line;
+  flex: 1 1 auto; min-width: 0; box-sizing: border-box;
+  border: 1px solid transparent; border-radius: 7px;
+  padding: 2px 6px;
+}
+.field.editable { cursor: text; transition: background 0.12s; }
+.field.editable:hover { background: rgb(var(--sand-light)); }
+.field.editable:focus-visible { outline: 2px solid rgb(var(--focus) / 0.4); }
+.field.edit-input {
+  width: 100%; background: rgb(var(--surface)); color: rgb(var(--ink));
+  border-color: rgb(var(--sand)); resize: none; overflow: hidden; min-height: 0;
+}
+.field.edit-input:focus { outline: 2px solid rgb(var(--focus) / 0.4); border-color: rgb(var(--focus)); }
+
+/* add form */
+.addform { display: flex; gap: 8px; margin-top: 12px; align-items: flex-start; }
+.addform textarea, .input { font: inherit; border: 1px solid rgb(var(--sand)); border-radius: 9px; padding: 10px 12px; background: rgb(var(--surface)); color: rgb(var(--ink)); }
+.addform textarea { flex: 1 1 auto; resize: vertical; min-height: 44px; }
+.addform textarea:focus, .input:focus { outline: 2px solid rgb(var(--focus) / 0.4); border-color: rgb(var(--focus)); }
+
+.empty { color: rgb(var(--ink-soft)); font-size: 13px; padding: 16px 0; }
+.scroll { max-height: 600px; overflow-y: auto; padding-right: 4px; }
+.muted-inline { color: rgb(var(--ink-muted)); }
+
+/* proactive question cards */
+.qcard { align-items: flex-start; }
+/* override the page-layout .content padding (22px 28px 80px) — the question text
+   only needs the card's own padding, not 80px of dead space below it */
+.qcard .content { font-weight: 600; padding: 0; }
+.qwhy { font-size: 12px; color: rgb(var(--ink-soft)); margin-top: 6px; }
+/* verify-question framing on a high-stakes inferred suggestion (source-of-truth / guardrail) */
+.verify-q { font-size: 12px; color: rgb(var(--ink-soft)); margin-bottom: 6px; }
+.qform { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.qform textarea { font: inherit; border: 1px solid rgb(var(--sand)); border-radius: 9px; padding: 10px 12px; background: rgb(var(--surface)); color: rgb(var(--ink)); resize: vertical; min-height: 44px; width: 100%; }
+.qform textarea:focus { outline: 2px solid rgb(var(--focus) / 0.4); border-color: rgb(var(--focus)); }
+.qform .actions { justify-content: flex-end; }
+.qskip { flex: 0 0 auto; }
+.drip-hint { font-size: 12px; color: rgb(var(--ink-soft)); margin: 10px 2px 0; font-style: italic; }
+
+/* optimistic save: an answered/skipped/confirmed card flashes its outcome as a
+   full-card tinted panel (keeps the card's shape — no hollow void or content
+   snap), then collapses away at a single uniform speed. The height is locked to
+   the real value in JS so the fold has no dead-time, and removal rides the data
+   refresh. */
+.card.leaving {
+  position: relative;
+  overflow: hidden;
+  border-color: rgb(var(--secondary) / 0.4);
+  transition: height 0.24s linear, opacity 0.24s linear, margin 0.24s linear,
+              padding 0.24s linear, border-width 0.24s linear;
+}
+.skip-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  background: rgb(var(--sand-light));
+  color: rgb(var(--secondary-hover)); font-weight: 600; font-size: 14px;
+  border-radius: 12px;
+}
+/* the single mark shown while a card collapses away — big enough to read at a
+   glance, no words. ✓ for saved/confirmed (teal), ✕ for skipped (muted). */
+.leave-icon { font-size: 34px; line-height: 1; font-weight: 700; color: rgb(var(--secondary-hover)); }
+.leave-icon.skip { color: rgb(var(--ink-soft)); }
+.card.leaving.collapsing {
+  opacity: 0; margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; border-width: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .card.leaving { transition: none; }
+}
+/* rollback state when a save fails */
+.card.save-error { border-color: rgb(var(--amber)); }
+.save-error-msg { color: rgb(var(--amber)); font-weight: 600; }
+
+/* brief success flash on the Add button after a fact/guardrail is added */
+.btn.primary.added {
+  background: rgb(var(--secondary)); border-color: rgb(var(--secondary)); color: rgb(var(--on-primary));
+  transition: background 0.15s;
+}
+
+/* a just-added fact: green fade-in highlight that settles to a normal card */
+.just-added { margin-bottom: 8px; }
+.card.fresh { animation: fresh-in 2.2s ease; }
+@keyframes fresh-in {
+  0%   { background: rgb(var(--sand-light)); border-color: rgb(var(--secondary) / 0.55); }
+  100% { background: rgb(var(--surface)); border-color: rgb(var(--sand)); }
+}
+@media (prefers-reduced-motion: reduce) { .card.fresh { animation: none; } }
+
+/* a newly-emerged question or suggested fact: a slow, calm fade-in. .is-new is
+   set at mount ONLY when the item genuinely just arrived in the current scope (a
+   fresh drip / a suggestion Claude saved) — never on page load or a filter
+   switch (those remount the list but get no is-new). Covers both qcards and
+   plain suggested-fact cards. */
+.card.is-new { animation: qcard-in 2.6s ease both; }
+@keyframes qcard-in {
+  0%   { opacity: 0; transform: translateY(-6px); }
+  55%  { opacity: 0.5; }
+  100% { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { .card.is-new { animation: none; } }
+
+/* credentials tab (org-root only) */
+.cred-form { max-width: 620px; }
+.cred-group { margin: 0 0 22px; padding: 16px 18px; background: rgb(var(--surface)); border: 1px solid rgb(var(--sand)); border-radius: 12px; }
+.cred-group-head { font-family: var(--font-display); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgb(var(--heading)); margin-bottom: 12px; }
+.cred-field { display: grid; grid-template-columns: 150px 1fr; align-items: center; gap: 12px; margin-bottom: 10px; }
+.cred-field:last-child { margin-bottom: 0; }
+.cred-label { font-size: 12.5px; color: rgb(var(--ink-muted)); }
+.cred-input { font: inherit; font-size: 13px; width: 100%; border: 1px solid rgb(var(--sand)); border-radius: 8px; padding: 7px 10px; background: rgb(var(--bg) / 0.4); color: rgb(var(--ink)); }
+.cred-input:focus { outline: 2px solid rgb(var(--focus) / 0.35); border-color: rgb(var(--focus)); background: rgb(var(--surface)); }
+.cred-secret { display: flex; gap: 6px; align-items: center; }
+.cred-secret .cred-input { flex: 1 1 auto; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.cred-reveal { flex: 0 0 auto; padding: 6px 10px; font-size: 12px; }
+.cred-actions { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+.cred-saved { font-size: 13px; color: rgb(var(--success)); display: inline-flex; align-items: center; gap: 5px; }
+
+/* passive sync hint under a project header: no local folder yet */
+.folder-hint {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin: 0 0 18px; padding: 10px 14px; font-size: 13px;
+  background: rgb(var(--secondary) / 0.07); border: 1px solid rgb(var(--secondary) / 0.25);
+  border-radius: 10px; color: rgb(var(--ink-muted));
+}
+.folder-hint code { font-size: 12.5px; color: rgb(var(--ink)); background: rgb(var(--sand-light)); padding: 1px 5px; border-radius: 5px; }
+.folder-hint-text { flex: 1 1 240px; }
+.folder-hint-actions { flex: 0 0 auto; }
+.folder-hint .btn.primary { padding: 5px 12px; font-size: 12.5px; }
+
+/* sidebar drift surface: projects/folders that don't line up */
+.sync-note { margin: 18px 10px 0; padding-top: 14px; border-top: 1px solid rgb(var(--sand)); }
+.sync-note-head { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: rgb(var(--amber)); margin-bottom: 8px; }
+.sync-row { display: flex; flex-wrap: wrap; gap: 5px; align-items: baseline; margin-bottom: 8px; }
+.sync-label { display: block; flex: 1 1 100%; font-size: 11px; color: rgb(var(--ink-soft)); margin-bottom: 2px; }
+.sync-chip { font-size: 12px; text-decoration: none; padding: 2px 8px; border-radius: 7px; background: rgb(var(--amber-bg)); color: rgb(var(--amber)); border: 1px solid rgb(var(--amber) / 0.25); }
+.sync-chip:hover { border-color: rgb(var(--amber)); }
+.sync-chip.muted { background: rgb(var(--sand-light)); color: rgb(var(--ink-muted)); border-color: rgb(var(--sand)); }
+
+/* scope picker on a confirmed fact: move a fact to a project or org-wide.
+   Quiet by default (just a small caption + plain select); the select gets a
+   visible affordance on hover/focus so it reads as editable. */
+.scope-pick { display: inline-flex; align-items: baseline; gap: 6px; margin-top: 7px; flex-wrap: wrap; }
+.scope-pick-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.04em; color: rgb(var(--ink-soft)); }
+.scope-select {
+  font: inherit; font-size: 11.5px; font-weight: 600; color: rgb(var(--ink-muted));
+  background: transparent; border: 1px solid transparent; border-radius: 7px;
+  padding: 2px 6px; cursor: pointer; max-width: 220px;
+}
+.scope-select:hover { border-color: rgb(var(--sand)); background: rgb(var(--surface)); }
+.scope-select:focus { outline: 2px solid rgb(var(--focus) / 0.35); border-color: rgb(var(--focus)); }
+
+/* multi-scope chips: a fact can carry several scopes (a project plus another,
+   org-wide, or SFMC-general). Each chip is removable; the + select adds one. */
+.scope-chips { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+.scope-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 11.5px; font-weight: 600; color: rgb(var(--ink-muted));
+  background: rgb(var(--sand-light)); border: 1px solid rgb(var(--sand));
+  border-radius: 7px; padding: 2px 4px 2px 8px;
+}
+.scope-chip.org { color: rgb(var(--ink-soft)); }
+.scope-chip.platform { color: rgb(var(--teal)); background: rgb(var(--teal) / 0.08); border-color: rgb(var(--teal) / 0.28); }
+.scope-chip.untriaged { color: rgb(var(--amber)); background: rgb(var(--amber-bg)); border-color: rgb(var(--amber) / 0.28); }
+.scope-x {
+  font: inherit; font-size: 13px; line-height: 1; color: rgb(var(--ink-soft));
+  background: none; border: none; cursor: pointer; padding: 0 2px; border-radius: 4px;
+}
+.scope-x:hover { color: rgb(var(--ink)); background: rgb(var(--sand)); }
+.scope-add {
+  font: inherit; font-size: 11px; font-weight: 600; color: rgb(var(--ink-soft));
+  background: transparent; border: 1px dashed rgb(var(--sand)); border-radius: 7px;
+  padding: 2px 6px; cursor: pointer;
+}
+.scope-add:hover { border-color: rgb(var(--ink-soft)); color: rgb(var(--ink-muted)); }
+/* Locked while the fact's text is being edited — dimmed and non-interactive, but
+   the row keeps every element (× / + scope / suggestions), so its width and wrap
+   stay put and the card height doesn't shift when you click into edit. */
+.scope-pick.inert { opacity: 0.4; pointer-events: none; }
+
+/* confirmed facts just sit at the bottom, no section header */
+.confirmed-list { margin-top: 18px; border-top: 1px solid rgb(var(--sand)); padding-top: 16px; }
+
+/* sync handed off to Claude Code — waiting for it to learn the folder */
+.folder-hint.requested { background: rgb(var(--sand-light) / 0.5); border-color: rgb(var(--sand)); }
+
+/* local folders that aren't projects yet: a muted, ghostly sidebar group */
+.folder-group { margin-top: 20px; }
+.tree-item.ghost { color: rgb(var(--ink-soft)); border-style: dashed; border-color: rgb(var(--sand) / 0.55); }
+.tree-item.ghost .tree-ico { opacity: 0.5; }
+.tree-item.ghost:hover { color: rgb(var(--ink-muted)); border-color: rgb(var(--sand)); background: rgb(var(--sand-light) / 0.4); }
+.tree-item.ghost.active { background: rgb(var(--surface)); color: rgb(var(--ink)); border-style: solid; border-color: rgb(var(--sand)); }
+.ghost-tag { font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 1px 6px; border-radius: 6px; color: rgb(var(--secondary)); background: rgb(var(--secondary) / 0.1); }
+.ghost-tag.asked { color: rgb(var(--ink-soft)); background: rgb(var(--sand-light)); }
+
+/* ───── scope filter pills (sidebar) ───── */
+/* Multi-select tags replace the old folder tree: a fact can carry several scopes,
+   so it shows under every matching pill. Brown (--primary) is the active fill —
+   the lead colour — with an amber "needs you" count and a sparing teal flash. */
+/* Uniform pills: a 2-column equal grid, so every pill is the same size no matter
+   how long its label is. The label truncates; the fact count sits at the right;
+   the amber "needs you" count rides as a corner badge so it never shifts width. */
+/* Scope filter bar — sits under the Review/Facts tabs. A uniform grid of equal
+   pills (auto-fill so they fill the row); minmax(0,1fr) + min-width:0 stop a long
+   label from blowing a column out. The new-project field spans two cells. */
+.scopebar-head { font-family: var(--font-display); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: rgb(var(--ink-soft)); margin: 18px 0 9px; }
+.scopebar { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 7px 6px; margin-bottom: 26px; }
+.scopebar .new-project { grid-column: span 2; margin: 0; }
+.pill {
+  position: relative; display: flex; align-items: center; gap: 6px; width: 100%; min-width: 0; justify-content: space-between;
+  padding: 6px 11px; border-radius: 999px; cursor: pointer; font: inherit; font-size: 13px; line-height: 1.2;
+  border: 1px solid rgb(var(--sand)); background: rgb(var(--surface)); color: rgb(var(--ink-muted)); text-decoration: none;
+}
+.pill:hover { border-color: rgb(var(--ink-soft)); color: rgb(var(--ink)); }
+.pill.active { background: rgb(var(--primary)); border-color: rgb(var(--primary)); color: rgb(var(--on-primary)); font-weight: 600; }
+.pill.active:hover { background: rgb(var(--primary-hover)); border-color: rgb(var(--primary-hover)); color: rgb(var(--on-primary)); }
+.pill.all { font-weight: 600; justify-content: center; }
+.pill-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+/* Fact count: just a plain number (no badge) — how many facts in this scope. */
+.pill-count { flex: 0 0 auto; font-size: 12px; font-weight: 600; color: rgb(var(--ink-soft)); }
+.pill.active .pill-count { color: rgb(var(--on-primary) / 0.7); }
+/* Solid green "needs confirming" dot — presence only, no number. Brand green
+   (--secondary) = "new / changed", consistent with the fresh-item highlight. */
+.pill-dot {
+  position: absolute; top: -4px; right: -4px; z-index: 1;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: rgb(var(--secondary)); box-shadow: 0 0 0 2px rgb(var(--bg));
+}
+.pill.untriaged { border-style: dashed; border-color: rgb(var(--amber) / 0.5); color: rgb(var(--amber)); }
+.pill.untriaged.active { background: rgb(var(--amber)); border-color: rgb(var(--amber)); color: rgb(var(--surface)); }
+.pill.ghost { border-style: dashed; border-color: rgb(var(--sand) / 0.6); color: rgb(var(--ink-soft)); }
+.pill.ghost:hover { color: rgb(var(--ink-muted)); border-color: rgb(var(--sand)); }
+/* Green background fade when new questions/suggestions land on this pill. */
+.pill.flash { animation: pill-flash 3.2s ease-in-out; }
+@keyframes pill-flash {
+  0%   { background: rgb(var(--surface)); }
+  50%  { background: rgb(var(--secondary) / 0.22); }
+  100% { background: rgb(var(--surface)); }
+}
+@media (prefers-reduced-motion: reduce) { .pill.flash { animation: none; } }
+
+/* Facts grouped under their category tag (default sort on the Facts shelf) */
+.fact-group-head {
+  display: flex; align-items: center; gap: 8px; margin: 18px 0 9px;
+  font-family: var(--font-display); font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.07em; color: rgb(var(--ink-soft));
+}
+.fact-group-head::after { content: ''; flex: 1 1 auto; height: 1px; background: rgb(var(--sand) / 0.7); }
+.fact-group-head .fact-group-count { font-size: 11px; letter-spacing: 0; color: rgb(var(--ink-soft)); }
+.fact-group:first-of-type .fact-group-head { margin-top: 4px; }
+
+/* "also tag …?" co-occurrence suggestion in the scope editor */
+.scope-suggest {
+  font: inherit; font-size: 11px; cursor: pointer;
+  padding: 1px 7px; border-radius: 5px; border: 1px dashed rgb(var(--secondary) / 0.5);
+  background: rgb(var(--secondary) / 0.06); color: rgb(var(--secondary-hover));
+}
+.scope-suggest:hover { background: rgb(var(--secondary) / 0.12); border-color: rgb(var(--secondary)); }

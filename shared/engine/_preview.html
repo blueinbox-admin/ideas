@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M1 preview — faithful app pane</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div class="layout">
+    <div id="memoryapp"></div>
+  </div>
+
+<script src="defaults.js"></script>
+<script>
+// inline SFMC config for M1 verification (the real demo gets its own config.js)
+window.DEMO = {
+  org: { name: 'Vanta Motors', product: 'Marketing Memory', url: 'memory.vantamotors.com' },
+  connectors: [{ label: 'Salesforce Marketing Cloud', mode: 'read-only' }],
+  scopes: ['new-owner-welcome', 'service-reminders', 'lease-end', 'win-back'],
+  seed: {
+    facts: [
+      { type: 'fact', confidence: 'observed', scopes: ['org'], content: 'Two business units: the Marketing BU runs sends, local DEs, and Query Activities; the Parent BU holds the shared ENT. data extensions and direct data reads.' },
+      { type: 'mapping', confidence: 'observed', scopes: ['org'], content: 'Send and engagement row data lives only in the system data views (_Sent, _Open, _Click, _Bounce), queried in SQL, not in a regular Data Extension.' },
+      { type: 'mapping', confidence: 'inferred', scopes: ['org'], content: 'Resolve a campaign to its model line (EV, truck, sedan) with the Campaign_Prefix_Model lookup DE.' },
+      { type: 'fact', confidence: 'observed', scopes: ['new-owner-welcome'], content: 'The new-owner welcome is a 3-email journey that onboards buyers in their first 30 days, entered from the sales-delivered feed.' },
+      { type: 'mapping', confidence: 'observed', scopes: ['service-reminders'], content: 'Service reminders join the owner roster to the service-due DE on VIN, not email, since one household can share an email.' },
+      { type: 'fact', confidence: 'observed', scopes: ['lease-end'], content: 'Lease-end offers are regional: the offer DE is keyed by dealer region, so the audience must carry region to render the right incentive.' },
+      { type: 'guardrail', scopes: ['org'], content: 'Never send to real owners while testing. Test to mailinator or test leads with sends off.' },
+      { type: 'guardrail', scopes: ['org'], content: 'Never activate a journey or automation without a named human approving go-live.' },
+      { type: 'guardrail', scopes: ['org'], content: 'Never query an audience without filtering to the opted-in roster (ENT.All_Owners_Opted_In).' },
+      { type: 'guardrail', scopes: ['service-reminders'], content: 'Never send service reminders outside 8am to 8pm in the owner local time zone.' },
+      { type: 'guardrail', scopes: ['win-back'], content: 'Never include an owner with an open complaint or a pending recall in a win-back promo.' },
+    ],
+    questions: [
+      { scope: 'org', text: 'Is there one official definition of an opted-in, emailable owner, or does it genuinely differ by campaign?', rationale: 'each campaign rebuilds the audience its own way, and the canonical definition is something only your team knows.' },
+      { scope: 'org', text: 'When an owner qualifies for more than one re-engagement campaign at once (win-back, lapsed), which one takes priority?', rationale: 'win-back and re-engagement overlap on the same owners, and the tiebreak is a business call Claude cannot infer.' },
+      { scope: 'new-owner-welcome', text: 'If a sale falls through or a car is returned after the welcome journey starts, how should that owner come out of it, and how does the journey find out?', rationale: 'the welcome enters from the sales feed, but how a reversed sale flows back out is a business process only your team knows.' },
+    ],
+  },
+};
+</script>
+<script src="app.js"></script>
+</body>
+</html>
