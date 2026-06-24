@@ -19,26 +19,31 @@ window.PROTOTYPES = [
     blurb: 'A marketing-ops brain for an auto brand on SFMC. Claude builds audiences, wires journeys, and schedules sends; the memory files every fact under a project (or Org-wide), so Claude gets the setup right instead of guessing.',
     status: 'live',
   },
+  // ── Deprecated: older UX, pre shared-engine. Hidden from the launcher (kept for
+  //    reference). Re-cut onto the shared engine + a config.js if a lead wants them.
   {
     slug: 'activememory-sportek',
     connector: 'Product knowledge for sales',
     persona: 'Sportek International',
-    blurb: 'A sales-enablement brain for a wholesale technical-fabric distributor. Reps ask Claude about fabrics, applications, what prints, and what to quote; the hub remembers what the best reps know so everyone gives the same right answer.',
+    blurb: 'A sales-enablement brain for a wholesale technical-fabric distributor.',
     status: 'live',
+    hidden: true,
   },
   {
     slug: 'activememory-wordpress',
     connector: 'WordPress',
     persona: 'Reyes Law Firm',
-    blurb: 'A solo estate-planning firm. Claude builds and edits the website while Active Memory learns the site setup, the firm’s voice, and the rules it must never break.',
+    blurb: 'A solo estate-planning firm. Claude builds and edits the website while Active Memory learns the setup, voice, and rules.',
     status: 'live',
+    hidden: true,
   },
   {
     slug: 'activememory-quickbooks',
     connector: 'QuickBooks',
     persona: 'Bluebird Coffee',
-    blurb: 'A two-shop coffee business. Claude does the bookkeeping while Active Memory learns the categorizations, the cross-system mappings, and the close-period rules.',
+    blurb: 'A two-shop coffee business. Claude does the bookkeeping while Active Memory learns the categories and rules.',
     status: 'live',
+    hidden: true,
   },
   {
     slug: 'activememory-salesforce',
@@ -46,5 +51,6 @@ window.PROTOTYPES = [
     persona: 'Healthcare marketing team',
     blurb: 'The first connector: email and journey work in SFMC. Earlier build, different layout.',
     status: 'draft',
+    hidden: true,
   },
 ];
