@@ -41,17 +41,17 @@ window.TRANSCRIPT = [
     },
   },
 
-  // 2) Immediate chat Q&A -> a saved MAPPING (cross-system credential rule).
+  // 2) Claude INFERS a rule from the error (no human confirms it) -> a SOFT fact,
+  //    saved as "assumed, fix if wrong." This is the inferred->soft path.
   {
     you: 'Reading the shared owner roster is throwing "Invalid object name."',
     steps: [
-      { say: 'That error means a shared **ENT.** data extension was read with the Marketing BU keys. Do you have Parent BU credentials I should use for direct reads?' },
-      { u: 'Yeah, the Parent BU creds are in the vault. Use those for any ENT. read.' },
-      { say: 'Using the Parent BU creds for ENT. reads and the Marketing BU for sends. That clears it.' },
+      { say: 'That is almost always a business-unit mismatch: shared **ENT.** data extensions have to be read with the **Parent BU** credentials, and the Marketing BU keys throw exactly this error. I will retry the read on the Parent BU. Since I am inferring this from the error rather than reading it from your setup, I have saved it as an assumption for you to correct if it is off.' },
     ],
     memory: {
       kind: 'mapping',
       scope: 'org',
+      soft: true,
       text: 'Direct reads of shared ENT. data extensions use the Parent BU credentials. The Marketing BU keys error with "Invalid object name." Sends and local DEs use the Marketing BU.',
     },
   },

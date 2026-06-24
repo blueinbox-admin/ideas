@@ -386,8 +386,13 @@
   /* a horizontal scope filter: every card is filed under a project (or Org-wide).
      Clicking a chip filters all three tabs; org-wide facts are inherited so they
      stay visible under any project. */
-  .projbar { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; margin: 0 0 16px; padding-bottom: 14px; border-bottom: 1px solid rgb(var(--sand)); }
+  .scopebar-head { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: rgb(var(--ink-soft)); margin: 2px 0 8px; }
+  .projbar { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; margin: 0 0 20px; }
   .projbar-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: rgb(var(--ink-soft)); margin-right: 3px; }
+  /* green "answer needed" dot on a scope pill that has an open question */
+  .proj-chip .pc-waiting { display: none; }
+  .proj-chip .pc-waiting.on { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: rgb(var(--secondary)); margin-left: 1px; flex: 0 0 auto; }
+  .proj-chip.active .pc-waiting.on { background: rgb(var(--on-primary)); }
   .proj-chip {
     appearance: none; cursor: pointer; font: inherit; font-size: 12.5px; font-weight: 600;
     display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: 999px;
@@ -420,6 +425,18 @@
 
   /* hidden by the project filter */
   .card.scope-hidden { display: none; }
+
+  /* ============ soft (inferred) fact ============ */
+  /* A fact Claude reasoned out rather than read from the org. Saved live, but
+     visually softer and flagged "assumed, fix if wrong" so a wrong guess is cheap
+     to catch. An observed/measured fact stays the plain confirmed card. */
+  .card.soft { background: rgb(var(--amber-bg) / 0.45); border-color: rgb(var(--amber) / 0.4); border-style: dashed; }
+  .card.soft .tick { color: rgb(var(--amber)); }
+  .soft-flag {
+    display: inline-block; margin-top: 7px; font-size: 10.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.03em; color: rgb(var(--amber));
+    background: rgb(var(--amber-bg)); padding: 2px 8px; border-radius: 6px;
+  }
 
   /* ============ onboarding callout restyle (scoped to this prototype) ============ */
   /* The shared chalk note defaults to a big, bold, marker-style bubble. Here we

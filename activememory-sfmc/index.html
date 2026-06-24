@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=3">
+<link rel="stylesheet" href="styles.css?v=4">
 <link rel="stylesheet" href="../shared/chalk/chalk.css">
 </head>
 <body>
@@ -67,31 +67,32 @@
           <div class="scope-head">
             <h1 class="scope-title">Vanta Motors</h1>
           </div>
-          <p class="scope-sub">Everything Claude knows about your Marketing Cloud setup: business units, audiences, journeys, and the rules behind them. Each fact is filed under a project, or marked Org-wide so every project inherits it.</p>
-
-          <!-- PROJECTS rail: the SFMC difference. Filters every tab to one project
-               (org-wide facts are inherited, so they show under any project too). -->
-          <div class="projbar" id="projbar">
-            <span class="projbar-label">Projects</span>
-            <button class="proj-chip active" type="button" data-proj="all">All</button>
-            <button class="proj-chip" type="button" data-proj="org"><span class="pc-dot org"></span>Org-wide <span class="pc-count" data-count="org"></span></button>
-            <button class="proj-chip" type="button" data-proj="new-owner-welcome">new-owner-welcome <span class="pc-count" data-count="new-owner-welcome"></span></button>
-            <button class="proj-chip" type="button" data-proj="service-reminders">service-reminders <span class="pc-count" data-count="service-reminders"></span></button>
-            <button class="proj-chip" type="button" data-proj="lease-end">lease-end <span class="pc-count" data-count="lease-end"></span></button>
-            <button class="proj-chip" type="button" data-proj="win-back">win-back <span class="pc-count" data-count="win-back"></span></button>
-          </div>
+          <p class="scope-sub">Everything Claude knows about your Marketing Cloud setup. What it can know, it saves as a fact; what only your team can decide, it leaves as a question. Each item is filed under a project, or Org-wide so every project inherits it.</p>
 
           <nav class="tabs" id="tabs">
             <button class="tab active" data-tab="review">Review <span class="badge amber" id="bReview">3</span></button>
             <button class="tab" data-tab="facts">Facts <span class="badge" id="bFacts">6</span></button>
-            <button class="tab" data-tab="guardrails">Guardrails <span class="badge amber" id="bGuard">5</span></button>
+            <button class="tab" data-tab="guardrails">Guardrails <span class="badge" id="bGuard">5</span></button>
             <button class="tab" data-tab="david">David <span class="badge" id="bDavid">1</span></button>
           </nav>
+
+          <!-- scope filter: pills under the tabs (matches the latest memoryapp UI).
+               Each pill shows the scope's fact count and a green dot when it has an
+               open question. Filtering a project also shows inherited Org-wide items. -->
+          <div class="scopebar-head">Filter by scope</div>
+          <div class="projbar" id="projbar">
+            <button class="proj-chip active" type="button" data-proj="all">All</button>
+            <button class="proj-chip" type="button" data-proj="org">Org-wide <span class="pc-count" data-count="org"></span><span class="pc-waiting" data-wait="org"></span></button>
+            <button class="proj-chip" type="button" data-proj="new-owner-welcome">new-owner-welcome <span class="pc-count" data-count="new-owner-welcome"></span><span class="pc-waiting" data-wait="new-owner-welcome"></span></button>
+            <button class="proj-chip" type="button" data-proj="service-reminders">service-reminders <span class="pc-count" data-count="service-reminders"></span><span class="pc-waiting" data-wait="service-reminders"></span></button>
+            <button class="proj-chip" type="button" data-proj="lease-end">lease-end <span class="pc-count" data-count="lease-end"></span><span class="pc-waiting" data-wait="lease-end"></span></button>
+            <button class="proj-chip" type="button" data-proj="win-back">win-back <span class="pc-count" data-count="win-back"></span><span class="pc-waiting" data-wait="win-back"></span></button>
+          </div>
 
           <!-- REVIEW -->
           <section class="panel active" data-panel="review">
             <div class="legend">Questions to answer</div>
-            <p class="note">Not the in-the-moment questions Claude asks you in chat. These are higher-level things Claude noticed across your work and wants to understand. Answer one and it becomes a confirmed fact, filed under its project.</p>
+            <p class="note">Not the in-the-moment questions Claude asks in chat, those it works out with you and saves as facts. These are the calls only your team can own: ownership, approvals, intent, the rules a guess could get wrong. Answer one and it becomes a confirmed fact.</p>
 
             <div class="card qcard" data-scope="org">
               <div class="body">
@@ -148,7 +149,7 @@
 
             <div class="card" data-scope="org"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Two business units: the Marketing BU runs sends, local DEs, and Query Activities; the Parent BU holds the shared ENT. data extensions and direct data reads.</div><div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip org">Org-wide</span></div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
             <div class="card" data-scope="org"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill mapping">mapping</span>Send and engagement row data lives only in the system data views (_Sent, _Open, _Click, _Bounce), queried in SQL, not in a regular Data Extension.</div><div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip org">Org-wide</span></div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
-            <div class="card" data-scope="org"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill mapping">mapping</span>Resolve a campaign to its model line (EV, truck, sedan) with the Campaign_Prefix_Model lookup DE.</div><div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip org">Org-wide</span></div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
+            <div class="card soft" data-scope="org"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill mapping">mapping</span>Resolve a campaign to its model line (EV, truck, sedan) with the Campaign_Prefix_Model lookup DE.</div><div class="soft-flag">assumed · fix if wrong</div><div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip org">Org-wide</span></div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
             <div class="card" data-scope="new-owner-welcome"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>The new-owner welcome is a 3-email journey that onboards buyers in their first 30 days, entered from the sales-delivered feed.</div><div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip">new-owner-welcome</span></div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
             <div class="card" data-scope="service-reminders"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill mapping">mapping</span>Service reminders join the owner roster to the service-due DE on VIN, not email, since one household can share an email.</div><div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip">service-reminders</span></div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
             <div class="card" data-scope="lease-end"><span class="tick">✓</span><div class="body"><div class="content editable"><span class="type-pill">fact</span>Lease-end offers are regional: the offer DE is keyed by dealer region, so the audience must carry region to render the right incentive.</div><div class="scope-row"><span class="scope-row-label">Applies to</span><span class="scope-chip">lease-end</span></div></div><div class="actions"><button class="btn ghost" type="button">Remove</button></div></div>
@@ -265,8 +266,8 @@
 
 
 <script src="../shared/chalk/chalk.js"></script>
-<script src="app.js?v=2"></script>
-<script src="transcript.js?v=2"></script>
-<script src="demo.js?v=2"></script>
+<script src="app.js?v=4"></script>
+<script src="transcript.js?v=4"></script>
+<script src="demo.js?v=4"></script>
 </body>
 </html>

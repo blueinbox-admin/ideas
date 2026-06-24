@@ -44,7 +44,7 @@
     var after = null;
     if (turn.memory) {
       var m = turn.memory, map = MEM[m.kind] || MEM.fact;
-      after = function () { dropItem({ id: 'mem-' + i, tab: map.tab, pill: map.pill, scope: m.scope || 'org', content: esc(m.text), why: m.why ? esc(m.why) : '' }); };
+      after = function () { dropItem({ id: 'mem-' + i, tab: map.tab, pill: map.pill, scope: m.scope || 'org', soft: !!m.soft, content: esc(m.text), why: m.why ? esc(m.why) : '' }); };
     }
     return { u: turn.you, steps: steps, after: after };
   });
@@ -89,13 +89,15 @@
     card.setAttribute('data-scope', o.scope || 'org');
     if (o.tab === 'facts' || o.tab === 'guardrails') {
       // auto-confirmed and editable like the rest. The pill marks fact / mapping /
-      // guardrail (matches memoryapp, where an observed record is saved, not asked).
-      card.className = 'card is-new';
+      // guardrail. A SOFT fact (Claude inferred it, no human confirmed) wears an
+      // "assumed, fix if wrong" flag and a softer style, vs a silent observed fact.
+      card.className = 'card is-new' + (o.soft ? ' soft' : '');
       var pill = o.tab === 'guardrails' ? 'guardrail' : (o.pill || 'fact');
       var pillCls = 'type-pill' + (pill === 'guardrail' ? ' guardrail' : pill === 'mapping' ? ' mapping' : '');
       card.innerHTML =
         '<span class="tick">✓</span>' +
         '<div class="body"><div class="content editable"><span class="' + pillCls + '">' + pill + '</span>' + o.content + '</div>' +
+        (o.soft ? '<div class="soft-flag">assumed · fix if wrong</div>' : '') +
         scopeChip(o.scope || 'org') + '</div>' +
         '<div class="actions"><button class="btn ghost" type="button">Remove</button></div>';
     } else {
@@ -176,7 +178,7 @@
     }, 900));
     obTimers.push(setTimeout(clearChalk, 7500));
     obTimers.push(setTimeout(function () {
-      chalkAnnotate('.app-win', 'This is your marketing memory. Every fact Claude learns is filed under a project (or marked Org-wide so every project inherits it), so it gets your SFMC setup right instead of guessing. Go ahead, play with it.', { corner: 'top-left' });
+      chalkAnnotate('.app-win', 'This is your marketing memory. What Claude can know, it just saves as a fact (assumptions flagged "fix if wrong"). What only your team can decide, it leaves as a question for you. Every item is filed under a project, or Org-wide. Go ahead, play with it.', { corner: 'top-left' });
     }, 8600));
     obTimers.push(setTimeout(clearChalk, 16000));
   }

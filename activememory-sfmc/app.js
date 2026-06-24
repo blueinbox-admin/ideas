@@ -63,14 +63,24 @@ window.AM = window.AM || {};
   }
   function refreshProjects() {
     if (!projbar) return;
-    var counts = {};
-    allCards().forEach(function (c) {
-      if (c.classList.contains('leaving')) return;
-      var s = c.getAttribute('data-scope') || 'org';
-      counts[s] = (counts[s] || 0) + 1;
-    });
+    // Per scope: fact count (Facts + Guardrails) shown on the pill, and whether the
+    // scope has an OPEN QUESTION (Review qcard) -> the green "answer needed" dot.
+    var facts = {}, waiting = {};
+    function tally(panel, isReview) {
+      if (!panel) return;
+      panel.querySelectorAll('.card').forEach(function (c) {
+        if (c.classList.contains('leaving')) return;
+        var s = c.getAttribute('data-scope') || 'org';
+        if (isReview) waiting[s] = (waiting[s] || 0) + 1;
+        else facts[s] = (facts[s] || 0) + 1;
+      });
+    }
+    tally(factsPanel, false); tally(guardPanel, false); tally(reviewPanel, true);
     projbar.querySelectorAll('.pc-count').forEach(function (el) {
-      el.textContent = counts[el.getAttribute('data-count')] || 0;
+      el.textContent = facts[el.getAttribute('data-count')] || 0;
+    });
+    projbar.querySelectorAll('.pc-waiting').forEach(function (el) {
+      el.classList.toggle('on', (waiting[el.getAttribute('data-wait')] || 0) > 0);
     });
     applyProjFilter();
     updateBadges();
