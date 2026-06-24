@@ -110,6 +110,30 @@ body { font-family: var(--font-body); color: rgb(var(--ink)); background: rgb(va
 /* a soft brown chocolate callout, matching the SFMC demo's onboarding look */
 .chalk-layer .chalk-note { font-family: var(--font-body); font-size: 24px; font-weight: 500; line-height: 1.38; padding: 22px 28px; max-width: 460px; border-radius: 20px 20px 20px 6px; color: rgb(var(--on-primary)); background: rgb(var(--ink)); border: 1.5px solid rgb(var(--ink)); box-shadow: 0 14px 38px rgba(40,20,4,.32); }
 
+/* ===== embedded surface: the agent as an in-product "implementation chat" ===== */
+.surface-embedded { background: linear-gradient(135deg, #6b5d4f, #4a5a4e); }
+.embed-page { height: 100vh; padding: 30px; display: flex; }
+.embed-win { flex: 1 1 auto; min-width: 0; background: #fff; }
+.embed-body { flex: 1 1 auto; min-height: 0; display: flex; }
+.embed-body .app-scroll { flex: 1 1 auto; min-width: 0; }
+.embed-chat { flex: 0 0 clamp(360px, 38%, 520px); display: flex; flex-direction: column; min-height: 0; background: rgb(var(--surface)); border-left: 1px solid rgb(var(--sand)); }
+.embed-chat-head { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; padding: 14px 18px; border-bottom: 1px solid rgb(var(--sand)); font-family: var(--font-display); font-weight: 700; font-size: 14px; color: rgb(var(--heading)); }
+.embed-chat-head .ec-dot { width: 8px; height: 8px; border-radius: 50%; background: rgb(var(--secondary)); flex: 0 0 auto; }
+.embed-chat-head .ec-sub { font-family: var(--font-body); font-weight: 500; font-size: 12.5px; color: rgb(var(--ink-soft)); }
+.embed-compose { flex: 0 0 auto; padding: 12px 16px 16px; }
+/* product-styled conversation (overrides the desktop am-* look) */
+.surface-embedded .am-convo { padding: 16px 18px 8px; color: rgb(var(--ink)); }
+.surface-embedded .am-user { background: rgb(var(--primary)); color: rgb(var(--on-primary)); border-radius: 13px 13px 4px 13px; padding: 9px 13px; margin: 0 0 14px auto; max-width: 85%; width: fit-content; }
+.surface-embedded .am-claude { color: rgb(var(--ink)); margin-bottom: 14px; }
+.surface-embedded .am-claude .who { font-weight: 700; color: rgb(var(--secondary-hover)); }
+.surface-embedded .am-tool .code { background: rgb(var(--bg)); border-color: rgb(var(--sand)); color: rgb(var(--ink-muted)); }
+.surface-embedded .am-tool .fn { color: rgb(var(--ink)); }
+.surface-embedded .am-tool .gd { background: rgb(var(--secondary)); }
+.surface-embedded .am-working { color: rgb(var(--ink-soft)); }
+.surface-embedded .am-working .sp { border-color: rgb(var(--sand)); border-top-color: rgb(var(--secondary)); }
+.surface-embedded .am-input { background: rgb(var(--surface)); border-color: rgb(var(--sand)); color: rgb(var(--ink-soft)); }
+.surface-embedded .am-prompt.typed { color: rgb(var(--ink)); }
+
 @media (max-width: 900px) {
   .desktop { flex-direction: column; height: auto; min-height: 100vh; padding: 18px; gap: 18px; }
   .desktop-icons { display: none; }

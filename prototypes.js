@@ -19,6 +19,13 @@ window.PROTOTYPES = [
     blurb: 'A marketing-ops brain for an auto brand on SFMC. Claude builds audiences, wires journeys, and schedules sends; the memory files every fact under a project (or Org-wide), so Claude gets the setup right instead of guessing.',
     status: 'live',
   },
+  {
+    slug: 'activememory-retail',
+    connector: 'Shopify + QuickBooks',
+    persona: 'Maple & Pine',
+    blurb: 'A DTC retailer running its store and books with Claude built in. Same engine as the SFMC demo, but the agent is an in-product chat (the embedded surface). The memory files every fact by campaign or Org-wide.',
+    status: 'live',
+  },
   // ── Deprecated: older UX, pre shared-engine. Hidden from the launcher (kept for
   //    reference). Re-cut onto the shared engine + a config.js if a lead wants them.
   {
