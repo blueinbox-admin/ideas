@@ -1,0 +1,118 @@
+/* shell.css — DEMO SCAFFOLDING chrome only (not part of the real app).
+   The desktop, the two windows, and the Claude Code pane that wraps the app.
+   Card + topbar + memory-app styling come from app.css (the globals copy); this
+   file styles ONLY the demo frame. The 'embedded' surface will add its own CSS
+   later; this is the 'desktop' surface. */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
+body { font-family: var(--font-body); color: rgb(var(--ink)); background: rgb(var(--bg)); -webkit-font-smoothing: antialiased; }
+
+/* ===== desktop: wallpaper + two separate apps ===== */
+.desktop { position: relative; height: 100vh; padding: 30px 116px 30px 30px; display: flex; gap: 30px; background: #5a6a5e; overflow: hidden; }
+.wallpaper { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+.desktop-icons { position: absolute; top: 24px; right: 10px; z-index: 1; width: 98px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.dicon { display: flex; flex-direction: column; align-items: center; gap: 5px; width: 100%; cursor: default; }
+.dicon svg { width: 52px; height: 44px; filter: drop-shadow(0 1px 2px rgba(0,0,0,.35)); }
+.dicon .thumb { width: 46px; height: 56px; border-radius: 3px; background: #fff; border: 1px solid rgba(0,0,0,.2); box-shadow: 0 1px 3px rgba(0,0,0,.35); }
+.dicon span { font-size: 11px; line-height: 1.2; color: #fff; text-align: center; text-shadow: 0 1px 2px rgba(0,0,0,.7); max-width: 110px; }
+
+/* shared window chrome */
+.win { position: relative; z-index: 2; display: flex; flex-direction: column; min-height: 0; overflow: hidden; border-radius: 12px; box-shadow: 0 28px 70px rgba(0,0,0,.45), 0 2px 10px rgba(0,0,0,.25); }
+.app-win { flex: 1 1 auto; min-width: 0; background: #fff; }
+.app-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; background: rgb(var(--bg)); }
+/* the app pane renders its own .layout/.content inside #memoryapp; keep it padded */
+#memoryapp .content { max-width: none; }
+
+/* Chrome browser chrome (the app is a WEB APP) */
+.chrome-tabs { flex: 0 0 auto; display: flex; align-items: flex-end; gap: 11px; height: 40px; padding: 0 12px; background: #dee1e6; }
+.chrome-dots { display: flex; gap: 8px; align-self: center; }
+.chrome-dots i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+.chrome-dots i:nth-child(1) { background: #ff5f57; } .chrome-dots i:nth-child(2) { background: #febc2e; } .chrome-dots i:nth-child(3) { background: #28c840; }
+.chrome-tab { display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 11px; background: #fff; border-radius: 9px 9px 0 0; font-size: 12px; color: #3c4043; max-width: 260px; }
+.chrome-tab .fav { width: 15px; height: 15px; border-radius: 4px; background: rgb(var(--primary)); color: rgb(var(--on-primary)); display: grid; place-items: center; font-size: 9px; flex: 0 0 auto; }
+.chrome-tab .tname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chrome-tab .x { margin-left: 4px; color: #9aa0a6; font-size: 13px; }
+.chrome-newtab { align-self: center; color: #5f6368; font-size: 19px; line-height: 1; }
+.chrome-toolbar { flex: 0 0 auto; display: flex; align-items: center; gap: 13px; height: 44px; padding: 0 14px; background: #fff; border-bottom: 1px solid #e7e9ec; }
+.chrome-nav { display: flex; gap: 15px; color: #5f6368; } .chrome-nav svg { width: 17px; height: 17px; }
+.chrome-omni { flex: 1 1 auto; display: flex; align-items: center; gap: 9px; height: 30px; padding: 0 14px; background: #f1f3f4; border-radius: 16px; font-size: 12.5px; color: #3c4043; }
+.chrome-omni .lock { color: #5f6368; flex: 0 0 auto; } .chrome-omni .lock svg { width: 12px; height: 12px; display: block; }
+.chrome-menu { color: #5f6368; font-size: 19px; line-height: 1; flex: 0 0 auto; }
+.chrome-avatar { width: 22px; height: 22px; border-radius: 50%; background: rgb(var(--secondary)); color: #fff; display: grid; place-items: center; font-size: 11px; font-weight: 600; flex: 0 0 auto; }
+.topbar { position: sticky; top: 0; z-index: 2; }
+
+/* ===== Claude Code window (the 'desktop' agent surface) ===== */
+.cc-win { flex: 0 0 clamp(440px, 42%, 620px); background: #fff; color: #1d1d1f; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif; }
+.ccd { display: flex; flex: 1 1 auto; min-height: 0; }
+.ccd-side { flex: 0 0 158px; display: flex; flex-direction: column; background: #f6f6f7; border-right: 1px solid #ebebed; padding: 11px 9px; min-height: 0; }
+.ccd-traffic { display: flex; gap: 8px; padding: 2px 4px 12px; }
+.ccd-traffic i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+.ccd-traffic i:nth-child(1) { background: #ff5f57; } .ccd-traffic i:nth-child(2) { background: #febc2e; } .ccd-traffic i:nth-child(3) { background: #28c840; }
+.ccd-tabs { display: flex; gap: 3px; background: #e7e7ea; border-radius: 9px; padding: 3px; margin-bottom: 13px; }
+.ccd-tab { flex: 0 0 30px; display: grid; place-items: center; height: 27px; border-radius: 7px; color: #75757a; }
+.ccd-tab.code { flex: 1 1 auto; grid-auto-flow: column; gap: 6px; font-size: 12.5px; font-weight: 600; }
+.ccd-tab.active { background: #fff; color: #1d1d1f; box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+.ccd-tab svg { width: 15px; height: 15px; }
+.ccd-nav { display: flex; align-items: center; gap: 10px; padding: 7px; border-radius: 7px; color: #34343a; font-size: 13px; cursor: default; }
+.ccd-nav svg { width: 15px; height: 15px; color: #75757a; flex: 0 0 auto; }
+.ccd-seclabel { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #9a9a9f; padding: 15px 7px 5px; }
+.ccd-seclabel svg { width: 13px; height: 13px; color: #b0b0b5; }
+.ccd-rec { padding: 7px; border-radius: 7px; color: #45454b; font-size: 12.5px; display: flex; align-items: center; gap: 9px; white-space: nowrap; overflow: hidden; cursor: default; }
+.ccd-rec .rdot { width: 6px; height: 6px; border-radius: 50%; border: 1.5px solid #bcbcc1; flex: 0 0 auto; }
+.ccd-rec .rname { overflow: hidden; text-overflow: ellipsis; }
+.ccd-rec.active { background: #e7e7ea; color: #1d1d1f; }
+.ccd-spacer { flex: 1 1 auto; }
+.ccd-user { display: flex; align-items: center; gap: 9px; padding: 9px 7px 2px; border-top: 1px solid #ebebed; font-size: 12.5px; color: #34343a; }
+.ccd-user .av { width: 24px; height: 24px; border-radius: 50%; background: #c96442; color: #fff; display: grid; place-items: center; font-size: 10px; font-weight: 600; flex: 0 0 auto; }
+.ccd-user .pl { color: #9a9a9f; } .ccd-user .chev { margin-left: auto; color: #b0b0b5; } .ccd-user .chev svg { width: 13px; height: 13px; }
+.ccd-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+.ccd-top { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid #efeff1; font-size: 13px; color: #45454b; overflow: hidden; }
+.ccd-top > svg { width: 16px; height: 16px; color: #8a8a90; flex: 0 0 auto; }
+.ccd-top .crumb { display: inline-flex; align-items: center; gap: 6px; min-width: 0; white-space: nowrap; overflow: hidden; }
+.ccd-top .crumb b { overflow: hidden; text-overflow: ellipsis; color: #1d1d1f; font-weight: 600; }
+.ccd-top .crumb svg { width: 13px; height: 13px; color: #b0b0b5; }
+.ccd-top .grow { flex: 1 1 auto; }
+
+/* ----- conversation (engine emits these am-* classes; surface picks them) ----- */
+.am-convo { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 16px 16px 8px; font-size: 13px; line-height: 1.55; }
+.am-convo > * { animation: msg-in .32s ease; }
+@keyframes msg-in { 0% { opacity: 0; transform: translateY(5px); } 100% { opacity: 1; transform: none; } }
+.am-user { background: #f3f3f5; border-radius: 12px; padding: 10px 13px; margin-bottom: 14px; color: #1d1d1f; }
+.am-claude { color: #2a2a2a; margin-bottom: 14px; }
+.am-claude .who { font-weight: 600; color: #c96442; }
+.am-tool { display: flex; gap: 9px; align-items: flex-start; margin: 0 0 14px; }
+.am-tool .gd { width: 7px; height: 7px; border-radius: 50%; background: #2ba25f; flex: 0 0 auto; margin-top: 7px; }
+.am-tool .code { flex: 1 1 auto; min-width: 0; background: #f6f6f7; border: 1px solid #ececee; border-radius: 8px; padding: 9px 11px; font-family: var(--font-mono); font-size: 12px; color: #3c4043; line-height: 1.5; }
+.am-tool .fn { color: #1d1d1f; } .am-tool .sub { display: block; margin-top: 5px; color: #8a8a90; }
+.am-working { display: flex; align-items: center; gap: 8px; color: #8a8a86; font-size: 12.5px; margin-bottom: 14px; }
+.am-working .sp { width: 12px; height: 12px; border: 2px solid #d9d7d2; border-top-color: #c96442; border-radius: 50%; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.ccd-compose { flex: 0 0 auto; padding: 8px 14px 12px; }
+.am-input { display: flex; align-items: center; justify-content: space-between; border: 1px solid #e0e0e3; border-radius: 12px; padding: 12px 14px; font-size: 13px; color: #9a9a9f; box-shadow: 0 1px 2px rgba(0,0,0,.04); transition: background .6s ease, border-color .6s ease, box-shadow .6s ease; }
+.am-input .ret { color: #c2c2c6; }
+.am-input.hl-type { background: #ffec9e; border-color: #f0dd92; box-shadow: 0 0 0 3px rgba(235,205,110,.26); }
+.am-prompt { flex: 1 1 auto; min-width: 0; outline: none; cursor: text; word-break: break-word; }
+.am-prompt.typed { color: #1d1d1f; } .am-prompt[contenteditable="true"] { caret-color: #1d1d1f; }
+.ccd-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; font-size: 11.5px; color: #75757a; }
+.ccd-bar .grp { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.ccd-bar .grp svg { width: 14px; height: 14px; flex: 0 0 auto; }
+.ccd-bar .pill { color: #34343a; }
+.ccd-spin { width: 13px; height: 13px; border: 2px solid #e2e2e5; border-top-color: #9a9a9f; border-radius: 50%; animation: spin .8s linear infinite; flex: 0 0 auto; }
+
+/* ===== floating demo controls ===== */
+.demo-ctrl { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 6px; padding: 9px 24px 9px 12px; background: rgb(var(--ink) / .9); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-radius: 999px; box-shadow: 0 12px 34px rgba(40,20,4,.36); opacity: .92; transition: opacity .2s ease; }
+.demo-ctrl:hover { opacity: 1; }
+.demo-ctrl button { appearance: none; cursor: pointer; border: none; background: transparent; color: rgb(var(--on-primary)); width: 60px; height: 60px; border-radius: 50%; font-size: 28px; line-height: 1; display: grid; place-items: center; }
+.demo-ctrl button:hover { background: rgb(var(--on-primary) / .16); }
+.demo-ctrl .lbl { color: rgb(var(--on-primary) / .8); font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; padding: 0 16px 0 10px; font-family: var(--font-body); }
+
+/* a soft brown chocolate callout, matching the SFMC demo's onboarding look */
+.chalk-layer .chalk-note { font-family: var(--font-body); font-size: 24px; font-weight: 500; line-height: 1.38; padding: 22px 28px; max-width: 460px; border-radius: 20px 20px 20px 6px; color: rgb(var(--on-primary)); background: rgb(var(--ink)); border: 1.5px solid rgb(var(--ink)); box-shadow: 0 14px 38px rgba(40,20,4,.32); }
+
+@media (max-width: 900px) {
+  .desktop { flex-direction: column; height: auto; min-height: 100vh; padding: 18px; gap: 18px; }
+  .desktop-icons { display: none; }
+  .app-win, .cc-win { flex: 0 0 auto; width: 100%; }
+  .app-win { height: 78vh; } .cc-win { height: 72vh; }
+}

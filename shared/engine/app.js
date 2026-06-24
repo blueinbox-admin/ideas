@@ -133,6 +133,22 @@ window.AM = window.AM || {};
       '</div><div class="qskip"><button class="btn ghost" type="button" data-skip="' + q.id + '">Skip</button></div></div>';
   }
 
+  // the app's own header (brand + connectors + agent liveness), all from config —
+  // this is where "different platforms per demo" actually shows.
+  function topbarHtml() {
+    var conn = CONNECTORS.map(function (c) {
+      return '<span class="conn-item"><span class="conn-dot app"></span>' + esc(c.label) + (c.mode ? ' · ' + esc(c.mode) : '') + '</span>';
+    }).join('');
+    if (FEAT.claudeCodeWindow || CFG.agentSurface === 'embedded') {
+      conn += '<span class="conn-item conn-working"><span class="conn-dot pulse"></span>' + esc(CFG.agentLabel || 'Claude Code') + ' · working</span>';
+    }
+    return '<header class="topbar"><div class="topbar-inner">' +
+      '<div><div class="brand"><span class="mark">◧</span>' + esc(ORG.product || 'Memory') + '</div>' +
+      (ORG.tagline ? '<div class="tagline">' + esc(ORG.tagline) + '</div>' : '') + '</div>' +
+      '<div class="topbar-right"><div class="conn">' + conn + '</div><div class="org">' + esc(ORG.name) + '</div></div>' +
+      '</div></header>';
+  }
+
   function subText() {
     if (!selected.length) return 'Everything Claude knows across your org. Filter to a project — or several — with the pills below.';
     if (selected.length >= 2) return 'Facts tagged ' + selected.map(scopeLabel).join(' or ') + '. A browse across these scopes; pick a single one to answer its questions.';
@@ -199,6 +215,7 @@ window.AM = window.AM || {};
     }
 
     root.innerHTML =
+      topbarHtml() +
       '<main class="content">' +
       '<div class="scope-head"><h1 class="scope-title">' + esc(ORG.name) + '</h1></div>' +
       '<p class="scope-sub">' + esc(subText()) + '</p>' +

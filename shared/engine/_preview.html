@@ -3,24 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>M1 preview — faithful app pane</title>
+<title>M2 preview — desktop surface</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shell.css">
 <link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="../chalk/chalk.css">
 </head>
 <body>
-  <div class="layout">
-    <div id="memoryapp"></div>
-  </div>
 
 <script src="defaults.js"></script>
 <script>
-// inline SFMC config for M1 verification (the real demo gets its own config.js)
+// ===== this is the shape of a per-demo config.js =====
 window.DEMO = {
-  org: { name: 'Vanta Motors', product: 'Marketing Memory', url: 'memory.vantamotors.com' },
+  org: { name: 'Vanta Motors', product: 'Marketing Memory', url: 'memory.vantamotors.com',
+         tagline: 'What Claude reads before it touches Marketing Cloud, so your sends are right instead of guessed.' },
   connectors: [{ label: 'Salesforce Marketing Cloud', mode: 'read-only' }],
+  agentSurface: 'desktop',
+  agentLabel: 'Claude Code',
+  desktopIcons: ['Audiences', 'Journeys', 'Blue Inbox'],
+  claudeCode: { recents: ['Marketing ops', 'Service reminders', 'Lease-end journey'], crumb: 'Marketing ops' },
   scopes: ['new-owner-welcome', 'service-reminders', 'lease-end', 'win-back'],
+  onboarding: [
+    { which: 'cc', target: '.cc-win', corner: 'bottom-right', text: 'This is Claude Code. Ask it to do real Salesforce Marketing Cloud work in plain English, build an audience, wire a journey, schedule a send, and it works from what your team knows.' },
+    { which: 'app', target: '.app-win', corner: 'top-left', text: 'This is your marketing memory. What Claude can know, it saves as a fact; what only your team can decide, it leaves as a question. Go ahead, play with it.' },
+  ],
   seed: {
     facts: [
       { type: 'fact', confidence: 'observed', scopes: ['org'], content: 'Two business units: the Marketing BU runs sends, local DEs, and Query Activities; the Parent BU holds the shared ENT. data extensions and direct data reads.' },
@@ -41,8 +49,55 @@ window.DEMO = {
       { scope: 'new-owner-welcome', text: 'If a sale falls through or a car is returned after the welcome journey starts, how should that owner come out of it, and how does the journey find out?', rationale: 'the welcome enters from the sales feed, but how a reversed sale flows back out is a business process only your team knows.' },
     ],
   },
+  // the faked-but-plausible responder lives with its platform (config is JS)
+  respond: function (text) {
+    var t = text.toLowerCase();
+    function scopeOf() {
+      if (/lease|maturity/.test(t)) return 'lease-end';
+      if (/win.?back|lapsed|dormant|re.?engage|inactive/.test(t)) return 'win-back';
+      if (/service|reminder|recall|maintenance|oil|tire/.test(t)) return 'service-reminders';
+      if (/welcome|new owner|new buyer|onboard|delivery/.test(t)) return 'new-owner-welcome';
+      return 'org';
+    }
+    var scope = scopeOf(), lbl = scope === 'org' ? 'this campaign' : scope;
+    if (/activate|go.?live|publish|launch|turn on/.test(t)) {
+      if (/test_|\btest\b/.test(t)) return { reply: 'I will not activate that. **TEST_** builds never send, and no journey goes live without a named human approving it. I can run a preview to a mailinator address with sends off so you can see it safely.' };
+      return { reply: 'Going live is a human decision, not mine, so I will not flip that on from here. I have put the go-live owner on Review.', memory: { kind: 'question', scope: scope, text: 'Who signs off on go-live for ' + lbl + ', and what has to be true first?', why: 'Activating a real send is a call only your team can own.' } };
+    }
+    if (/who |approve|sign.?off|owner|consent|opt.?out|opt.?in|unsubscrib|should we|priorit|decide|allowed/.test(t)) {
+      return { reply: 'That is a call only your team can own, so I will not guess at it. I have added it to Review for you to answer.', memory: { kind: 'question', scope: scope, text: text.trim().replace(/[.?!]+$/, '') + '?', why: 'Only your team can own this one.' } };
+    }
+    if (/mailinator|preview|test send/.test(t)) return { reply: 'I will send that as a preview to a mailinator address with sends off, never to real owners. That follows your testing guardrail.' };
+    if (/schedule|blast|deploy|\bsend\b|sending|when should/.test(t)) {
+      return { reply: 'Before I schedule for ' + lbl + ', I need your send window. I do not have quiet hours or a weekly frequency cap saved for it, so I have flagged it on Review.', memory: { kind: 'question', scope: scope, text: 'What are the send-window and frequency rules for ' + lbl + ' (quiet hours, weekly cap per owner)?', why: 'Send timing is your policy, not something Claude can infer.' } };
+    }
+    if (/audience|segment|build|query|list|pull|data extension|\bde\b|who gets|recipients/.test(t)) {
+      return { tool: { tool: 'SFMC', action: 'build query · ' + scope, result: 'audience from ENT.All_Owners_Opted_In' }, reply: 'I will build the ' + lbl + ' audience from **ENT.All_Owners_Opted_In** (your Org-wide opt-in rule) and point at the production data extension, not a TEST_ copy. Saving the recipe so it stays consistent.', memory: { kind: 'fact', soft: true, scope: scope, text: 'The ' + lbl + ' audience starts from ENT.All_Owners_Opted_In, filtered to ' + lbl + ' criteria.' } };
+    }
+    if (/report|metric|open rate|click|bounce|stats|performance|results|analytic/.test(t)) return { reply: 'Engagement data lives in the system data views (_Open, _Click, _Bounce), queried in SQL, not in a regular data extension. I will pull the ' + lbl + ' results from there.' };
+    return null; // engine fallback handles the rest
+  },
 };
+
+window.TRANSCRIPT = [
+  { you: 'Build the audience query for the 90-day service reminder send.',
+    steps: [
+      { tool: 'SFMC', action: 'list data extensions · service-reminders', result: 'Service_Due_90d, TEST_Service_Due_90d, Service_Due_Working' },
+      { say: 'Three lookalike data extensions here. Which one is the real production audience, versus a QA copy?' },
+      { u: 'Service_Due_90d is prod. The TEST_ and _Working ones are QA.' },
+      { say: 'Got it. Querying **Service_Due_90d** and filtering to the opted-in roster.' },
+    ],
+    memory: { kind: 'fact', scope: 'service-reminders', text: 'Service_Due_90d is the production audience for service reminders. TEST_Service_Due_90d and Service_Due_Working are QA copies.' } },
+  { you: 'Reading the shared owner roster is throwing "Invalid object name."',
+    steps: [
+      { say: 'That is almost always a business-unit mismatch: shared **ENT.** data extensions have to be read with the **Parent BU** credentials, and the Marketing BU keys throw exactly this error. Since I am inferring this from the error, I have saved it as an assumption for you to correct if it is off.' },
+    ],
+    memory: { kind: 'mapping', scope: 'org', soft: true, text: 'Direct reads of shared ENT. data extensions use the Parent BU credentials. The Marketing BU keys error with "Invalid object name." Sends and local DEs use the Marketing BU.' } },
+];
 </script>
+<script src="../chalk/chalk.js"></script>
+<script src="surface-desktop.js"></script>
 <script src="app.js"></script>
+<script src="convo.js"></script>
 </body>
 </html>
