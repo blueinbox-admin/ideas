@@ -79,7 +79,7 @@
           var w = working(); await sleep(step.wait); if (!alive()) { w.remove(); return; } w.remove();
           addMsg(step.html, step.cls); await sleep(step.hold); if (!alive()) return;
         }
-        if (turn.memory) { await sleep(600); if (!alive()) return; dropMems(turn.memory); }
+        if (turn.memory) { await sleep(300); if (!alive()) return; dropMems(turn.memory); }
         await sleep(1800); if (!alive()) return;
       }
       if (tok === token) {

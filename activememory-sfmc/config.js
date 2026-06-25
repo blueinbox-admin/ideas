@@ -19,7 +19,7 @@ window.DEMO = {
 
   onboarding: [
     { which: 'cc', target: '.cc-win', corner: 'bottom-right', text: 'This is Claude Code. Whether you want to build something or analyze what\'s there, just ask in plain English and it does the real Marketing Cloud work.' },
-    { which: 'app', target: '.app-win', corner: 'top-left', text: 'This is your marketing memory, always open while you work in Claude. Every fact it learns lands here.' },
+    { which: 'app', target: '.app-win', corner: 'top-left', text: 'This is your memory. As you work, it saves what Claude learns about how your business runs, so the AI can learn and work like an experienced employee, not a new hire.' },
   ],
 
   seed: {

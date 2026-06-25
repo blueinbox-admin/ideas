@@ -20,7 +20,7 @@ window.DEMO = {
 
   onboarding: [
     { which: 'cc', target: '.embed-chat', corner: 'bottom-right', text: 'Claude lives right in your ops app. Ask it to build an audience, run a send, or reconcile the books, and it works from what your team knows about your store and your accounting.' },
-    { which: 'app', target: '.app-scroll', corner: 'top-left', text: 'This is your ops memory. What Claude can know it saves as a fact; what only your team can decide it leaves as a question. Filed by campaign, or Org-wide.' },
+    { which: 'app', target: '.app-scroll', corner: 'top-left', text: 'This is your memory. As you work, it saves what Claude learns about how your business runs, so the AI can learn and work like an experienced employee, not a new hire.' },
   ],
 
   seed: {
