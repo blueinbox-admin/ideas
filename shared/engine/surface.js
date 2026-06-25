@@ -71,8 +71,7 @@
     buildDesktop();
 
   document.body.insertAdjacentHTML('beforeend', chrome +
-    '<div class="chalk-layer" id="chalkLayer" aria-hidden="true"></div>' +
-    '<div class="demo-ctrl" id="demoCtrl"><button id="playPause" type="button" title="Pause">⏸</button><button id="restart" type="button" title="Restart">↻</button><span class="lbl">Demo</span></div>');
+    '<div class="chalk-layer" id="chalkLayer" aria-hidden="true"></div>');
 
   window.AM_SURFACE = {
     convo: document.getElementById('am-convo'),

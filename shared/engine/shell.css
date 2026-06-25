@@ -134,13 +134,6 @@ body { font-family: var(--font-body); color: rgb(var(--ink)); background: rgb(va
 .ccd-bar .pill { color: #34343a; }
 .ccd-spin { width: 13px; height: 13px; border: 2px solid #e2e2e5; border-top-color: #9a9a9f; border-radius: 50%; animation: spin .8s linear infinite; flex: 0 0 auto; }
 
-/* ===== floating demo controls ===== */
-.demo-ctrl { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 6px; padding: 9px 24px 9px 12px; background: rgb(var(--ink) / .9); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-radius: 999px; box-shadow: 0 12px 34px rgba(40,20,4,.36); opacity: .92; transition: opacity .2s ease; }
-.demo-ctrl:hover { opacity: 1; }
-.demo-ctrl button { appearance: none; cursor: pointer; border: none; background: transparent; color: rgb(var(--on-primary)); width: 60px; height: 60px; border-radius: 50%; font-size: 28px; line-height: 1; display: grid; place-items: center; }
-.demo-ctrl button:hover { background: rgb(var(--on-primary) / .16); }
-.demo-ctrl .lbl { color: rgb(var(--on-primary) / .8); font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; padding: 0 16px 0 10px; font-family: var(--font-body); }
-
 /* a soft brown chocolate callout, matching the SFMC demo's onboarding look */
 .chalk-layer .chalk-note { font-family: var(--font-body); font-size: 24px; font-weight: 500; line-height: 1.38; padding: 22px 28px; max-width: 460px; border-radius: 20px 20px 20px 6px; color: rgb(var(--on-primary)); background: rgb(var(--ink)); border: 1.5px solid rgb(var(--ink)); box-shadow: 0 14px 38px rgba(40,20,4,.32); }
 

@@ -18,8 +18,8 @@ window.DEMO = {
   scopes: ['new-owner-welcome', 'service-reminders', 'lease-end', 'win-back'],
 
   onboarding: [
-    { which: 'cc', target: '.cc-win', corner: 'bottom-right', text: 'This is Claude Code. Ask it to do real Marketing Cloud work in plain English — build an audience, wire a journey, schedule a send. It works from what your team knows.' },
-    { which: 'app', target: '.app-win', corner: 'top-left', text: 'This is your marketing memory. What Claude can know, it saves as a fact; what only your team can decide, it asks. Go ahead, play with it.' },
+    { which: 'cc', target: '.cc-win', corner: 'bottom-right', text: 'This is Claude Code. Whether you want to build something or analyze what\'s there, just ask in plain English and it does the real Marketing Cloud work.' },
+    { which: 'app', target: '.app-win', corner: 'top-left', text: 'This is your marketing memory, always open while you work in Claude. Every fact it learns lands here.' },
   ],
 
   seed: {

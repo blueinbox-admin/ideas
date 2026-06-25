@@ -82,7 +82,16 @@
         if (turn.memory) { await sleep(600); if (!alive()) return; dropMems(turn.memory); }
         await sleep(1800); if (!alive()) return;
       }
-      if (tok === token) { playing = false; ctrl(); enableTyping(); }
+      if (tok === token) {
+        playing = false; ctrl();
+        // The scripted response has landed. Let it sit a beat, THEN surface the
+        // memory callout on the left, let that read, and only then hand over.
+        await sleep(1400); if (tok !== token) return;
+        showMemoryCallout();
+        await sleep(6000); if (tok !== token) return;
+        chalkOff(); await sleep(700); if (tok !== token) return;
+        enableTyping();
+      }
     })();
   }
 
@@ -99,7 +108,7 @@
     // the page for this one (highlight:false) — just point, don't black everything out.
     setTimeout(function () {
       inputEl.classList.add('hl-type'); setTimeout(function () { inputEl.classList.remove('hl-type'); }, 2200);
-      chalkOn(onbTarget('cc'), 'Your turn. Ask Claude to build an audience, wire a journey, schedule a send, or anything else, and watch the memory fill in on the left.', { corner: 'bottom-right', highlight: false });
+      chalkOn(onbTarget('cc'), 'Your turn. This is a demo, so it\'s all pretend, but ask Claude to do anything and watch the memory fill in on the left.', { corner: 'bottom-right', highlight: false });
       setTimeout(chalkOff, 9000);
     }, 5500);
   }
@@ -185,23 +194,20 @@
     var hit = ob.filter(function (o) { return o.which === which; })[0];
     return (hit && hit.target) || (S.onboarding && S.onboarding[which]) || '.cc-win';
   }
+  // popup 1 only: the Claude Code intro on the right, while the first command
+  // types. Popup 2 (the memory callout on the left) is NOT on a timer — play()
+  // fires it after the scripted response lands and sits a beat (showMemoryCallout).
   function playOnboarding() {
     chalkOff(true);
     var ob = CFG.onboarding || [];
     if (ob[0]) setTimeout(function () { chalkOn(ob[0].target, ob[0].text, { corner: ob[0].corner || 'bottom-right' }); }, 900);
     setTimeout(chalkOff, 7500);
-    if (ob[1]) setTimeout(function () { chalkOn(ob[1].target, ob[1].text, { corner: ob[1].corner || 'top-left' }); }, 8600);
-    setTimeout(chalkOff, 16000);
   }
-
-  // ---- controls ----
-  var pp = document.getElementById('playPause'), rb = document.getElementById('restart');
-  if (pp) pp.addEventListener('click', function () {
-    if (playing && !paused) { paused = true; ctrl(); }
-    else if (playing && paused) { paused = false; flushResume(); ctrl(); }
-    else { location.reload(); }
-  });
-  if (rb) rb.addEventListener('click', function () { location.reload(); });
+  function showMemoryCallout() {
+    if (FEAT.onboarding === false) return;
+    var ob = CFG.onboarding || [];
+    if (ob[1]) chalkOn(ob[1].target, ob[1].text, { corner: ob[1].corner || 'top-left' });
+  }
 
   // boot — onboarding flag comes from the resolved feature set (boot.js)
   if (FEAT.onboarding !== false) playOnboarding();

@@ -36,7 +36,7 @@
  */
 (function () {
   var cfg = {
-    fadeOutMs: 900,
+    fadeOutMs: 2000,
     defaultSide: 'above', defaultGap: 60, defaultRotate: -2,
     bottomKeepout: 24, highlight: true, highlightPad: 8, layer: null
   };
