@@ -33,6 +33,12 @@
     if (m.kind === 'question') AM.dropQuestion({ text: m.text, rationale: m.why || '', scope: m.scope || 'org' });
     else AM.dropMemory({ type: m.kind || 'fact', content: m.text, scopes: [m.scope || 'org'], confidence: m.soft ? 'inferred' : 'observed', tab: 'facts' });
   }
+  // A turn may surface SEVERAL memories at once (a recipe fact AND a higher-level
+  // question it derived). Accept one or an array; drop them one at a time.
+  function dropMems(m) {
+    if (!m) return;
+    (Array.isArray(m) ? m : [m]).forEach(function (mm, i) { setTimeout(function () { dropMem(mm); }, i * 750); });
+  }
 
   var CONVO = (window.TRANSCRIPT || []).map(function (turn) {
     var steps = (turn.steps || []).map(function (step) {
@@ -73,7 +79,7 @@
           var w = working(); await sleep(step.wait); if (!alive()) { w.remove(); return; } w.remove();
           addMsg(step.html, step.cls); await sleep(step.hold); if (!alive()) return;
         }
-        if (turn.memory) { await sleep(600); if (!alive()) return; dropMem(turn.memory); }
+        if (turn.memory) { await sleep(600); if (!alive()) return; dropMems(turn.memory); }
         await sleep(1800); if (!alive()) return;
       }
       if (tok === token) { playing = false; ctrl(); enableTyping(); }
@@ -126,7 +132,7 @@
       w.remove();
       var after = function () {
         addMsg('<span class="who">Claude</span> ' + fmt(r.reply), CLS.claude);
-        if (r.memory) setTimeout(function () { dropMem(r.memory); }, 650);
+        if (r.memory) setTimeout(function () { dropMems(r.memory); }, 650);
       };
       if (r.tool) { addMsg(toolHtml(r.tool), CLS.tool); setTimeout(after, 650); } else after();
     }, 780);

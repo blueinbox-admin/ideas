@@ -24,21 +24,28 @@
 // quotes don’t break. No em/en dashes. Timing is automatic.
 
 window.TRANSCRIPT = [
-  // 1) Immediate chat Q&A -> a saved FACT. Claude asks in chat, the human answers,
-  //    the app keeps the ANSWER (not the question).
+  // 1) A real BUILD with a QUANTITATIVE result (Claude already has the data, runs the
+  //    query, returns a count). The app then surfaces BOTH: a recipe FACT, and a
+  //    higher-level pattern QUESTION it derived (combine two attributes for a use case).
   {
-    you: 'Build the audience query for the 90-day service reminder send.',
+    you: 'Build the Q3 lease-end audience and tell me how many owners qualify.',
     steps: [
-      { tool: 'SFMC', action: 'list data extensions · service-reminders', result: 'Service_Due_90d, TEST_Service_Due_90d, Service_Due_Working' },
-      { say: 'Three lookalike data extensions here. Which one is the real production audience, versus a QA copy?' },
-      { u: 'Service_Due_90d is prod. The TEST_ and _Working ones are QA.' },
-      { say: 'Got it. Querying **Service_Due_90d** and filtering to the opted-in roster.' },
+      { tool: 'SFMC', action: 'query lease-end DE · Q3 maturities', result: '4,812 opted-in owners · 1,190 opened the last 3 sends' },
+      { say: 'Built the **Q3 lease-end audience** from the regional offer DE, filtered to the opted-in roster: **4,812 owners** qualify. Of those, **1,190** have opened your last three sends.' },
     ],
-    memory: {
-      kind: 'fact',
-      scope: 'service-reminders',
-      text: 'Service_Due_90d is the production audience for service reminders. TEST_Service_Due_90d and Service_Due_Working are QA copies.',
-    },
+    memory: [
+      {
+        kind: 'fact',
+        scope: 'lease-end',
+        text: 'The lease-end audience comes from the regional offer DE (keyed by dealer region), filtered to ENT.All_Owners_Opted_In and to leases maturing in the target quarter.',
+      },
+      {
+        kind: 'question',
+        scope: 'lease-end',
+        text: 'Which owners are both approaching lease-end AND highly engaged (opened the last 3 sends), so we can route them to a premium upgrade offer instead of a standard renewal?',
+        why: 'Lease timing crossed with engagement is a segment Claude can spot, but whether it earns a different offer is a call only your team can make.',
+      },
+    ],
   },
 
   // 2) Claude INFERS a rule from the error (no human confirms it) -> a SOFT fact,

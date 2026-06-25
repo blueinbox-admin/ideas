@@ -2,16 +2,23 @@
 // Same shape as every demo: turns of { you, steps, memory }. Memory kinds:
 // fact/mapping/guardrail are saved knowledge; question lands on Review.
 window.TRANSCRIPT = [
-  // chat Q&A -> a saved FACT (the answer, not the question)
+  // A real BUILD with a QUANTITATIVE result, then the app surfaces BOTH a recipe FACT
+  // and a higher-level pattern QUESTION it derived (two attributes -> a use case).
   {
-    you: 'Pull the win-back audience for customers who have not ordered in a while.',
+    you: 'Build the win-back audience and tell me how many lapsed customers we have.',
     steps: [
-      { tool: 'Shopify', action: 'customers by last order date', result: 'customers + last order date' },
-      { say: 'How long since the last order counts as lapsed for win-back?' },
-      { u: 'No order in 6 months.' },
-      { say: 'Got it, lapsed is no order in 6 months. Building the segment from Shopify order history.' },
+      { tool: 'Shopify', action: 'customers by last order date', result: '3,420 with no order in 6+ months · 540 former VIPs' },
+      { say: 'Built the **win-back audience** from Shopify order history: **3,420 customers** have not ordered in 6+ months. **540** of them are former VIPs (3+ orders or $300+ lifetime spend).' },
     ],
-    memory: { kind: 'fact', scope: 'win-back', text: 'Win-back targets customers with no order in 6 months, pulled from Shopify order history.' },
+    memory: [
+      { kind: 'fact', scope: 'win-back', text: 'The win-back audience is customers with no order in 6+ months, pulled from Shopify order history.' },
+      {
+        kind: 'question',
+        scope: 'win-back',
+        text: 'Which lapsed customers were once VIPs (3+ orders or $300+ spend), so we can send them a stronger win-back offer than first-time lapsers?',
+        why: 'Lapsed status crossed with past VIP value is a segment worth a different offer, but how generous to be is a margin call only your team can make.',
+      },
+    ],
   },
   // Claude INFERS a cross-system mapping -> a SOFT fact ("assumed, fix if wrong")
   {
