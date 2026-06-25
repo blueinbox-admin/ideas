@@ -28,7 +28,7 @@ window.AM = window.AM || {};
     return { id: m.id || ('seed-f-' + i), type: m.type || 'fact', content: m.content, scopes: (m.scopes || ['org']).slice(), confidence: m.confidence || null, fresh: false };
   });
   var questions = (CFG.seed && CFG.seed.questions || []).map(function (q, i) {
-    return { id: q.id || ('seed-q-' + i), text: q.text, rationale: q.rationale || '', scope: q.scope || 'org' };
+    return { id: q.id || ('seed-q-' + i), text: q.text, rationale: q.rationale || '', scope: q.scope || 'org', fresh: false };
   });
   var selected = [];      // [] = All; [k] focused; [a,b] union
   var tab = 'review';     // review | facts | credentials
@@ -59,6 +59,7 @@ window.AM = window.AM || {};
         key: k, label: scopeLabel(k), reserved: !!RESERVED[k],
         facts: memories.filter(function (m) { return m.scopes.indexOf(k) >= 0; }).length,
         waiting: questions.filter(function (q) { return q.scope === k; }).length,
+        freshWaiting: questions.filter(function (q) { return q.scope === k && q.fresh; }).length,
       };
     }).filter(function (c) { return c.facts > 0 || c.waiting > 0 || selected.indexOf(c.key) >= 0; });
   }
@@ -126,7 +127,7 @@ window.AM = window.AM || {};
 
   function questionCardHtml(q) {
     var showProj = !single();
-    return '<div class="card qcard" data-q="' + q.id + '"><div class="body">' +
+    return '<div class="card qcard' + (q.fresh ? ' is-new' : '') + '" data-q="' + q.id + '"><div class="body">' +
       (showProj ? '<div class="meta"><span class="proj-tag' + (q.scope === 'org' ? ' root' : '') + '">' + esc(scopeLabel(q.scope)) + '</span></div>' : '') +
       '<div class="content">' + esc(q.text) + '</div>' +
       (q.rationale ? '<div class="qwhy">Why Claude asks: ' + esc(q.rationale) + '</div>' : '') +
@@ -171,19 +172,21 @@ window.AM = window.AM || {};
     var pills = '<button class="pill all' + (!selected.length ? ' active' : '') + '" type="button" data-pill="__all">All</button>';
     chipData().forEach(function (c) {
       var active = selected.indexOf(c.key) >= 0;
-      pills += '<button class="pill' + (c.reserved ? '' : '') + (active ? ' active' : '') + '" type="button" data-pill="' + esc(c.key) + '">' +
+      // green cue ONLY for a freshly-surfaced question, never for the seeded baseline.
+      pills += '<button class="pill' + (active ? ' active' : '') + (c.freshWaiting > 0 ? ' flash' : '') + '" type="button" data-pill="' + esc(c.key) + '">' +
         '<span class="pill-label">' + esc(c.label) + '</span><span class="pill-count">' + c.facts + '</span>' +
-        (c.waiting > 0 ? '<span class="pill-dot" title="' + c.waiting + ' to confirm"></span>' : '') + '</button>';
+        (c.freshWaiting > 0 ? '<span class="pill-dot" title="new question"></span>' : '') + '</button>';
     });
 
-    // tabs
-    var tabsHtml =
-      '<button class="tab' + (tab === 'review' ? ' active' : '') + '" data-tab="review"><span class="tab-label" data-label="Review">Review</span>' + (waiting > 0 ? '<span class="badge amber">' + waiting + '</span>' : '') + '</button>' +
-      '<button class="tab' + (tab === 'facts' ? ' active' : '') + '" data-tab="facts"><span class="tab-label" data-label="Facts">Facts</span>' + (ms.length > 0 ? '<span class="badge">' + ms.length + '</span>' : '') + '</button>' +
-      (showCred ? '<button class="tab' + (tab === 'credentials' ? ' active' : '') + '" data-tab="credentials"><span class="tab-label" data-label="Credentials">Credentials</span></button>' : '');
-
-    // active section
+    // tabs — a tab whose content just got a fresh item (while you're elsewhere)
+    // pulses its background, so you notice without being yanked off your tab.
     var activeTab = (tab === 'credentials' && !showCred) ? 'review' : tab;
+    var freshQ = questions.some(function (q) { return q.fresh; });
+    var freshM = memories.some(function (m) { return m.fresh; });
+    var tabsHtml =
+      '<button class="tab' + (tab === 'review' ? ' active' : '') + (freshQ && activeTab !== 'review' ? ' flash' : '') + '" data-tab="review"><span class="tab-label" data-label="Review">Review</span>' + (waiting > 0 ? '<span class="badge amber">' + waiting + '</span>' : '') + '</button>' +
+      '<button class="tab' + (tab === 'facts' ? ' active' : '') + (freshM && activeTab !== 'facts' ? ' flash' : '') + '" data-tab="facts"><span class="tab-label" data-label="Facts">Facts</span>' + (ms.length > 0 ? '<span class="badge">' + ms.length + '</span>' : '') + '</button>' +
+      (showCred ? '<button class="tab' + (tab === 'credentials' ? ' active' : '') + '" data-tab="credentials"><span class="tab-label" data-label="Credentials">Credentials</span></button>' : '');
     var section = '';
     if (activeTab === 'review') {
       section += '<section><div class="legend">Questions to answer</div>' +
@@ -229,8 +232,11 @@ window.AM = window.AM || {};
 
     // focus the open editor / answer box
     if (editingId) { var ta = root.querySelector('.edit-input'); if (ta) { ta.style.height = 'auto'; ta.style.height = (ta.scrollHeight + 2) + 'px'; ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); } }
-    // clear one-shot fresh flags after paint
+    // clear one-shot fresh flags after paint (so a later filter/tab re-render
+    // does not replay the surfacing animation). The cues themselves are CSS and
+    // fade out on their own; this just resets the state.
     memories.forEach(function (m) { if (m.fresh) setTimeout(function () { m.fresh = false; }, 2300); });
+    questions.forEach(function (q) { if (q.fresh) setTimeout(function () { q.fresh = false; }, 2300); });
   }
 
   function credentialsHtml() {
@@ -302,14 +308,15 @@ window.AM = window.AM || {};
   function remove(id) { memories = memories.filter(function (m) { return m.id !== id; }); }
 
   // ---- surface for the demo scaffolding (demo.js) ----
+  // Drops do NOT yank the tab. If the item lands on the tab you're viewing, its
+  // card fades in; if it lands on another tab, that tab's background pulses.
   AM.dropMemory = function (o) {
     memories.unshift({ id: o.id || ('drop-' + (seq++)), type: o.type || 'fact', content: o.content, scopes: (o.scopes || ['org']).slice(), confidence: o.confidence || null, fresh: true });
-    if (o.tab) tab = o.tab;
     render();
   };
   AM.dropQuestion = function (o) {
-    questions.unshift({ id: o.id || ('dropq-' + (seq++)), text: o.text, rationale: o.rationale || '', scope: o.scope || 'org' });
-    tab = 'review'; render();
+    questions.unshift({ id: o.id || ('dropq-' + (seq++)), text: o.text, rationale: o.rationale || '', scope: o.scope || 'org', fresh: true });
+    render();
   };
   AM.render = render;
   AM.state = function () { return { memories: memories, questions: questions, selected: selected, tab: tab }; };
