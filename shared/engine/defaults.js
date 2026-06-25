@@ -26,6 +26,14 @@ window.DEMO_DEFAULTS = {
     credentialsTab:   true,   // the Credentials tab (shown at org-root / All only)
   },
 
+  // ---- live LLM fallback (off-script typing) ----
+  // When a typed prompt doesn't match a demo's curated respond() branch, the
+  // engine calls this endpoint (a Cloudflare Worker that holds the Anthropic
+  // key — see improvise-worker/) to improvise a plausible answer + a high-level
+  // fact. Leave '' to disable (a quiet static reply is used instead). Set it
+  // ONCE here after deploying the worker, and every demo gets the live fallback.
+  improviseUrl: '',
+
   // ---- canonical copy the engine falls back to when a demo omits it ----
   // (identity, connectors, scopes, seed, transcript, responder, onboarding all
   // live in each demo's config.js — there is no sensible default org.)

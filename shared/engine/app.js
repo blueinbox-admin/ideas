@@ -116,7 +116,6 @@ window.AM = window.AM || {};
         '<textarea class="field edit-input" rows="1">' + esc(m.content) + '</textarea></form>';
     } else {
       body = '<div class="field-row">' + pill +
-        (soft ? '<span class="assumed-tag" title="Claude inferred this — fix it if it is wrong">assumed</span>' : '') +
         '<div class="field editable" role="button" tabindex="0" title="Click to edit" data-editopen="' + m.id + '">' + esc(m.content) + '</div></div>';
     }
     var actions = editing
@@ -125,7 +124,7 @@ window.AM = window.AM || {};
         '<button class="btn ghost" type="button" data-remove="' + m.id + '">Remove</button>';
     return '<div class="card' + (m.fresh ? ' fresh surfaced' : '') + (editing ? ' editing' : '') + (soft ? ' assumed' : '') + '" data-card="' + m.id + '">' +
       '<span class="tick">' + (soft ? '~' : '✓') + '</span>' +
-      '<div class="body">' + body + scopeChipsHtml(m) + '</div>' +
+      '<div class="body">' + body + '</div>' +
       '<div class="actions card-actions">' + actions + '</div></div>';
   }
 

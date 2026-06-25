@@ -1,0 +1,6 @@
+name = "activememory-improvise"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# The Anthropic key is NOT here. Set it as a secret (never committed):
+#   wrangler secret put ANTHROPIC_API_KEY

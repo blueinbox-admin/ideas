@@ -112,35 +112,67 @@
   });
   inputEl.addEventListener('click', function () { if (!typingOn) takeOver(); else promptEl.focus(); });
 
-  // The catch-all behaves like Claude Code actually does: it DOES the work
-  // (each instance is preseeded, so it already knows the setup), shows a
-  // plausible tool step, and a fact surfaces in the app. It does NOT punt to
-  // Review. Review is only for the genuine human-owned calls, which each
-  // demo's respond() routes there explicitly. This is a demo: the point is the
-  // live coordination between Claude and the memory, not literal correctness.
-  function fallback(text) {
+  // Off-script handling, in order of preference:
+  //   1. CFG.respond(text)  — the demo's curated branches (the money moments).
+  //   2. a LIVE LLM call     — a Cloudflare Worker (holds the API key) that, given
+  //      what the user typed, invents a plausible answer + ONE high-level reusable
+  //      fact about this made-up org, and returns JSON we surface.
+  //   3. a quiet static reply (no echoed pseudo-fact) if no endpoint / it errors.
+  var IMPROVISE_URL = CFG.improviseUrl || (window.DEMO_DEFAULTS && window.DEMO_DEFAULTS.improviseUrl) || '';
+
+  function staticFallback(text) {
     var conns = CFG.connectors || [];
     var tool = (conns[0] && conns[0].label) || CFG.agentLabel || 'Claude';
     var action = text.trim().replace(/[.?!]+$/, '');
     if (action.length > 46) action = action.slice(0, 44) + '…';
     return {
       tool: { tool: tool, action: action, result: 'done' },
-      reply: 'On it. I worked from what your team already has saved so it lines up with the rest of your setup. Saving what I did so it stays consistent.',
-      memory: { kind: 'fact', soft: true, scope: 'org', text: 'Handled “' + action + '” from the existing setup.' },
+      reply: 'Done. I worked from what your team already has saved so it lines up with the rest of your setup.',
+      memory: null,
     };
   }
+
+  // ask the worker to improvise a reply + a high-concept fact for this org
+  function improvise(text) {
+    var conns = CFG.connectors || [];
+    var connLabel = (conns[0] && conns[0].label) || CFG.agentLabel || 'Claude';
+    var payload = {
+      org: (CFG.org && CFG.org.name) || 'the company',
+      platform: connLabel,
+      agent: CFG.agentLabel || 'Claude',
+      prompt: text,
+      scopes: CFG.scopes || [],
+    };
+    return fetch(IMPROVISE_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+      .then(function (res) { if (!res.ok) throw new Error('improvise ' + res.status); return res.json(); })
+      .then(function (d) {
+        if (!d || !d.reply) return null;
+        return {
+          tool: d.tool ? { tool: connLabel, action: d.tool.action || 'work', result: d.tool.result || 'done' } : null,
+          reply: d.reply,
+          memory: d.fact ? { kind: d.fact.kind || 'fact', soft: false, scope: d.fact.scope || 'org', text: d.fact.text } : null,
+        };
+      });
+  }
+
+  function renderResponse(r) {
+    var after = function () {
+      addMsg('<span class="who">Claude</span> ' + fmt(r.reply), CLS.claude);
+      if (r.memory) setTimeout(function () { dropMems(r.memory); }, 650);
+    };
+    if (r.tool) { addMsg(toolHtml(r.tool), CLS.tool); setTimeout(after, 650); } else after();
+  }
+
   function submitUser(text) {
     addText(text, CLS.user);
-    var r = (typeof CFG.respond === 'function' ? CFG.respond(text) : null) || fallback(text);
+    var curated = (typeof CFG.respond === 'function' ? CFG.respond(text) : null);
     var w = working();
-    setTimeout(function () {
-      w.remove();
-      var after = function () {
-        addMsg('<span class="who">Claude</span> ' + fmt(r.reply), CLS.claude);
-        if (r.memory) setTimeout(function () { dropMems(r.memory); }, 650);
-      };
-      if (r.tool) { addMsg(toolHtml(r.tool), CLS.tool); setTimeout(after, 650); } else after();
-    }, 780);
+    if (curated) { setTimeout(function () { w.remove(); renderResponse(curated); }, 780); return; }
+    if (!IMPROVISE_URL) { setTimeout(function () { w.remove(); renderResponse(staticFallback(text)); }, 780); return; }
+    // off-script -> live LLM, keep the spinner until the network resolves
+    improvise(text).then(function (r) {
+      w.remove(); renderResponse(r || staticFallback(text));
+    }).catch(function () { w.remove(); renderResponse(staticFallback(text)); });
   }
 
   // ---- onboarding callouts ----
