@@ -67,9 +67,11 @@ window.DEMO = {
       return { reply: 'Before I schedule for ' + lbl + ', I need your send window. I do not have quiet hours or a weekly frequency cap saved for it, so I have flagged it on Review.', memory: { kind: 'question', scope: scope, text: 'What are the send-window and frequency rules for ' + lbl + ' (quiet hours, weekly cap per owner)?', why: 'Send timing is your policy, not something Claude can infer.' } };
     }
     if (/audience|segment|build|query|list|pull|data extension|\bde\b|who gets|recipients/.test(t)) {
-      return { tool: { tool: 'SFMC', action: 'build query · ' + scope, result: 'audience from ENT.All_Owners_Opted_In' }, reply: 'I will build the ' + lbl + ' audience from **ENT.All_Owners_Opted_In** (your Org-wide opt-in rule) and point at the production data extension, not a TEST_ copy. Saving the recipe so it stays consistent.', memory: { kind: 'fact', soft: true, scope: scope, text: 'The ' + lbl + ' audience starts from ENT.All_Owners_Opted_In, filtered to ' + lbl + ' criteria.' } };
+      return { tool: { tool: 'SFMC', action: 'build query · ' + scope, result: 'audience from ENT.All_Owners_Opted_In' }, reply: 'I will build the audience for ' + lbl + ' from **ENT.All_Owners_Opted_In** (your Org-wide opt-in rule) and point at the production data extension, not a TEST_ copy. Saving the recipe so it stays consistent.', memory: { kind: 'fact', soft: true, scope: scope, text: 'The audience for ' + lbl + ' starts from ENT.All_Owners_Opted_In, filtered to its own criteria.' } };
     }
-    if (/report|metric|open rate|click|bounce|stats|performance|results|analytic/.test(t)) return { reply: 'Engagement data lives in the system data views (_Open, _Click, _Bounce), queried in SQL, not in a regular data extension. I will pull the ' + lbl + ' results from there.' };
+    if (/report|metric|open rate|click|bounce|stats|performance|results|analytic/.test(t)) {
+      return { tool: { tool: 'SFMC', action: 'query data views · ' + scope, result: '_Open / _Click / _Bounce rates' }, reply: 'Pulling the results for ' + lbl + ' from the system data views (_Open, _Click, _Bounce) in SQL, where engagement data lives. Saving where these numbers come from.', memory: { kind: 'fact', scope: 'org', text: 'Campaign analytics (opens, clicks, bounces) come from the SFMC system data views (_Open, _Click, _Bounce) queried in SQL, not a regular data extension.' } };
+    }
     return null;
   },
 };

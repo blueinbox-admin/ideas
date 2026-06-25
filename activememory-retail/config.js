@@ -66,10 +66,10 @@ window.DEMO = {
       return { reply: 'That is a call only your team can own, so I will not guess at it. I have added it to Review for you to answer.', memory: { kind: 'question', scope: scope, text: text.trim().replace(/[.?!]+$/, '') + '?', why: 'Only your team can own this one.' } };
     }
     if (/audience|segment|build|list|pull|who gets|recipients|cart|customers/.test(t)) {
-      return { tool: { tool: 'Shopify', action: 'build segment · ' + scope, result: 'customers from order history' }, reply: 'I will build the ' + lbl + ' audience from **Shopify order history** and drop anyone whose marketing consent is off. Saving the recipe so it stays consistent.', memory: { kind: 'fact', soft: true, scope: scope, text: 'The ' + lbl + ' audience is built from Shopify order history, excluding customers with marketing consent off.' } };
+      return { tool: { tool: 'Shopify', action: 'build segment · ' + scope, result: 'customers from order history' }, reply: 'I will build the audience for ' + lbl + ' from **Shopify order history** and drop anyone whose marketing consent is off. Saving the recipe so it stays consistent.', memory: { kind: 'fact', soft: true, scope: scope, text: 'The audience for ' + lbl + ' is built from Shopify order history, excluding customers with marketing consent off.' } };
     }
     if (/report|metric|revenue|sales|ltv|stats|performance|results/.test(t)) {
-      return { reply: 'Revenue and LTV come from Shopify order history; QuickBooks only has the daily sales-receipt total. I will pull the ' + lbl + ' numbers from Shopify so they reconcile.' };
+      return { tool: { tool: 'Shopify', action: 'pull metrics · ' + scope, result: 'revenue + LTV from order history' }, reply: 'Pulling the numbers for ' + lbl + ' from **Shopify order history**, where revenue and LTV live. QuickBooks only has the daily sales-receipt total, so I use Shopify for these. Saving where the numbers come from.', memory: { kind: 'fact', scope: 'org', text: 'Revenue and customer lifetime value come from Shopify order history, not QuickBooks (which only holds the daily sales-receipt total).' } };
     }
     return null;
   },
