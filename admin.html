@@ -144,15 +144,15 @@
 
     // ---- what each feature flag actually does (matches the engine) ----
     var FEATURE_DESC = {
-      claudeCodeWindow: 'Show the agent status row (Claude + connectors) in the memory-app header. Off hides it on the desktop surface.',
-      autoplay: 'Play the short scripted intro (a couple of turns) before handing the keyboard to the viewer. Off opens with an empty chat.',
-      freeTyping: 'Let the viewer type their own prompts to the agent. Off makes the demo read-only (watch, no typing).',
-      onboarding: 'Show the two intro callouts that point at the agent and the memory when the demo opens.',
-      softFacts: 'Render inferred facts as a neutral "assumed" card with a "Looks right" opt-out, instead of a plain confirmed fact.',
-      multiScope: 'Let a fact carry several scopes and the scope pills multi-select (union). Off = one scope at a time.',
-      factGrouping: 'Group confirmed facts under their scope headings on the Facts tab. Off = one flat list.',
-      coTagSuggestions: 'Offer "+ project?" co-tag hints when editing a fact’s scopes.',
-      credentialsTab: 'Show the Credentials tab (connector credentials, at org-root / All only).'
+      claudeCodeWindow: 'Shows a "Claude is working" status bar at the top of the app.',
+      autoplay: 'Plays a short demo by itself before you take over.',
+      freeTyping: 'Lets you type your own messages to Claude.',
+      onboarding: 'Shows two pop-up tips when the demo opens.',
+      softFacts: 'When Claude guesses, it marks the fact "assumed" so you can fix it.',
+      multiScope: 'A fact can belong to more than one project.',
+      factGrouping: 'Sorts the facts into groups by project.',
+      coTagSuggestions: 'Suggests other projects to tag a fact with.',
+      credentialsTab: 'Shows the logins / connections tab.'
     };
 
     // ---- override storage (same keys boot.js reads) ----
@@ -250,7 +250,7 @@
     function renderGlossary() {
       var g = document.getElementById('glossary');
       g.innerHTML = '<h3>What the features mean</h3>'
-        + '<p class="gsub">The same flags resolve for every demo. “surface” picks the agent chrome: <b>desktop</b> = a separate Claude Code window, <b>embedded</b> = an in-product chat, <b>none</b> = no agent pane.</p>'
+        + '<p class="gsub">“surface” = where Claude shows up: <b>desktop</b> = its own separate window, <b>embedded</b> = a chat built into the app, <b>none</b> = no Claude panel.</p>'
         + '<dl>' + FLAGS.map(function (f) {
             return '<dt>' + esc(f) + '</dt><dd>' + esc(FEATURE_DESC[f] || '') + '</dd>';
           }).join('') + '</dl>';
