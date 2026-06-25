@@ -45,6 +45,20 @@
   .vlinks { margin-top: 5px; display: flex; gap: 10px; }
   .vlinks a { font-size: 11.5px; font-weight: 600; color: rgb(var(--secondary)); text-decoration: none; }
   .vlinks a:hover { text-decoration: underline; }
+  .paths { margin-top: 7px; display: flex; flex-direction: column; gap: 3px; white-space: normal; }
+  .path { display: flex; align-items: center; gap: 7px; font-family: "JetBrains Mono", monospace; font-size: 11px; }
+  .path .pl { flex: 0 0 32px; text-transform: uppercase; letter-spacing: .04em; font-family: "Source Sans 3", sans-serif; font-size: 9.5px; font-weight: 700; color: rgb(var(--ink-soft)); }
+  .path .purl { color: rgb(var(--ink-soft)); text-decoration: none; word-break: break-all; }
+  .path .purl:hover { color: rgb(var(--secondary)); text-decoration: underline; }
+  .path .cp { font-family: "Source Sans 3", sans-serif; font-size: 10px; font-weight: 600; color: rgb(var(--secondary)); background: none; border: 1px solid rgb(var(--sand)); border-radius: 6px; padding: 1px 6px; cursor: pointer; flex: 0 0 auto; }
+  .path .cp:hover { border-color: rgb(var(--secondary) / .6); }
+
+  .glossary { margin-top: 30px; }
+  .glossary h3 { font-family: "Bricolage Grotesque", sans-serif; font-size: 15px; margin: 0 0 4px; }
+  .glossary .gsub { font-size: 12.5px; color: rgb(var(--ink-soft)); margin: 0 0 12px; }
+  .glossary dl { margin: 0; display: grid; grid-template-columns: minmax(150px, 220px) 1fr; gap: 8px 18px; }
+  .glossary dt { font-family: "JetBrains Mono", monospace; font-size: 12.5px; color: rgb(var(--ink)); }
+  .glossary dd { margin: 0; font-size: 13.5px; color: rgb(var(--ink-soft)); line-height: 1.5; }
 
   .seg { display: inline-flex; gap: 3px; }
   .seg button { font: inherit; font-size: 11.5px; padding: 4px 8px; border: 1px solid rgb(var(--sand)); background: rgb(var(--surface)); color: rgb(var(--ink-soft)); border-radius: 7px; cursor: pointer; }
@@ -93,7 +107,9 @@
       <table id="matrix"><thead></thead><tbody></tbody></table>
     </div>
 
-    <p class="note">Switches and surface changes here write a <b>browser-local override</b> (the same ones the in-demo <code>?admin</code> panel uses). They do not change the deployed files until you Export. A green outline marks a cell that differs from the registry.</p>
+    <p class="note">Switches and surface changes here write a <b>browser-local override</b> (the same ones the in-demo <code>?admin</code> panel uses). They do not change the deployed files until you Export. A green outline marks a cell that differs from the registry. Hover a column header for what a flag does.</p>
+
+    <div class="glossary" id="glossary"></div>
 
     <div class="dep" id="dep"></div>
   </div>
@@ -109,7 +125,7 @@
     </div>
   </div>
 
-  <script src="shared/engine/defaults.js?v=2"></script>
+  <script src="shared/engine/defaults.js?v=3"></script>
   <script src="versions.js?v=1"></script>
   <script>
   (function () {
@@ -119,6 +135,25 @@
     var VERSIONS = window.VERSIONS || [];
     var engine = VERSIONS.filter(function (v) { return !v.hidden; });
     var deprecated = VERSIONS.filter(function (v) { return v.hidden; });
+
+    // ---- paths: where each version lives, local vs deployed ----
+    var REMOTE_BASE = 'https://blueinbox-admin.github.io/ideas';
+    var LOCAL_BASE = location.origin + location.pathname.replace(/admin\.html?$/i, '').replace(/\/$/, '');
+    function localUrl(slug) { return LOCAL_BASE + '/' + slug + '/'; }
+    function remoteUrl(slug) { return REMOTE_BASE + '/' + slug + '/'; }
+
+    // ---- what each feature flag actually does (matches the engine) ----
+    var FEATURE_DESC = {
+      claudeCodeWindow: 'Show the agent status row (Claude + connectors) in the memory-app header. Off hides it on the desktop surface.',
+      autoplay: 'Play the short scripted intro (a couple of turns) before handing the keyboard to the viewer. Off opens with an empty chat.',
+      freeTyping: 'Let the viewer type their own prompts to the agent. Off makes the demo read-only (watch, no typing).',
+      onboarding: 'Show the two intro callouts that point at the agent and the memory when the demo opens.',
+      softFacts: 'Render inferred facts as a neutral "assumed" card with a "Looks right" opt-out, instead of a plain confirmed fact.',
+      multiScope: 'Let a fact carry several scopes and the scope pills multi-select (union). Off = one scope at a time.',
+      factGrouping: 'Group confirmed facts under their scope headings on the Facts tab. Off = one flat list.',
+      coTagSuggestions: 'Offer "+ project?" co-tag hints when editing a fact’s scopes.',
+      credentialsTab: 'Show the Credentials tab (connector credentials, at org-root / All only).'
+    };
 
     // ---- override storage (same keys boot.js reads) ----
     function liveFeatures(slug) { try { return JSON.parse(localStorage.getItem('am-features:' + slug) || '{}'); } catch (e) { return {}; } }
@@ -140,7 +175,7 @@
 
     function renderHead() {
       var tr = document.createElement('tr');
-      tr.innerHTML = '<th>Version</th><th>Surface</th>' + FLAGS.map(function (f) { return '<th class="feat">' + f + '</th>'; }).join('');
+      tr.innerHTML = '<th>Version</th><th>Surface</th>' + FLAGS.map(function (f) { return '<th class="feat" title="' + esc(FEATURE_DESC[f] || '') + '">' + f + '</th>'; }).join('');
       thead.innerHTML = ''; thead.appendChild(tr);
     }
 
@@ -151,11 +186,16 @@
         if (isDirty(v)) tr.className = 'dirty';
 
         var name = document.createElement('td');
+        var lu = localUrl(v.slug), ru = remoteUrl(v.slug);
         name.innerHTML = '<div class="vname">' + esc(v.persona || v.slug) + '</div>'
           + '<div class="vmeta">' + esc(v.connector || '') + '</div>'
-          + '<div class="vlinks"><a href="./' + v.slug + '/" target="_blank">open</a>'
-          + '<a href="./' + v.slug + '/?admin" target="_blank">open ?admin</a>'
-          + (isDirty(v) ? '<a href="#" data-reset="' + v.slug + '" style="color:rgb(var(--danger))">reset</a>' : '') + '</div>';
+          + '<div class="vlinks"><a href="' + esc(lu) + '" target="_blank">open</a>'
+          + '<a href="' + esc(lu) + '?admin" target="_blank">open ?admin</a>'
+          + (isDirty(v) ? '<a href="#" data-reset="' + v.slug + '" style="color:rgb(var(--danger))">reset</a>' : '') + '</div>'
+          + '<div class="paths">'
+          +   '<div class="path"><span class="pl">local</span><a class="purl" href="' + esc(lu) + '" target="_blank">' + esc(lu) + '</a><button class="cp" data-copy="' + esc(lu) + '" title="Copy">copy</button></div>'
+          +   '<div class="path"><span class="pl">live</span><a class="purl" href="' + esc(ru) + '" target="_blank">' + esc(ru) + '</a><button class="cp" data-copy="' + esc(ru) + '" title="Copy">copy</button></div>'
+          + '</div>';
         tr.appendChild(name);
 
         // surface segmented control
@@ -188,6 +228,14 @@
       [].forEach.call(document.querySelectorAll('[data-reset]'), function (a) {
         a.addEventListener('click', function (e) { e.preventDefault(); resetVersion(a.getAttribute('data-reset')); rerender(); });
       });
+      // copy-path buttons
+      [].forEach.call(document.querySelectorAll('.cp'), function (b) {
+        b.addEventListener('click', function () {
+          var url = b.getAttribute('data-copy');
+          navigator.clipboard ? navigator.clipboard.writeText(url) : (function () { var t = document.createElement('textarea'); t.value = url; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); })();
+          var old = b.textContent; b.textContent = '✓'; setTimeout(function () { b.textContent = old; }, 1000);
+        });
+      });
     }
 
     function renderDep() {
@@ -197,6 +245,15 @@
         + deprecated.map(function (v) {
             return '<div class="row"><b style="font-family:\'Bricolage Grotesque\',sans-serif;color:rgb(var(--ink))">' + esc(v.persona || v.slug) + '</b> · ' + esc(v.connector || '') + ' · <a href="./' + v.slug + '/" target="_blank">open</a> <span style="opacity:.7">— not engine-driven, no toggles</span></div>';
           }).join('');
+    }
+
+    function renderGlossary() {
+      var g = document.getElementById('glossary');
+      g.innerHTML = '<h3>What the features mean</h3>'
+        + '<p class="gsub">The same flags resolve for every demo. “surface” picks the agent chrome: <b>desktop</b> = a separate Claude Code window, <b>embedded</b> = an in-product chat, <b>none</b> = no agent pane.</p>'
+        + '<dl>' + FLAGS.map(function (f) {
+            return '<dt>' + esc(f) + '</dt><dd>' + esc(FEATURE_DESC[f] || '') + '</dd>';
+          }).join('') + '</dl>';
     }
 
     function renderBadge() {
@@ -273,7 +330,7 @@
 
     function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
-    renderHead(); renderBody(); renderDep(); renderBadge();
+    renderHead(); renderBody(); renderGlossary(); renderDep(); renderBadge();
   })();
   </script>
 </body>

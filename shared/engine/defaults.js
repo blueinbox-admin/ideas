@@ -24,7 +24,6 @@ window.DEMO_DEFAULTS = {
     factGrouping:     true,   // group confirmed facts by scope on the Facts shelf
     coTagSuggestions: true,   // "+ project?" co-tag hints on a fact's scope chips
     credentialsTab:   true,   // the Credentials tab (shown at org-root / All only)
-    david:            false,  // human-advisor tab — NOT in the live app; opt-in per demo
   },
 
   // ---- canonical copy the engine falls back to when a demo omits it ----

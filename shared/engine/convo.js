@@ -8,6 +8,7 @@
 (function (AM) {
   var S = window.AM_SURFACE; if (!S) return;
   var CFG = window.DEMO || {};
+  var FEAT = window.AM_FEATURES || (window.DEMO_DEFAULTS && window.DEMO_DEFAULTS.features) || {};
   var convo = S.convo, promptEl = S.prompt, inputEl = S.input, CLS = S.cls;
   var chalkOn = window.Chalk ? Chalk.annotate : function () {}, chalkOff = window.Chalk ? Chalk.clear : function () {};
   if (window.Chalk) Chalk.config({ bottomKeepout: 150 });
@@ -43,7 +44,8 @@
   });
 
   // ---- autoplay (first DEMO_TURNS turns, then hand over) ----
-  var DEMO_TURNS = (CFG.demoTurns != null ? CFG.demoTurns : 2);
+  // autoplay off -> 0 guided turns (jump straight to free typing / a static view)
+  var DEMO_TURNS = FEAT.autoplay === false ? 0 : (CFG.demoTurns != null ? CFG.demoTurns : 2);
   var timers = [], playing = false, paused = false, token = 0, resumeQ = [];
   function clearTimers() { timers.forEach(clearTimeout); timers = []; }
   function flushResume() { var r = resumeQ; resumeQ = []; r.forEach(function (f) { f(); }); }
@@ -82,13 +84,14 @@
   function showPH() { promptEl.classList.remove('typed'); promptEl.textContent = PH; phShown = true; }
   function clearPH() { if (phShown) { promptEl.textContent = ''; phShown = false; } promptEl.classList.add('typed'); }
   function enableTyping() {
+    if (FEAT.freeTyping === false) { ctrl(); return; }   // read-only demo: no keyboard handover
     if (typingOn) return; typingOn = true;
     promptEl.setAttribute('contenteditable', 'true'); promptEl.setAttribute('spellcheck', 'false'); showPH();
     inputEl.classList.add('hl-type'); setTimeout(function () { inputEl.classList.remove('hl-type'); }, 2200);
     chalkOff(true); chalkOn(onbTarget('cc'), 'Your turn. Ask Claude to build an audience, wire a journey, schedule a send, or anything else, and watch the memory fill in on the left.', { corner: 'bottom-right' });
     setTimeout(chalkOff, 9000);
   }
-  function takeOver() { token++; playing = false; paused = false; clearTimers(); flushResume(); ctrl(); enableTyping(); promptEl.focus(); }
+  function takeOver() { if (FEAT.freeTyping === false) return; token++; playing = false; paused = false; clearTimers(); flushResume(); ctrl(); enableTyping(); promptEl.focus(); }
   promptEl.addEventListener('focus', function () { if (typingOn) clearPH(); });
   promptEl.addEventListener('blur', function () { if (typingOn && !promptEl.textContent.trim()) showPH(); });
   promptEl.addEventListener('keydown', function (e) {
@@ -153,7 +156,6 @@
   if (rb) rb.addEventListener('click', function () { location.reload(); });
 
   // boot — onboarding flag comes from the resolved feature set (boot.js)
-  var FEAT = window.AM_FEATURES || (window.DEMO_DEFAULTS && window.DEMO_DEFAULTS.features) || {};
   if (FEAT.onboarding !== false) playOnboarding();
   play();
 })(window.AM);
