@@ -31,7 +31,9 @@ window.AM = window.AM || {};
     return { id: q.id || ('seed-q-' + i), text: q.text, rationale: q.rationale || '', scope: q.scope || 'org', fresh: false };
   });
   var selected = [];      // [] = All; [k] focused; [a,b] union
-  var tab = 'review';     // review | facts | credentials
+  // open on Facts so the first surfaced fact fades in where you can see it (the
+  // question that also lands pulses the Review tab). Override per demo if needed.
+  var tab = CFG.startTab || 'facts';   // review | facts | credentials
   var editingId = null;
   var seq = 0;
 
