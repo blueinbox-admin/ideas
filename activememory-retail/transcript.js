@@ -7,7 +7,7 @@ window.TRANSCRIPT = [
     you: 'Build the win-back audience and tell me how many lapsed customers we have.',
     steps: [
       { tool: 'Shopify', action: 'customers by last order date', result: '3,420 with no order in 6+ months · 540 former VIPs' },
-      { say: 'Built the **win-back audience** from Shopify order history: **3,420 customers** have not ordered in 6+ months. **540** of them are former VIPs (3+ orders or $300+ lifetime spend).' },
+      { say: '**3,420 customers** qualify for win-back, with no order in 6+ months. I pulled them from Shopify order history. **540** of those are former VIPs (3+ orders or $300+ lifetime spend).' },
     ],
     memory: { kind: 'fact', scope: 'win-back', text: 'The win-back audience is customers with no order in 6+ months, pulled from Shopify order history.' },
   },

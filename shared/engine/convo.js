@@ -94,9 +94,14 @@
     if (FEAT.freeTyping === false) { ctrl(); return; }   // read-only demo: no keyboard handover
     if (typingOn) return; typingOn = true;
     promptEl.setAttribute('contenteditable', 'true'); promptEl.setAttribute('spellcheck', 'false'); showPH();
-    inputEl.classList.add('hl-type'); setTimeout(function () { inputEl.classList.remove('hl-type'); }, 2200);
-    chalkOff(true); chalkOn(onbTarget('cc'), 'Your turn. Ask Claude to build an audience, wire a journey, schedule a send, or anything else, and watch the memory fill in on the left.', { corner: 'bottom-right' });
-    setTimeout(chalkOff, 9000);
+    chalkOff(true);
+    // wait a beat after the turn settles, then nudge the user to type. Do NOT dim
+    // the page for this one (highlight:false) — just point, don't black everything out.
+    setTimeout(function () {
+      inputEl.classList.add('hl-type'); setTimeout(function () { inputEl.classList.remove('hl-type'); }, 2200);
+      chalkOn(onbTarget('cc'), 'Your turn. Ask Claude to build an audience, wire a journey, schedule a send, or anything else, and watch the memory fill in on the left.', { corner: 'bottom-right', highlight: false });
+      setTimeout(chalkOff, 9000);
+    }, 3000);
   }
   function takeOver() { if (FEAT.freeTyping === false) return; token++; playing = false; paused = false; clearTimers(); flushResume(); ctrl(); enableTyping(); promptEl.focus(); }
   promptEl.addEventListener('focus', function () { if (typingOn) clearPH(); });

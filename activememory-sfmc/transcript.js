@@ -30,7 +30,7 @@ window.TRANSCRIPT = [
     you: 'Build the Q3 lease-end audience and tell me how many owners qualify.',
     steps: [
       { tool: 'SFMC', action: 'query lease-end DE · Q3 maturities', result: '4,812 opted-in owners · 1,190 opened the last 3 sends' },
-      { say: 'Built the **Q3 lease-end audience** from the regional offer DE, filtered to the opted-in roster: **4,812 owners** qualify. Of those, **1,190** have opened your last three sends.' },
+      { say: '**4,812 owners** qualify for the Q3 lease-end audience. I built it from the regional offer DE, filtered to your opted-in roster. **1,190** of those have opened your last three sends.' },
     ],
     memory: {
       kind: 'fact',
