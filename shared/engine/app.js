@@ -107,7 +107,9 @@ window.AM = window.AM || {};
   function factCardHtml(m) {
     var soft = FEAT.softFacts && isSoft(m);
     var editing = editingId === m.id;
-    var pill = '<span class="type-pill' + (m.type === 'guardrail' ? ' guardrail' : '') + '">' + esc(m.type) + '</span>';
+    // No category/type pill ("fact"/"mapping"/"guardrail") — the live memoryapp
+    // dropped these, so we mirror that. The "assumed" tag (soft facts) stays.
+    var pill = '';
     var body;
     if (editing) {
       body = '<form class="field-row" data-edit="' + m.id + '">' + pill +
