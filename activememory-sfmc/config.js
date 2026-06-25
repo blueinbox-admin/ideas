@@ -74,7 +74,7 @@ window.DEMO = {
       return { tool: { tool: 'SFMC', action: 'build query · ' + scope, result: 'audience from ENT.All_Owners_Opted_In' }, reply: 'I will build the audience for ' + lbl + ' from **ENT.All_Owners_Opted_In** (your Org-wide opt-in rule) and point at the production data extension, not a TEST_ copy. Saving the recipe so it stays consistent.', memory: { kind: 'fact', soft: true, scope: scope, text: 'The audience for ' + lbl + ' starts from ENT.All_Owners_Opted_In, filtered to its own criteria.' } };
     }
     if (/report|metric|open rate|click|bounce|stats|performance|results|analytic/.test(t)) {
-      return { tool: { tool: 'SFMC', action: 'query data views · ' + scope, result: '_Open / _Click / _Bounce rates' }, reply: 'Pulling the results for ' + lbl + ' from the system data views (_Open, _Click, _Bounce) in SQL, where engagement data lives. Saving where these numbers come from.', memory: { kind: 'fact', scope: 'org', text: 'Campaign analytics (opens, clicks, bounces) come from the SFMC system data views (_Open, _Click, _Bounce) queried in SQL, not a regular data extension.' } };
+      return { tool: { tool: 'SFMC', action: 'query data views · ' + scope, result: 'open 22.4% · click 3.1% · bounce 0.5% (last 3 sends)' }, reply: 'Across the last three sends, **' + lbl + '** is running a **22.4% open rate** and a **3.1% click rate**, with bounces at **0.5%**. I pulled these from the system data views (_Open, _Click, _Bounce) in SQL, where engagement data lives. Saving where these numbers come from.', memory: { kind: 'fact', scope: 'org', text: 'Campaign analytics (opens, clicks, bounces) come from the SFMC system data views (_Open, _Click, _Bounce) queried in SQL, not a regular data extension.' } };
     }
     return null;
   },
