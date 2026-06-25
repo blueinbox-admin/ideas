@@ -44,8 +44,9 @@
   });
 
   // ---- autoplay (first DEMO_TURNS turns, then hand over) ----
-  // autoplay off -> 0 guided turns (jump straight to free typing / a static view)
-  var DEMO_TURNS = FEAT.autoplay === false ? 0 : (CFG.demoTurns != null ? CFG.demoTurns : 2);
+  // autoplay plays the FIRST command only, then hands the keyboard to the user.
+  // (off -> 0 guided turns: jump straight to free typing / a static view.)
+  var DEMO_TURNS = FEAT.autoplay === false ? 0 : (CFG.demoTurns != null ? CFG.demoTurns : 1);
   var timers = [], playing = false, paused = false, token = 0, resumeQ = [];
   function clearTimers() { timers.forEach(clearTimeout); timers = []; }
   function flushResume() { var r = resumeQ; resumeQ = []; r.forEach(function (f) { f(); }); }
