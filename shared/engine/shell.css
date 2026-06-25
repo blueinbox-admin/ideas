@@ -99,6 +99,17 @@ body { font-family: var(--font-body); color: rgb(var(--ink)); background: rgb(va
   40%  { background: rgb(var(--secondary) / 0.16); }
   100% { background: transparent; }
 }
+/* a freshly SURFACED fact emerges prominently (slide + fade + a green tint that
+   settles), so you clearly see it arrive even among existing cards. Higher
+   specificity than app.css .card.fresh, so this animation wins. */
+.card.fresh.surfaced { animation: am-card-surface 1.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes am-card-surface {
+  0%   { opacity: 0; transform: translateY(12px) scale(0.985); background: rgb(var(--secondary) / 0.10); border-color: rgb(var(--secondary) / 0.55); }
+  55%  { opacity: 1; transform: none; }
+  100% { opacity: 1; transform: none; background: rgb(var(--surface)); border-color: rgb(var(--sand)); }
+}
+@media (prefers-reduced-motion: reduce) { .card.fresh.surfaced { animation: none; } }
+
 /* the pill dot is rendered ONLY for a freshly-arrived question; fade it out so
    it does not become a persistent notification. */
 .pill-dot { animation: am-dot-inout 3.1s ease forwards; }

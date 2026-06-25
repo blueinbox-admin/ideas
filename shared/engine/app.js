@@ -123,7 +123,7 @@ window.AM = window.AM || {};
       ? '<button class="btn primary" type="button" data-edit-save="' + m.id + '">Save</button><button class="btn ghost" type="button" data-edit-cancel="1">Cancel</button>'
       : (soft ? '<button class="btn ghost" type="button" data-looksright="' + m.id + '" title="Clear the assumed mark">Looks right</button>' : '') +
         '<button class="btn ghost" type="button" data-remove="' + m.id + '">Remove</button>';
-    return '<div class="card' + (m.fresh ? ' fresh' : '') + (editing ? ' editing' : '') + (soft ? ' assumed' : '') + '" data-card="' + m.id + '">' +
+    return '<div class="card' + (m.fresh ? ' fresh surfaced' : '') + (editing ? ' editing' : '') + (soft ? ' assumed' : '') + '" data-card="' + m.id + '">' +
       '<span class="tick">' + (soft ? '~' : '✓') + '</span>' +
       '<div class="body">' + body + scopeChipsHtml(m) + '</div>' +
       '<div class="actions card-actions">' + actions + '</div></div>';
@@ -317,6 +317,9 @@ window.AM = window.AM || {};
   AM.dropMemory = function (o) {
     memories.unshift({ id: o.id || ('drop-' + (seq++)), type: o.type || 'fact', content: o.content, scopes: (o.scopes || ['org']).slice(), confidence: o.confidence || null, fresh: true });
     render();
+    // bring the just-surfaced fact into view so it's clearly seen emerging
+    var el = document.querySelector('#memoryapp .card.surfaced');
+    if (el && el.scrollIntoView) setTimeout(function () { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 70);
   };
   AM.dropQuestion = function (o) {
     questions.unshift({ id: o.id || ('dropq-' + (seq++)), text: o.text, rationale: o.rationale || '', scope: o.scope || 'org', fresh: true });
