@@ -18,8 +18,8 @@ window.DEMO = {
   scopes: ['new-owner-welcome', 'service-reminders', 'lease-end', 'win-back'],
 
   onboarding: [
-    { which: 'cc', target: '.cc-win', corner: 'bottom-right', text: 'This is Claude Code. Ask it to do real Salesforce Marketing Cloud work in plain English, build an audience, wire a journey, schedule a send, and it works from what your team knows.' },
-    { which: 'app', target: '.app-win', corner: 'top-left', text: 'This is your marketing memory. What Claude can know, it saves as a fact; what only your team can decide, it leaves as a question. Go ahead, play with it.' },
+    { which: 'cc', target: '.cc-win', corner: 'bottom-right', text: 'This is Claude Code. Ask it to do real Marketing Cloud work in plain English — build an audience, wire a journey, schedule a send. It works from what your team knows.' },
+    { which: 'app', target: '.app-win', corner: 'top-left', text: 'This is your marketing memory. What Claude can know, it saves as a fact; what only your team can decide, it asks. Go ahead, play with it.' },
   ],
 
   seed: {
@@ -30,6 +30,10 @@ window.DEMO = {
       { type: 'fact', confidence: 'observed', scopes: ['new-owner-welcome'], content: 'The new-owner welcome is a 3-email journey that onboards buyers in their first 30 days, entered from the sales-delivered feed.' },
       { type: 'mapping', confidence: 'observed', scopes: ['service-reminders'], content: 'Service reminders join the owner roster to the service-due DE on VIN, not email, since one household can share an email.' },
       { type: 'fact', confidence: 'observed', scopes: ['lease-end'], content: 'Lease-end offers are regional: the offer DE is keyed by dealer region, so the audience must carry region to render the right incentive.' },
+      // --- the human side: how the business thinks, not how the systems are wired ---
+      { type: 'fact', confidence: 'inferred', scopes: ['org'], content: 'Owner emails use the owner’s first name and a warm, plain tone: always “your vehicle,” never “unit.” No countdown timers or “act now” urgency; the brand reads premium.' },
+      { type: 'fact', confidence: 'observed', scopes: ['org'], content: 'Brand signs off on all creative before a send, and Legal must review any lease or finance-offer language. No send goes out without both.' },
+      { type: 'fact', confidence: 'observed', scopes: ['org'], content: 'EV owners skew younger and respond to sustainability and tech angles; truck owners respond to towing, capability, and utility. Keep the two messaging tracks separate.' },
       { type: 'guardrail', scopes: ['org'], content: 'Never send to real owners while testing. Test to mailinator or test leads with sends off.' },
       { type: 'guardrail', scopes: ['org'], content: 'Never activate a journey or automation without a named human approving go-live.' },
       { type: 'guardrail', scopes: ['org'], content: 'Never query an audience without filtering to the opted-in roster (ENT.All_Owners_Opted_In).' },

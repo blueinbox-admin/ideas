@@ -31,6 +31,10 @@ window.DEMO = {
       { type: 'fact', confidence: 'observed', scopes: ['welcome-series'], content: 'The welcome series is a 3-email flow triggered on a customer’s first order, with a 10% second-purchase code in email 2.' },
       { type: 'mapping', confidence: 'observed', scopes: ['abandoned-cart'], content: 'The abandoned-cart audience is Shopify checkouts with no matching paid order within 24 hours.' },
       { type: 'fact', confidence: 'observed', scopes: ['vip-loyalty'], content: 'VIP is any customer with 3 or more orders or $300+ lifetime spend, pulled from Shopify order history.' },
+      // --- the human side: how the business thinks, not how the systems are wired ---
+      { type: 'fact', confidence: 'inferred', scopes: ['org'], content: 'Emails are first-name, warm, and concise, leaning into craft and sustainability. Never discount-spammy or urgent; the brand sells quality, not a fire sale.' },
+      { type: 'fact', confidence: 'observed', scopes: ['org'], content: 'Any discount over 15%, or featuring a brand partner, needs the founder’s sign-off before it goes out.' },
+      { type: 'fact', confidence: 'inferred', scopes: ['org'], content: 'Candle buyers tend to come back for home textiles, not electronics. Cross-merchandise within home goods, and lead returning customers with the category they already love.' },
       { type: 'guardrail', scopes: ['org'], content: 'Never email a customer whose Shopify marketing consent is false, or who has requested deletion.' },
       { type: 'guardrail', scopes: ['org'], content: 'Never reconcile or change anything in QuickBooks without a human approving the period close.' },
       { type: 'guardrail', scopes: ['abandoned-cart'], content: 'Never send an abandoned-cart email to a customer who already completed the purchase.' },
