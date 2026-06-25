@@ -25,27 +25,18 @@
 
 window.TRANSCRIPT = [
   // 1) A real BUILD with a QUANTITATIVE result (Claude already has the data, runs the
-  //    query, returns a count). The app then surfaces BOTH: a recipe FACT, and a
-  //    higher-level pattern QUESTION it derived (combine two attributes for a use case).
+  //    query, returns a count). The first turn surfaces ONE thing: a recipe FACT.
   {
     you: 'Build the Q3 lease-end audience and tell me how many owners qualify.',
     steps: [
       { tool: 'SFMC', action: 'query lease-end DE · Q3 maturities', result: '4,812 opted-in owners · 1,190 opened the last 3 sends' },
       { say: 'Built the **Q3 lease-end audience** from the regional offer DE, filtered to the opted-in roster: **4,812 owners** qualify. Of those, **1,190** have opened your last three sends.' },
     ],
-    memory: [
-      {
-        kind: 'fact',
-        scope: 'lease-end',
-        text: 'The lease-end audience comes from the regional offer DE (keyed by dealer region), filtered to ENT.All_Owners_Opted_In and to leases maturing in the target quarter.',
-      },
-      {
-        kind: 'question',
-        scope: 'lease-end',
-        text: 'Which owners are both approaching lease-end AND highly engaged (opened the last 3 sends), so we can route them to a premium upgrade offer instead of a standard renewal?',
-        why: 'Lease timing crossed with engagement is a segment Claude can spot, but whether it earns a different offer is a call only your team can make.',
-      },
-    ],
+    memory: {
+      kind: 'fact',
+      scope: 'lease-end',
+      text: 'The lease-end audience comes from the regional offer DE (keyed by dealer region), filtered to ENT.All_Owners_Opted_In and to leases maturing in the target quarter.',
+    },
   },
 
   // 2) Claude INFERS a rule from the error (no human confirms it) -> a SOFT fact,
