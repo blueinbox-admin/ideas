@@ -10,7 +10,9 @@ window.AM = window.AM || {};
 (function (AM) {
   var DEF = window.DEMO_DEFAULTS || { features: {} };
   var CFG = window.DEMO || {};
-  var FEAT = Object.assign({}, DEF.features, CFG.features || {});
+  // boot.js resolves the effective flags (defaults <- registry <- config <- ?admin).
+  // Fall back to a local merge if the engine is loaded without boot.js.
+  var FEAT = window.AM_FEATURES || Object.assign({}, DEF.features, CFG.features || {});
   var ORG = Object.assign({}, DEF.org, CFG.org || {});
   var CONNECTORS = CFG.connectors || DEF.connectors || [];
   var SCOPES = CFG.scopes || [];                 // project scope keys, in display order

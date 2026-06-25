@@ -68,14 +68,14 @@
     <div class="count" id="count"></div>
     <div class="grid" id="grid"></div>
 
-    <p class="foot">To add or tweak a prototype, edit <code>prototypes.js</code> — one entry per card. No HTML to touch.</p>
+    <p class="foot">To add or tweak a version, edit <code>versions.js</code> — one entry per card, holding its launcher info and its feature/surface knobs. No HTML to touch. Append <code>?admin</code> to any demo URL for a live feature-toggle panel.</p>
   </div>
 
-  <script src="prototypes.js"></script>
+  <script src="versions.js?v=1"></script>
   <script>
     (function () {
       var grid = document.getElementById('grid');
-      var list = (window.PROTOTYPES || []).filter(function (p) { return !p.hidden; });
+      var list = (window.VERSIONS || window.PROTOTYPES || []).filter(function (p) { return !p.hidden; });
       var labels = { live: 'Live', wip: 'In progress', draft: 'Draft' };
 
       list.forEach(function (p) {

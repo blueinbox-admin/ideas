@@ -152,7 +152,8 @@
   });
   if (rb) rb.addEventListener('click', function () { location.reload(); });
 
-  // boot
-  if (CFG.features && CFG.features.onboarding === false) {} else if ((window.DEMO_DEFAULTS && window.DEMO_DEFAULTS.features.onboarding) !== false) playOnboarding();
+  // boot — onboarding flag comes from the resolved feature set (boot.js)
+  var FEAT = window.AM_FEATURES || (window.DEMO_DEFAULTS && window.DEMO_DEFAULTS.features) || {};
+  if (FEAT.onboarding !== false) playOnboarding();
   play();
 })(window.AM);
