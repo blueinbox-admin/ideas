@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Active Memory · Fleet controls</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: 74 35 5; --ink-soft: 124 92 66;
+    --surface: 255 252 247; --bg: 240 230 216; --sand: 226 210 188;
+    --secondary: 0 168 142; --amber: 176 122 18; --danger: 168 67 31;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; font-family: "Source Sans 3", system-ui, sans-serif; color: rgb(var(--ink));
+    background: radial-gradient(1100px 600px at 50% -10%, rgb(var(--surface)), transparent 70%), rgb(var(--bg)); }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 48px 24px 90px; }
+  .brand { display: flex; align-items: center; gap: 9px; font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 21px; }
+  .brand .mark { color: rgb(var(--secondary)); }
+  .brand a { color: inherit; text-decoration: none; opacity: .6; font-size: 13px; font-weight: 600; margin-left: auto; }
+  .brand a:hover { opacity: 1; }
+  .lede { margin: 12px 0 0; font-size: 15.5px; color: rgb(var(--ink-soft)); max-width: 70ch; line-height: 1.5; }
+
+  .toolbar { display: flex; align-items: center; gap: 12px; margin: 26px 0 12px; flex-wrap: wrap; }
+  .badge { font-size: 12px; font-weight: 600; border-radius: 999px; padding: 4px 11px; background: rgb(var(--sand)); color: rgb(var(--ink-soft)); }
+  .badge.dirty { background: rgb(var(--secondary)); color: #fff; }
+  .btn { font: inherit; font-size: 13px; font-weight: 600; padding: 7px 14px; border-radius: 9px; border: 1px solid rgb(var(--sand)); background: rgb(var(--surface)); color: rgb(var(--ink)); cursor: pointer; }
+  .btn:hover { border-color: rgb(var(--secondary) / .6); }
+  .btn.primary { background: rgb(var(--ink)); color: rgb(var(--surface)); border-color: rgb(var(--ink)); }
+  .btn.ghost { background: none; }
+  .btn.danger { color: rgb(var(--danger)); }
+  .spacer { flex: 1; }
+
+  .tablewrap { overflow-x: auto; border: 1px solid rgb(var(--sand)); border-radius: 14px; background: rgb(var(--surface)); }
+  table { border-collapse: collapse; width: 100%; min-width: 860px; }
+  th, td { text-align: left; padding: 12px 12px; border-bottom: 1px solid rgb(var(--sand) / .6); white-space: nowrap; }
+  thead th { position: sticky; top: 0; background: rgb(var(--surface)); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: rgb(var(--ink-soft)); font-weight: 600; z-index: 1; }
+  thead th.feat { font-family: "JetBrains Mono", monospace; text-transform: none; letter-spacing: 0; font-weight: 500; font-size: 11px; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr.dirty { background: rgb(var(--secondary) / .05); }
+  .vname { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 15px; }
+  .vmeta { font-size: 12px; color: rgb(var(--ink-soft)); margin-top: 1px; }
+  .vlinks { margin-top: 5px; display: flex; gap: 10px; }
+  .vlinks a { font-size: 11.5px; font-weight: 600; color: rgb(var(--secondary)); text-decoration: none; }
+  .vlinks a:hover { text-decoration: underline; }
+
+  .seg { display: inline-flex; gap: 3px; }
+  .seg button { font: inherit; font-size: 11.5px; padding: 4px 8px; border: 1px solid rgb(var(--sand)); background: rgb(var(--surface)); color: rgb(var(--ink-soft)); border-radius: 7px; cursor: pointer; }
+  .seg button.sel { background: rgb(var(--ink)); color: rgb(var(--surface)); border-color: rgb(var(--ink)); font-weight: 600; }
+
+  .sw { position: relative; width: 34px; height: 19px; border-radius: 999px; background: rgb(var(--sand)); cursor: pointer; transition: background .12s; display: inline-block; vertical-align: middle; }
+  .sw.on { background: rgb(var(--secondary)); }
+  .sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 15px; height: 15px; border-radius: 50%; background: #fff; transition: left .12s; }
+  .sw.on::after { left: 17px; }
+  td.cell { text-align: center; }
+  td.cell.ov { box-shadow: inset 0 0 0 2px rgb(var(--secondary) / .35); border-radius: 6px; }
+
+  .note { margin-top: 14px; font-size: 13px; color: rgb(var(--ink-soft)); line-height: 1.6; }
+  .note code { font-family: "JetBrains Mono", monospace; font-size: 12px; background: rgb(74 35 5 / .06); padding: 1px 6px; border-radius: 5px; }
+
+  .dep { margin-top: 34px; }
+  .dep h3 { font-family: "Bricolage Grotesque", sans-serif; font-size: 14px; margin: 0 0 8px; color: rgb(var(--ink-soft)); }
+  .dep .row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: rgb(var(--ink-soft)); padding: 5px 0; }
+  .dep .row a { color: rgb(var(--secondary)); text-decoration: none; font-weight: 600; }
+
+  /* export overlay */
+  .overlay { position: fixed; inset: 0; background: rgb(40 22 6 / .5); display: none; align-items: center; justify-content: center; padding: 24px; z-index: 50; }
+  .overlay.open { display: flex; }
+  .modal { background: rgb(var(--surface)); border-radius: 16px; width: min(760px, 100%); max-height: 86vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 24px 70px rgb(40 22 6 / .4); }
+  .modal header { padding: 16px 20px; border-bottom: 1px solid rgb(var(--sand)); display: flex; align-items: center; gap: 12px; }
+  .modal header b { font-family: "Bricolage Grotesque", sans-serif; font-size: 16px; }
+  .modal header .x { margin-left: auto; cursor: pointer; font-size: 20px; color: rgb(var(--ink-soft)); background: none; border: none; }
+  .modal .body { padding: 16px 20px; overflow: auto; }
+  .modal p { margin: 0 0 12px; font-size: 13.5px; color: rgb(var(--ink-soft)); line-height: 1.55; }
+  textarea { width: 100%; height: 340px; font-family: "JetBrains Mono", monospace; font-size: 12px; line-height: 1.5; border: 1px solid rgb(var(--sand)); border-radius: 10px; padding: 12px; resize: vertical; color: rgb(var(--ink)); background: #fffdf9; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand"><span class="mark">◧</span>Fleet controls <a href="./">← launcher</a></div>
+    <p class="lede">Every version and its knobs in one place. Flip a feature or switch the agent surface to <b>preview it in your browser</b> right away (open the demo to see it). To make a change permanent for everyone, <b>Export versions.js</b> and commit it (or just tell Claude to save it).</p>
+
+    <div class="toolbar">
+      <span class="badge" id="dirtyBadge">no local changes</span>
+      <span class="spacer"></span>
+      <button class="btn ghost danger" id="resetAll">Reset all to registry</button>
+      <button class="btn primary" id="exportBtn">Export versions.js</button>
+    </div>
+
+    <div class="tablewrap">
+      <table id="matrix"><thead></thead><tbody></tbody></table>
+    </div>
+
+    <p class="note">Switches and surface changes here write a <b>browser-local override</b> (the same ones the in-demo <code>?admin</code> panel uses). They do not change the deployed files until you Export. A green outline marks a cell that differs from the registry.</p>
+
+    <div class="dep" id="dep"></div>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <header><b>versions.js</b><span style="font-size:12px;color:rgb(var(--ink-soft))">effective registry with your changes baked in</span><button class="x" id="closeModal">×</button></header>
+      <div class="body">
+        <p>This is the full <code style="font-family:'JetBrains Mono',monospace">versions.js</code> reflecting the current matrix. Paste it over the file and commit, or tell Claude "save the registry" and it will write this for you.</p>
+        <button class="btn primary" id="copyBtn" style="margin-bottom:12px">Copy to clipboard</button>
+        <textarea id="exportText" spellcheck="false" readonly></textarea>
+      </div>
+    </div>
+  </div>
+
+  <script src="shared/engine/defaults.js?v=2"></script>
+  <script src="versions.js?v=1"></script>
+  <script>
+  (function () {
+    var DEF = (window.DEMO_DEFAULTS && window.DEMO_DEFAULTS.features) || {};
+    var FLAGS = Object.keys(DEF);
+    var SURFACES = ['desktop', 'embedded', 'none'];
+    var VERSIONS = window.VERSIONS || [];
+    var engine = VERSIONS.filter(function (v) { return !v.hidden; });
+    var deprecated = VERSIONS.filter(function (v) { return v.hidden; });
+
+    // ---- override storage (same keys boot.js reads) ----
+    function liveFeatures(slug) { try { return JSON.parse(localStorage.getItem('am-features:' + slug) || '{}'); } catch (e) { return {}; } }
+    function liveSurface(slug) { try { return localStorage.getItem('am-surface:' + slug); } catch (e) { return null; } }
+    function setFeature(slug, k, val) { var c = liveFeatures(slug); c[k] = val; localStorage.setItem('am-features:' + slug, JSON.stringify(c)); }
+    function setSurface(slug, s) { localStorage.setItem('am-surface:' + slug, s); }
+    function resetVersion(slug) { localStorage.removeItem('am-features:' + slug); localStorage.removeItem('am-surface:' + slug); }
+
+    // baseline (registry) and effective (registry + local) values
+    function baseFeatures(v) { return Object.assign({}, DEF, v.features || {}); }
+    function effFeatures(v) { return Object.assign({}, baseFeatures(v), liveFeatures(v.slug)); }
+    function baseSurface(v) { return v.surface || 'desktop'; }
+    function effSurface(v) { return liveSurface(v.slug) || baseSurface(v); }
+    function isDirty(v) { return Object.keys(liveFeatures(v.slug)).length > 0 || !!liveSurface(v.slug); }
+
+    // ---- render ----
+    var thead = document.querySelector('#matrix thead');
+    var tbody = document.querySelector('#matrix tbody');
+
+    function renderHead() {
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<th>Version</th><th>Surface</th>' + FLAGS.map(function (f) { return '<th class="feat">' + f + '</th>'; }).join('');
+      thead.innerHTML = ''; thead.appendChild(tr);
+    }
+
+    function renderBody() {
+      tbody.innerHTML = '';
+      engine.forEach(function (v) {
+        var tr = document.createElement('tr');
+        if (isDirty(v)) tr.className = 'dirty';
+
+        var name = document.createElement('td');
+        name.innerHTML = '<div class="vname">' + esc(v.persona || v.slug) + '</div>'
+          + '<div class="vmeta">' + esc(v.connector || '') + '</div>'
+          + '<div class="vlinks"><a href="./' + v.slug + '/" target="_blank">open</a>'
+          + '<a href="./' + v.slug + '/?admin" target="_blank">open ?admin</a>'
+          + (isDirty(v) ? '<a href="#" data-reset="' + v.slug + '" style="color:rgb(var(--danger))">reset</a>' : '') + '</div>';
+        tr.appendChild(name);
+
+        // surface segmented control
+        var sCell = document.createElement('td');
+        var seg = document.createElement('div'); seg.className = 'seg';
+        var curS = effSurface(v);
+        SURFACES.forEach(function (s) {
+          var b = document.createElement('button'); b.textContent = s;
+          if (curS === s) b.className = 'sel';
+          b.addEventListener('click', function () { setSurface(v.slug, s); rerender(); });
+          seg.appendChild(b);
+        });
+        if (curS !== baseSurface(v)) sCell.className = 'cell ov';
+        sCell.appendChild(seg); tr.appendChild(sCell);
+
+        // feature switches
+        var eff = effFeatures(v), base = baseFeatures(v), localF = liveFeatures(v.slug);
+        FLAGS.forEach(function (f) {
+          var td = document.createElement('td'); td.className = 'cell' + ((f in localF) ? ' ov' : '');
+          var sw = document.createElement('span'); sw.className = 'sw' + (eff[f] ? ' on' : '');
+          sw.title = f + ' = ' + eff[f];
+          sw.addEventListener('click', function () { setFeature(v.slug, f, !eff[f]); rerender(); });
+          td.appendChild(sw); tr.appendChild(td);
+        });
+
+        tbody.appendChild(tr);
+      });
+
+      // reset links
+      [].forEach.call(document.querySelectorAll('[data-reset]'), function (a) {
+        a.addEventListener('click', function (e) { e.preventDefault(); resetVersion(a.getAttribute('data-reset')); rerender(); });
+      });
+    }
+
+    function renderDep() {
+      var dep = document.getElementById('dep');
+      if (!deprecated.length) { dep.innerHTML = ''; return; }
+      dep.innerHTML = '<h3>Deprecated (pre shared-engine, off the launcher)</h3>'
+        + deprecated.map(function (v) {
+            return '<div class="row"><b style="font-family:\'Bricolage Grotesque\',sans-serif;color:rgb(var(--ink))">' + esc(v.persona || v.slug) + '</b> · ' + esc(v.connector || '') + ' · <a href="./' + v.slug + '/" target="_blank">open</a> <span style="opacity:.7">— not engine-driven, no toggles</span></div>';
+          }).join('');
+    }
+
+    function renderBadge() {
+      var n = engine.filter(isDirty).length;
+      var b = document.getElementById('dirtyBadge');
+      b.className = 'badge' + (n ? ' dirty' : '');
+      b.textContent = n ? (n + ' version' + (n === 1 ? '' : 's') + ' with local changes') : 'no local changes';
+    }
+
+    function rerender() { renderBody(); renderBadge(); }
+
+    // ---- export: regenerate versions.js with effective values baked in ----
+    var HEADER = [
+      '// versions.js — THE single registry for the whole fleet. One entry per version.',
+      '// It holds BOTH the launcher card data AND the per-version knobs (which surface,',
+      '// which features). The launcher (index.html), every demo (via boot.js), and the',
+      '// admin page (admin.html) read this same file, so there is one source of truth.',
+      '//',
+      '// Feature flags resolve last-wins:',
+      "//   shared/engine/defaults.js  ->  this entry's `features`  ->  the demo's own",
+      '//   config.js `features` (rare)  ->  ?admin live toggles (localStorage).',
+      ''
+    ].join('\n');
+
+    function q(s) { return JSON.stringify(s); }
+    function emitFeatures(obj) {
+      var ks = Object.keys(obj);
+      if (!ks.length) return '{}';
+      return '{ ' + ks.map(function (k) { return k + ': ' + obj[k]; }).join(', ') + ' }';
+    }
+    // only keep flags that differ from engine defaults -> the override object
+    function featuresDiff(effObj) {
+      var out = {};
+      FLAGS.forEach(function (k) { if (effObj[k] !== DEF[k]) out[k] = effObj[k]; });
+      return out;
+    }
+    function emitEntry(v) {
+      var L = ['  {', '    slug: ' + q(v.slug) + ','];
+      if (v.connector != null) L.push('    connector: ' + q(v.connector) + ',');
+      if (v.persona != null) L.push('    persona: ' + q(v.persona) + ',');
+      if (v.blurb != null) L.push('    blurb: ' + q(v.blurb) + ',');
+      if (v.status != null) L.push('    status: ' + q(v.status) + ',');
+      if (!v.hidden) {
+        L.push('    surface: ' + q(effSurface(v)) + ',');
+        L.push('    features: ' + emitFeatures(featuresDiff(effFeatures(v))) + ',');
+      }
+      if (v.hidden) L.push('    hidden: true,');
+      L.push('  },');
+      return L.join('\n');
+    }
+    function buildFile() {
+      return HEADER + 'window.VERSIONS = [\n'
+        + VERSIONS.map(emitEntry).join('\n') + '\n];\n\n'
+        + '// Back-compat: anything still reading window.PROTOTYPES gets the same list.\n'
+        + 'window.PROTOTYPES = window.VERSIONS;\n';
+    }
+
+    var overlay = document.getElementById('overlay');
+    document.getElementById('exportBtn').addEventListener('click', function () {
+      document.getElementById('exportText').value = buildFile();
+      overlay.classList.add('open');
+    });
+    document.getElementById('closeModal').addEventListener('click', function () { overlay.classList.remove('open'); });
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) overlay.classList.remove('open'); });
+    document.getElementById('copyBtn').addEventListener('click', function () {
+      var ta = document.getElementById('exportText'); ta.select();
+      navigator.clipboard ? navigator.clipboard.writeText(ta.value) : document.execCommand('copy');
+      this.textContent = 'Copied ✓'; var self = this; setTimeout(function () { self.textContent = 'Copy to clipboard'; }, 1400);
+    });
+    document.getElementById('resetAll').addEventListener('click', function () {
+      if (!confirm('Clear all local overrides and return every version to the registry?')) return;
+      engine.forEach(function (v) { resetVersion(v.slug); }); rerender();
+    });
+
+    function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+    renderHead(); renderBody(); renderDep(); renderBadge();
+  })();
+  </script>
+</body>
+</html>
