@@ -12,6 +12,8 @@
 //   wrangler deploy
 // Then copy the printed URL into shared/engine/defaults.js -> improviseUrl.
 
+import { systemPrompt, extractJson } from './prompt.mjs';
+
 // Only browsers on these origins may call the worker (light abuse guard; add
 // your own domain here if you deploy the demos elsewhere).
 const ALLOWED = [
@@ -72,21 +74,4 @@ function json(obj, status, headers) {
   return new Response(JSON.stringify(obj), { status, headers: { ...headers, 'Content-Type': 'application/json' } });
 }
 
-function extractJson(s) {
-  const m = s.match(/\{[\s\S]*\}/);
-  if (!m) return null;
-  try { return JSON.parse(m[0]); } catch { return null; }
-}
-
-function systemPrompt({ org, platform, agent, scopes }) {
-  const scopeList = (Array.isArray(scopes) ? scopes : []).concat(['org']).join(', ');
-  return [
-    `You are the memory layer behind ${agent} for ${org}, a company that runs its work on ${platform}.`,
-    `A teammate just typed a message to ${agent}. Assume ${agent} already has full, authenticated access to ${org}'s ${platform} and either answered the question or did the task SUCCESSFULLY, using realistic, specific, INVENTED details about ${org} (object names, fields, conventions, numbers). This is a demo: nothing has to be true, but it must sound like a real, well-run ${org}.`,
-    ``,
-    `Return ONLY a JSON object (no markdown, no preamble) with exactly these keys:`,
-    `- "reply": ${agent}'s short first-person reply, max 45 words. If the message is a QUESTION, ANSWER it concretely with invented specifics (real-sounding object/field names, locations, numbers). If it's a TASK, confirm it's done with a concrete result, leading with a number when natural. No filler like "On it" or "I worked from what your team has saved".`,
-    `- "tool": { "action": a 2-5 word lowercase action label (e.g. "look up model data"), "result": a short concrete result string, max 8 words }.`,
-    `- "fact": { "text": ONE high-level, REUSABLE fact the memory gleaned about HOW ${org} WORKS — a convention, mapping, data location, or rule. It MUST be reusable knowledge, NOT a restatement of the message or a one-off answer. Specific and plausible, max 30 words. "scope": the single best key from: ${scopeList}. Use "org" if it applies company-wide. }`,
-  ].join('\n');
-}
+// systemPrompt + extractJson live in prompt.mjs (shared with the local proxy).

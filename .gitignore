@@ -1,2 +1,6 @@
 .gstack/
 .DS_Store
+
+# local Anthropic key for the improviser proxy (never commit)
+improvise-worker/.dev.vars
+.dev.vars
