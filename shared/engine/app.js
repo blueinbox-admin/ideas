@@ -208,14 +208,19 @@ window.AM = window.AM || {};
       if (!ms.length) {
         section += '<p class="empty">Nothing saved yet — Claude adds facts as it works, or add one above.</p>';
       } else {
-        var groups = FEAT.factGrouping ? groupFacts(ms) : [{ key: '_', label: '', items: ms }];
+        // A freshly surfaced fact pins to the TOP, above the grouped list, so you
+        // see it arrive; it settles into its scope group on the next render.
+        var freshTop = ms.filter(function (m) { return m.fresh; });
+        var rest = ms.filter(function (m) { return !m.fresh; });
+        if (freshTop.length) section += '<div class="fresh-top">' + freshTop.map(factCardHtml).join('') + '</div>';
+        var groups = FEAT.factGrouping ? groupFacts(rest) : [{ key: '_', label: '', items: rest }];
         if (groups.length > 1) {
           section += groups.map(function (g) {
             return '<div class="fact-group"><div class="fact-group-head">' + esc(g.label) + '<span class="fact-group-count">' + g.items.length + '</span></div>' +
               g.items.map(factCardHtml).join('') + '</div>';
           }).join('');
         } else {
-          section += '<div>' + ms.map(factCardHtml).join('') + '</div>';
+          section += '<div>' + rest.map(factCardHtml).join('') + '</div>';
         }
       }
       section += '</section>';

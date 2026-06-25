@@ -99,13 +99,14 @@ body { font-family: var(--font-body); color: rgb(var(--ink)); background: rgb(va
   40%  { background: rgb(var(--secondary) / 0.16); }
   100% { background: transparent; }
 }
-/* a freshly SURFACED fact emerges prominently (slide + fade + a green tint that
-   settles), so you clearly see it arrive even among existing cards. Higher
-   specificity than app.css .card.fresh, so this animation wins. */
-.card.fresh.surfaced { animation: am-card-surface 1.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+/* a freshly SURFACED fact (pinned to the top of the Facts list) slowly fades in
+   with a GREEN background, holds, then the green fades back out — so you clearly
+   see the new fact arrive. Higher specificity than app.css .card.fresh, wins. */
+.card.fresh.surfaced { animation: am-card-surface 3.6s ease both; }
 @keyframes am-card-surface {
-  0%   { opacity: 0; transform: translateY(12px) scale(0.985); background: rgb(var(--secondary) / 0.10); border-color: rgb(var(--secondary) / 0.55); }
-  55%  { opacity: 1; transform: none; }
+  0%   { opacity: 0; transform: translateY(-8px); background: rgb(var(--surface)); border-color: rgb(var(--sand)); }
+  22%  { opacity: 1; transform: none; background: rgb(var(--secondary) / 0.22); border-color: rgb(var(--secondary) / 0.6); }
+  60%  { opacity: 1; transform: none; background: rgb(var(--secondary) / 0.22); border-color: rgb(var(--secondary) / 0.6); }
   100% { opacity: 1; transform: none; background: rgb(var(--surface)); border-color: rgb(var(--sand)); }
 }
 @media (prefers-reduced-motion: reduce) { .card.fresh.surfaced { animation: none; } }
