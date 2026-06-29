@@ -32,7 +32,7 @@ window.DEMO_DEFAULTS = {
   // key — see improvise-worker/) to improvise a plausible answer + a high-level
   // fact. Leave '' to disable (a quiet static reply is used instead). Set it
   // ONCE here after deploying the worker, and every demo gets the live fallback.
-  improviseUrl: '',
+  improviseUrl: 'https://activememory-improvise.david-f5f.workers.dev',
 
   // ---- canonical copy the engine falls back to when a demo omits it ----
   // (identity, connectors, scopes, seed, transcript, responder, onboarding all
