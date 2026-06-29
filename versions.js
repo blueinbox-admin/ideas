@@ -42,17 +42,18 @@ window.VERSIONS = [
     surface: 'embedded',
     features: {},
   },
+  {
+    slug: 'activememory-sportek',
+    connector: 'Product catalog & orders',
+    persona: 'Sportek International',
+    blurb: 'A sales assistant for a wholesale technical-fabric distributor. Reps describe what a customer is making; Claude matches it to real fabrics by spec, checks stock, and drafts a quote. The memory learns the product knowledge and the sales conventions. Seeded from sportek.com.',
+    status: 'live',
+    surface: 'embedded',
+    features: {},
+  },
   // ── Deprecated: older UX, pre shared-engine. Hidden from the launcher (kept for
   //    reference). These do NOT read the engine, so their `features` are inert.
   //    Re-cut onto the shared engine + a config.js if a lead wants them.
-  {
-    slug: 'activememory-sportek',
-    connector: 'Product knowledge for sales',
-    persona: 'Sportek International',
-    blurb: 'A sales-enablement brain for a wholesale technical-fabric distributor.',
-    status: 'live',
-    hidden: true,
-  },
   {
     slug: 'activememory-wordpress',
     connector: 'WordPress',
