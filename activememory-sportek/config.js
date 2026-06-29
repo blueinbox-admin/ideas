@@ -64,9 +64,17 @@ window.DEMO = {
       return 'org';
     }
     var scope = scopeOf(), lbl = scope === 'org' ? 'this customer' : scope;
-    // pricing / MOQ / terms -> a commercial call -> Review question
-    if (/price|pricing|\bmoq\b|minimum|discount|\bdeal\b|terms|net ?30|credit|markup|margin|cost/.test(t)) {
-      return { reply: 'Pricing, minimums, and terms are a sales call, not mine to set, so I will not put a number on it. I have flagged it on Review for your team.', memory: { kind: 'question', scope: 'org', text: 'What is our minimum order quantity by fabric category, and when can a rep waive it or discount?', why: 'Pricing and MOQ are commercial decisions only your team can own.' } };
+    // pull a style code out of the message so a quote names the right fabric
+    var sku = (text.match(/\b([A-Z]{1,3}-?\d{2,4})\b/i) || [])[1];
+    var skuLabel = sku ? sku.toUpperCase() : 'That style';
+    // discounts / waiving the minimum / terms -> Claude still does the work (quotes
+    // the standard) but going below it is the team's call -> also a Review question.
+    if (/discount|\bdeal\b|terms|net ?30|credit|markup|margin|waive|go lower|below (cost|that|the)|beat (the|their|that)/.test(t)) {
+      return { tool: { tool: 'Shopify', action: 'look up wholesale price · ' + scope, result: skuLabel + ' · $4.20/yd · 50yd min' }, reply: skuLabel + ' is **$4.20/yard** at the standard wholesale tier with a 50-yard minimum. Whether we can discount that or waive the minimum is a sales call, so I have flagged it on Review for your team to set.', memory: { kind: 'question', scope: 'org', text: 'When can a rep discount below standard wholesale or waive the minimum order quantity, and by how much?', why: 'Discounting and waiving minimums are commercial decisions only your team can own.' } };
+    }
+    // a straight price / cost / quote -> look it up in the catalog and answer
+    if (/price|pricing|cost|how much|\bquote\b|per.?yard|\brate\b|\bmoq\b|minimum/.test(t)) {
+      return { tool: { tool: 'Shopify', action: 'look up wholesale price · ' + scope, result: skuLabel + ' · $4.20/yd, $3.65 at 500yd · 50yd min' }, reply: skuLabel + ' runs **$4.20/yard** at the base wholesale tier (50-yard minimum), dropping to **$3.65/yard** at the 500-yard break. I pulled that from the catalog. Want me to draft a formal quote?', memory: { kind: 'fact', soft: true, scope: 'org', text: 'Wholesale per-yard pricing, minimums, and tier breaks live in the Shopify catalog and can be quoted directly from it.' } };
     }
     // retail / by-the-yard -> guardrail, route out
     if (/retail|by the yard|one yard|single yard|spandexbyyard|home sewer|hobby/.test(t)) {
