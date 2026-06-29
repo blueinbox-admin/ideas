@@ -110,7 +110,7 @@
       inputEl.classList.add('hl-type'); setTimeout(function () { inputEl.classList.remove('hl-type'); }, 2200);
       chalkOn(onbTarget('cc'), 'Your turn. This is a demo, so it\'s all pretend, but ask Claude to do anything and watch the memory fill in on the left.', { corner: 'bottom-right', highlight: false });
       setTimeout(chalkOff, 9000);
-    }, 5500);
+    }, 3500);
   }
   function takeOver() { if (FEAT.freeTyping === false) return; token++; playing = false; paused = false; clearTimers(); flushResume(); ctrl(); enableTyping(); promptEl.focus(); }
   promptEl.addEventListener('focus', function () { if (typingOn) clearPH(); });
