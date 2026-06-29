@@ -200,7 +200,6 @@ window.AM = window.AM || {};
     } else if (activeTab === 'facts') {
       var focus = single() && single() !== 'org' ? single() : null;
       section += '<section><div class="legend">Add your own</div>' +
-        '<p class="note">' + (focus ? 'A fact, mapping, or rule about ' + esc(focus) + ', so Claude works better for you.' : 'A fact, mapping, or convention true across your org, so Claude works better for you.') + '</p>' +
         '<form class="addform" data-add="1"><textarea placeholder="A fact or rule (e.g. which DE is the real audience, a naming convention, a never-do)."></textarea><button class="btn primary" type="submit">Add</button></form>' +
         '<div class="legend" style="margin-top:24px;">Confirmed facts</div>' +
         '<p class="note">What Claude actually knows ' + (focus ? 'about ' + esc(focus) : 'about your org') + ' — what it learned while working, your answers, and the facts you added. Click any to edit or remove.</p>';
