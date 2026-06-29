@@ -10,7 +10,7 @@
 // so off-script prompts roleplay live with no config edits.
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
-import { systemPrompt, extractJson } from './prompt.mjs';
+import { systemPrompt, extractJson, buildMessages } from './prompt.mjs';
 
 const MODEL = 'claude-haiku-4-5-20251001';
 const PORT = 8787;
@@ -37,12 +37,12 @@ createServer(async (req, res) => {
   if (req.method !== 'POST') { res.writeHead(405, CORS); return res.end('POST only'); }
   let raw = ''; for await (const c of req) raw += c;
   let body; try { body = JSON.parse(raw); } catch { res.writeHead(400, CORS); return res.end('{}'); }
-  const { org = 'the company', platform = 'their tools', agent = 'Claude', prompt = '', scopes = [] } = body;
+  const { org = 'the company', platform = 'their tools', agent = 'Claude', prompt = '', history = [], scopes = [] } = body;
   try {
     const ant = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'x-api-key': KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-      body: JSON.stringify({ model: MODEL, max_tokens: 500, system: systemPrompt({ org, platform, agent, scopes }), messages: [{ role: 'user', content: String(prompt).slice(0, 600) }] }),
+      body: JSON.stringify({ model: MODEL, max_tokens: 500, system: systemPrompt({ org, platform, agent, scopes }), messages: buildMessages({ history, prompt }) }),
     });
     const data = await ant.json();
     const parsed = extractJson(data?.content?.[0]?.text || '');

@@ -12,7 +12,7 @@
 //   wrangler deploy
 // Then copy the printed URL into shared/engine/defaults.js -> improviseUrl.
 
-import { systemPrompt, extractJson } from './prompt.mjs';
+import { systemPrompt, extractJson, buildMessages } from './prompt.mjs';
 
 // Only browsers on these origins may call the worker (light abuse guard; add
 // your own domain here if you deploy the demos elsewhere).
@@ -33,7 +33,7 @@ export default {
 
     let body;
     try { body = await request.json(); } catch { return json({ error: 'bad json' }, 400, headers); }
-    const { org = 'the company', platform = 'their tools', agent = 'Claude', prompt = '', scopes = [] } = body;
+    const { org = 'the company', platform = 'their tools', agent = 'Claude', prompt = '', history = [], scopes = [] } = body;
     if (!prompt || typeof prompt !== 'string') return json({ error: 'no prompt' }, 400, headers);
 
     const ant = await fetch('https://api.anthropic.com/v1/messages', {
@@ -47,7 +47,7 @@ export default {
         model: MODEL,
         max_tokens: 500,
         system: systemPrompt({ org, platform, agent, scopes }),
-        messages: [{ role: 'user', content: prompt.slice(0, 600) }],
+        messages: buildMessages({ history, prompt }),
       }),
     });
     if (!ant.ok) return json({ error: 'upstream', status: ant.status }, 502, headers);

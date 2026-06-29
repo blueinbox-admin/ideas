@@ -136,6 +136,11 @@
   function staticFallback(text) {
     var conns = CFG.connectors || [];
     var tool = (conns[0] && conns[0].label) || CFG.agentLabel || 'Claude';
+    // A bare confirmation ("yes", "ok", "go ahead") has no content to echo as a
+    // tool action — never render "Platform · yes". Just confirm it's handled.
+    if (/^(yes|yep|yeah|yup|sure|ok(ay)?|please|do it|go ahead|sounds good|that works|perfect|thanks|thank you)[.! ]*$/i.test(text.trim())) {
+      return { tool: null, reply: 'Done. I sent that over and kept it consistent with what your team has saved.', memory: null };
+    }
     var action = text.trim().replace(/[.?!]+$/, '');
     if (action.length > 46) action = action.slice(0, 44) + '…';
     return {
@@ -143,6 +148,24 @@
       reply: 'Done. I worked from what your team already has saved so it lines up with the rest of your setup.',
       memory: null,
     };
+  }
+
+  // the last few chat lines, so the improviser can resolve context-dependent
+  // replies ("yes", "the second one", "go ahead") instead of seeing a bare word.
+  // Tool/working lines are skipped; only what was said survives. Excludes the
+  // just-typed message (that rides in `prompt`).
+  function recentHistory(maxLines) {
+    var out = [], nodes = convo.children;
+    for (var i = nodes.length - 1; i >= 0 && out.length < maxLines; i--) {
+      var el = nodes[i], role = null;
+      if (el.classList.contains(CLS.user)) role = 'user';
+      else if (el.classList.contains(CLS.claude)) role = 'assistant';
+      else continue;                                  // tool / working / spinner
+      var txt = el.textContent.replace(/^\s*Claude\s*/, '').trim();
+      if (txt) out.unshift({ role: role, content: txt });
+    }
+    if (out.length && out[out.length - 1].role === 'user') out.pop();  // drop current turn
+    return out;
   }
 
   // ask the worker to improvise a reply + a high-concept fact for this org
@@ -154,6 +177,7 @@
       platform: connLabel,
       agent: CFG.agentLabel || 'Claude',
       prompt: text,
+      history: recentHistory(6),
       scopes: CFG.scopes || [],
     };
     return fetch(IMPROVISE_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })

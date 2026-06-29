@@ -15,6 +15,27 @@ export function systemPrompt({ org, platform, agent, scopes }) {
   ].join('\n');
 }
 
+// Build the Anthropic messages array from prior chat lines + the current prompt.
+// Enforces the API's rules: the array must start with a user turn and roles must
+// alternate, so leading assistant turns are dropped and consecutive same-role
+// turns are merged. Keeps only the last few lines so "yes" / "the second one" /
+// "go ahead" resolve against what was actually said.
+export function buildMessages({ history = [], prompt = '' }) {
+  const raw = (Array.isArray(history) ? history : []).slice(-6).map((h) => ({
+    role: h && h.role === 'assistant' ? 'assistant' : 'user',
+    content: String((h && h.content) || '').slice(0, 400),
+  })).filter((m) => m.content);
+  raw.push({ role: 'user', content: String(prompt).slice(0, 600) });
+  while (raw.length && raw[0].role === 'assistant') raw.shift();      // first must be user
+  const msgs = [];
+  for (const m of raw) {
+    const last = msgs[msgs.length - 1];
+    if (last && last.role === m.role) last.content += '\n' + m.content; // merge same-role
+    else msgs.push(m);
+  }
+  return msgs;
+}
+
 export function extractJson(s) {
   const m = String(s || '').match(/\{[\s\S]*\}/);
   if (!m) return null;
