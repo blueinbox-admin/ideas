@@ -1,18 +1,19 @@
 // transcript.js — the short guided story the engine autoplays before handing over.
-// One turn: a real fabric match with a quantitative result, surfacing ONE
-// high-concept, reusable fact. Grounded in Sportek's real catalog (F-70L,
-// Chloratek, PFP, UPF50+).
+// The live-call flow from the proposal: a rep describes what the customer is
+// making in plain language, Claude returns the right fabric with what's in stock
+// and an offer to send links. Surfaces ONE high-concept, reusable fact.
+// Grounded in Sportek's real catalog (F-78, FM-60, PFP).
 window.TRANSCRIPT = [
   {
-    you: 'I need a chlorine-resistant swim fabric that can also take a sublimated print. What fits, and how many colors are in stock?',
+    you: 'On a call — customer wants a printed polo, four-way stretch, mid weight. What do we have and what’s in stock?',
     steps: [
-      { tool: 'Product catalog', action: 'filter · chlorine-resist + PFP + UPF', result: 'F-70L Chloratek UPF50+ · 14 stock colors' },
-      { say: '**F-70L** Nylon-LYCRA Chlorine-Resist Tricot fits both: it is UPF50+, four-way stretch, and it sits in the **PFP** line, so it sublimates cleanly. **14 colors** are in stock now.' },
+      { tool: 'Shopify', action: 'match · printed polo · 4-way + mid weight + PFP', result: 'F-78 6oz · FM-60 matte · both PFP · in stock' },
+      { say: 'For a printed polo at mid weight I’d lead with **F-78** (shiny four-way nylon-spandex, 6oz, in the PFP line so it takes the print) — in stock now. **FM-60** is the matte option if they want less sheen. Want the catalog links to send over?' },
     ],
     memory: {
       kind: 'mapping',
-      scope: 'swimwear',
-      text: 'F-70L (Chloratek, UPF50+) is the one chlorine-resistant fabric that is also in the PFP sublimation line, so it is the pick for printed competitive or pool swimwear.',
+      scope: 'teamwear',
+      text: 'For printed polos and team tops, lead with F-78 (shiny) or FM-60 (matte) nylon-spandex tricot: both four-way stretch, mid weight, and PFP so they take a print.',
     },
   },
 ];

@@ -44,9 +44,9 @@ window.VERSIONS = [
   },
   {
     slug: 'activememory-sportek',
-    connector: 'Product catalog & orders',
+    connector: 'Shopify',
     persona: 'Sportek International',
-    blurb: 'A sales assistant for a wholesale technical-fabric distributor. Reps describe what a customer is making; Claude matches it to real fabrics by spec, checks stock, and drafts a quote. The memory learns the product knowledge and the sales conventions. Seeded from sportek.com.',
+    blurb: 'A sales-call assistant for a wholesale technical-fabric distributor. A rep describes what the customer is making ("printed polo, four-way stretch, mid weight"); Claude pulls the right fabrics from the Shopify catalog, with stock and links to send the customer. The memory learns the product knowledge and the sales conventions. Seeded from sportek.com.',
     status: 'live',
     surface: 'embedded',
     features: {},
