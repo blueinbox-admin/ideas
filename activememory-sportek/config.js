@@ -21,7 +21,7 @@ window.DEMO = {
   scopes: ['swimwear', 'activewear', 'teamwear', 'dancewear'],
 
   onboarding: [
-    { which: 'cc', target: '.embed-chat', corner: 'bottom-right', text: 'This is your Sportek assistant. On a call, just describe what the customer is making, "printed polo, four-way stretch, mid weight", and it pulls the right fabrics from your Shopify catalog, with what is in stock and links to send over.' },
+    { which: 'cc', target: '.embed-chat', corner: 'bottom-right', text: 'A sales rep can ask questions in real time during a call, "what moisture-wicking knit do you have for team jerseys this week?", and the assistant pulls the right fabrics from your Shopify catalog, with what is in stock and links to send over.' },
     { which: 'app', target: '.app-scroll', corner: 'top-left', text: 'This is your memory. As you work, it saves what Claude learns about how your business runs, so the AI can learn and work like an experienced employee, not a new hire.' },
   ],
 
