@@ -127,10 +127,10 @@
   //      what the user typed, invents a plausible answer + ONE high-level reusable
   //      fact about this made-up org, and returns JSON we surface.
   //   3. a quiet static reply (no echoed pseudo-fact) if no endpoint / it errors.
-  // On localhost, auto-target the local node proxy (improvise-worker/local-proxy.mjs)
-  // so off-script prompts roleplay live during laptop demos with no config edits.
+  // On localhost, the combined server (serve.mjs) serves the demo AND the improviser
+  // on the same origin, so we just POST to /improvise here — no CORS, no config edits.
   // In prod, use the configured Worker URL (defaults.js improviseUrl).
-  var LOCAL_IMPROVISE = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? 'http://localhost:8787' : '';
+  var LOCAL_IMPROVISE = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? location.origin + '/improvise' : '';
   var IMPROVISE_URL = CFG.improviseUrl || (window.DEMO_DEFAULTS && window.DEMO_DEFAULTS.improviseUrl) || LOCAL_IMPROVISE;
 
   function staticFallback(text) {
