@@ -15,8 +15,14 @@
   var KEY = 'sportek_unlocked';
   var CONTACT = 'david@blueinboxllc.com';
 
-  // already unlocked this tab session -> no gate
+  // already unlocked this tab session -> no gate, engine boots normally
   try { if (sessionStorage.getItem(KEY) === '1') return; } catch (e) {}
+
+  // Hold the auto-demo until unlock. Set synchronously (this runs before the
+  // engine's convo.js), so the engine waits on this promise instead of starting
+  // the scripted demo behind the blur. Resolved in attempt() on a correct password.
+  var releaseDemo;
+  window.AM_GATE = new Promise(function (r) { releaseDemo = r; });
 
   var css = [
     '.pw-gate-overlay{position:fixed;inset:0;z-index:2147483647;display:flex;',
@@ -85,6 +91,7 @@
         htmlEl.style.overflow = prevHtml;
         bodyEl.style.overflow = prevBody;
         if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        if (releaseDemo) releaseDemo();   // start the auto-demo now, fresh from the top
       } else {
         err.classList.add('show');
         input.select();

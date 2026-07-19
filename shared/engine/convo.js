@@ -234,6 +234,13 @@
   }
 
   // boot — onboarding flag comes from the resolved feature set (boot.js)
-  if (FEAT.onboarding !== false) playOnboarding();
-  play();
+  function boot() {
+    if (FEAT.onboarding !== false) playOnboarding();
+    play();
+  }
+  // Optional hold: a page can set window.AM_GATE (a promise, e.g. a password
+  // gate) to keep the auto-demo from starting until it resolves. No gate on the
+  // page -> boot immediately.
+  if (window.AM_GATE && typeof window.AM_GATE.then === 'function') window.AM_GATE.then(boot);
+  else boot();
 })(window.AM);
